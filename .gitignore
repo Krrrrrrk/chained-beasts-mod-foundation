@@ -1,0 +1,60 @@
+# Project-local tools and downloads
+/tools/
+/downloads/
+/backups/
+/exports/
+/inventory/
+
+# Local investigation notes and phase handoff reports
+/*_REPORT.md
+/MODDING_REPORT.md
+/LIMB_THROW_DEBUFF_FINDINGS.md
+
+# Generated inspection/decompilation output
+/analysis/
+/phase2/raw-logs/
+/phase2/generated/
+/phase3/raw-logs/
+/phase3/generated/
+/artifacts/
+/decompiled/
+/extracted/
+/copies/
+
+# Build output
+**/bin/
+**/obj/
+*.pdb
+*.log
+
+# Never commit copied game/runtime binaries or Unity containers
+*.dll
+*.exe
+*.bundle
+*.assets
+*.assets.resS
+*.resS
+*.resource
+global-metadata.dat
+globalgamemanagers
+level[0-9]*
+
+# Never commit copied local user data
+Player.log
+Player-prev.log
+SaveData
+SaveDataPrivate
+Settings
+bindings.json
+persistent_data*.json
+RemoteConfigCache.json
+RemoteConfigDifficulty
+steam_autocloud.vdf
+
+# If loader files are staged here in a later phase, keep them local
+/BepInEx/
+/dotnet/
+/doorstop_config.ini
+/winhttp.dll
+/.doorstop_version
+
