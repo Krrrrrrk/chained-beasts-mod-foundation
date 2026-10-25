@@ -1,0 +1,212 @@
+# Chained Beasts Mod Foundation
+
+An unofficial BepInEx 6 mod and source-level custom-content starter kit for **Chained Beasts**.
+
+The current build adds four pieces of custom content and an optional solo developer menu. Each example follows the game's normal offer, purchase, acquisition, ownership, and run-state paths rather than editing shipped assets or save files directly.
+
+## Included content
+
+| Content | Type | Effect |
+|---|---|---|
+| **Bulk Up** | Skill | Doubles maximum and current HP when acquired. Health percentage is preserved. |
+| **Runner's Wraps** | Equipment | Dodges consume 25% less stamina while equipped. Costs 40 gold. |
+| **Leadfoot** | Potion affliction | Reduces movement speed by 10%, 20%, or 30% at one, two, or three skulls. The generated potion's normal healing is preserved. |
+| **Adrenal Graft** | Surgery | Increases stamina recovery speed by 25% for the rest of the run. Currently free. |
+
+Custom content retains the surrounding native behavior: offer eligibility, normal UI interaction, costs, acquisition statistics, ownership checks, and checkpoint bookkeeping. The effects are applied through narrow runtime hooks and do not replace unrelated game systems.
+
+## Solo developer menu
+
+Press **F1** during a solo lobby or run to open the optional testing panel.
+
+It provides:
+
+- God mode
+- Infinite stamina
+- Heal to full
+- Gold adjustments
+- Add or remove one rank of an offerable skill
+- Add or remove one level of an injury/debuff
+
+The run-data tools target player 1 and require the local client to be the host. God mode and infinite stamina reset when the game closes. Health, gold, skills, and injuries are real run data and can be written into the active checkpoint, so use the menu on disposable test runs.
+
+## Compatibility
+
+The current release is built and manually tested against:
+
+| Component | Tested version |
+|---|---|
+| Chained Beasts | `1.0.1` — Steam App ID `3569420` |
+| Unity | `6000.3.21f1` |
+| BepInEx | `6.0.0-be.791+b782da4`, Unity IL2CPP, Windows x64 |
+| Plugin | `ChainedBeasts.ModFoundation 0.6.1` |
+| .NET target | `net6.0` |
+| `GameAssembly.dll` SHA-256 | `72f2892607b0772470caae5db766dc07aaf636c3edfe26cefe019a5b9ddae56b` |
+
+The mod is currently scoped and tested for **solo play**. Multiplayer behavior is not supported or claimed.
+
+Game updates can change interop signatures, enum ranges, and serialization layouts. If the game build or `GameAssembly.dll` hash differs, treat the release as unverified until it has been rebuilt and retested.
+
+## Installation
+
+### 1. Install BepInEx
+
+Download the tested [BepInEx Unity IL2CPP Windows x64 build](https://builds.bepinex.dev/projects/bepinex_be/791/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.791%2Bb782da4.zip).
+
+Extract its contents into the Chained Beasts game directory—the folder containing `ChainedBeasts.exe`. For a default Steam installation this is usually:
+
+```text
+C:\Program Files (x86)\Steam\steamapps\common\Chained Beasts
+```
+
+Launch the game once and close it after reaching the main menu. This lets BepInEx generate its configuration and IL2CPP interop assemblies. See the official [BepInEx IL2CPP installation guide](https://docs.bepinex.dev/master/articles/user_guide/installation/unity_il2cpp.html) if the loader does not start.
+
+### 2. Install the plugin
+
+Download `ChainedBeasts.ModFoundation.dll` from the repository's release and copy it to:
+
+```text
+<Chained Beasts>\BepInEx\plugins\ChainedBeasts.ModFoundation.dll
+```
+
+No other plugin files or copied game assemblies are required.
+
+Launch the game. A successful load appears in `BepInEx\LogOutput.log` as:
+
+```text
+Loading [ChainedBeasts.ModFoundation 0.6.1]
+[ChainedBeasts.ModFoundation] smoke test loaded
+```
+
+## Configuration
+
+BepInEx creates the configuration file after the first launch:
+
+```text
+<Chained Beasts>\BepInEx\config\local.chainedbeasts.modfoundation.cfg
+```
+
+Close and restart the game after changing a setting.
+
+| Section | Setting | Default | Purpose |
+|---|---|---:|---|
+| `BulkUp` | `EnableBulkUp` | `true` | Enables Bulk Up. |
+| `BulkUp` | `ForceBulkUpFirstOffer` | `false` | Places Bulk Up in the next eligible training offer until acquired. |
+| `RunnersWraps` | `EnableRunnersWraps` | `true` | Enables Runner's Wraps. |
+| `RunnersWraps` | `ForceRunnersWrapsNextOffer` | `false` | Replaces one eligible equipment-shop slot for testing. |
+| `Leadfoot` | `EnableLeadfoot` | `true` | Enables the Leadfoot affliction. |
+| `Leadfoot` | `ForceLeadfootNextOffer` | `false` | Replaces one non-water potion slot for testing. |
+| `AdrenalGraft` | `EnableAdrenalGraft` | `true` | Enables Adrenal Graft. |
+| `AdrenalGraft` | `ForceAdrenalGraftNextOffer` | `false` | Shows the free operation at the next eligible surgeon. |
+| `DeveloperMenu` | `EnableDeveloperMenu` | `true` | Enables the solo testing overlay and helper hooks. |
+| `DeveloperMenu` | `MenuKey` | `F1` | Changes the key that opens and closes the overlay. |
+| `Diagnostics` | `EnableDiagnostics` | `false` | Enables the read-only main-menu lifecycle diagnostic. |
+
+The `Force...` options are testing conveniences. They replace at most one eligible generated offer and still require the player to complete the normal interaction. Turn them off for ordinary play.
+
+## Removing or updating the mod
+
+Close the game before replacing or deleting the DLL.
+
+To uninstall, remove:
+
+```text
+<Chained Beasts>\BepInEx\plugins\ChainedBeasts.ModFoundation.dll
+```
+
+The configuration file may also be deleted if its settings are no longer wanted.
+
+Do not remove or disable the plugin while an active run contains custom content. Finish or abandon that run first. In particular:
+
+- Leadfoot uses a version-sensitive checkpoint bridge.
+- Bulk Up stores a compact run marker to prevent repeated health multiplication.
+- Adrenal Graft ownership is recorded in the run's surgery history.
+- Removing the plugin from such a checkpoint can leave unknown IDs without their effect hooks.
+
+## Building from source
+
+Requirements:
+
+- Windows
+- .NET 6 SDK, or a newer SDK capable of targeting .NET 6
+- The tested BepInEx IL2CPP build installed in your own Chained Beasts directory
+- One successful BepInEx launch so `BepInEx\interop` exists
+
+This repository does **not** redistribute Chained Beasts, Unity, or BepInEx assemblies. The project references the copies in your local game installation with `Private=false`.
+
+Set the game directory for the current PowerShell session:
+
+```powershell
+$env:CHAINED_BEASTS_GAME_DIR = 'C:\Program Files (x86)\Steam\steamapps\common\Chained Beasts'
+```
+
+Build and deploy with the game closed:
+
+```powershell
+pwsh -File .\scripts\build-and-deploy-plugin.ps1 -Configuration Release
+```
+
+For a non-default installation:
+
+```powershell
+pwsh -File .\scripts\build-and-deploy-plugin.ps1 `
+  -Configuration Release `
+  -GameRoot 'D:\Games\Steam\steamapps\common\Chained Beasts'
+```
+
+The script verifies every local reference, refuses to deploy while the game is running, builds the `net6.0` project, copies only the plugin DLL, and prints the deployed SHA-256.
+
+Compile without deploying:
+
+```powershell
+dotnet build .\src\ChainedBeasts.ModFoundation\ChainedBeasts.ModFoundation.csproj -c Release
+```
+
+## Project structure
+
+```text
+src/ChainedBeasts.ModFoundation/
+  Plugin.cs                          Configuration and feature isolation
+  CustomContentIds.cs                Custom IDs and collision guards
+  CustomLocalization.cs              Runtime localization boundaries
+  BulkUpFeature.cs                   Skill example
+  Equipment/RunnersWrapsFeature.cs   Equipment example
+  Afflictions/LeadfootFeature.cs     Potion-affliction example
+  Surgeries/AdrenalGraftFeature.cs   Surgery example
+  DevTools/DeveloperMenuFeature.cs   Solo testing overlay
+  FeaturePatcher.cs                  Harmony target helper
+
+scripts/
+  build-and-deploy-plugin.ps1        Closed-game build/deploy workflow
+
+docs/
+  ADDING_CONTENT.md                  Contributor walkthroughs for each content type
+```
+
+For implementation details and guidance on adding another skill, equipment item, affliction, or surgery, read [Adding custom content](docs/ADDING_CONTENT.md).
+
+## Known limitations
+
+- Custom strings are currently English-only.
+- Custom IDs and checkpoint marker slots can conflict with another mod that independently claims the same values.
+- Adrenal Graft has no native registry to join; normal mode inserts it on a deterministic one-in-four eligible surgeon visit. Its force option is intended for testing.
+- Removing a skill through the developer menu does not reverse unrelated one-time side effects that skill may have performed when acquired.
+- The developer menu is a testing tool, not a supported multiplayer admin interface.
+- Every game update requires compatibility verification against newly generated BepInEx interop assemblies.
+
+## Contributing
+
+Keep changes narrow and reversible:
+
+1. Use unused IDs with runtime collision guards.
+2. Preserve native acquisition and ownership bookkeeping.
+3. Do not commit game files, BepInEx binaries, generated interop assemblies, saves, logs, or build output.
+4. Build with zero warnings and test presentation, acquisition, effect removal, checkpoint restore, fresh-run reset, and ordinary content around the new feature.
+5. Document anything that remains untested, especially multiplayer behavior.
+
+The repository's `.gitignore` is configured to exclude local analysis output, binaries, backups, logs, and user data.
+
+## Disclaimer
+
+This is an unofficial community project and is not affiliated with or endorsed by Featherweight Games. Chained Beasts and its assets belong to their respective owners. The project references assets already loaded by the user's installed game and does not redistribute them.
+
