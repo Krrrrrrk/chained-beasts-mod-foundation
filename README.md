@@ -15,6 +15,20 @@ The current build adds four pieces of custom content and an optional solo develo
 
 Custom content retains the surrounding native behavior: offer eligibility, normal UI interaction, costs, acquisition statistics, ownership checks, and checkpoint bookkeeping. The effects are applied through narrow runtime hooks and do not replace unrelated game systems.
 
+The examples currently reuse sprites, models, and other visual references that are already loaded by Chained Beasts. This project does **not** yet demonstrate importing or assigning brand-new icons, and it does not redistribute the game's assets.
+
+## Screenshots
+
+| Bulk Up trainer offer | Runner's Wraps in the shop |
+|---|---|
+| ![Bulk Up shown as a trainer skill](docs/images/bulk-up-offer.png) | ![Runner's Wraps shown in an equipment shop](docs/images/runners-wraps-shop.png) |
+
+| Leadfoot potion | Adrenal Graft surgery |
+|---|---|
+| ![Leadfoot shown as a potion affliction](docs/images/leadfoot-potion.png) | ![Adrenal Graft shown at the surgeon](docs/images/adrenal-graft-surgery.png) |
+
+![The optional solo developer menu open during a test run](docs/images/developer-menu.png)
+
 ## Solo developer menu
 
 Press **F1** during a solo lobby or run to open the optional testing panel.
@@ -63,7 +77,7 @@ Launch the game once and close it after reaching the main menu. This lets BepInE
 
 ### 2. Install the plugin
 
-Download `ChainedBeasts.ModFoundation.dll` from the repository's release and copy it to:
+Download `ChainedBeasts.ModFoundation.dll` from the repository's [Releases page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases) and copy it to:
 
 ```text
 <Chained Beasts>\BepInEx\plugins\ChainedBeasts.ModFoundation.dll
@@ -128,6 +142,7 @@ Do not remove or disable the plugin while an active run contains custom content.
 Requirements:
 
 - Windows
+- [PowerShell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows) (`pwsh`)
 - .NET 6 SDK, or a newer SDK capable of targeting .NET 6
 - The tested BepInEx IL2CPP build installed in your own Chained Beasts directory
 - One successful BepInEx launch so `BepInEx\interop` exists
@@ -181,15 +196,28 @@ scripts/
 
 docs/
   ADDING_CONTENT.md                  Contributor walkthroughs for each content type
+  images/                            In-game screenshots used by this README
 ```
 
 For implementation details and guidance on adding another skill, equipment item, affliction, or surgery, read [Adding custom content](docs/ADDING_CONTENT.md).
 
+## Make your own mod
+
+There are two different extension paths:
+
+- **Add content to this plugin:** preserve the supplied IDs (`11000`, `2499`, `11010`, and `11020`), add new named constants in `CustomContentIds.cs`, give every item distinct localization keys, and retain the runtime collision guards. Persistent skills and afflictions also need their own verified storage strategy; changing only the content ID does not allocate a new checkpoint slot.
+- **Create a separate plugin:** change the assembly name, root namespace, BepInEx plugin GUID/name/version, Harmony owner, configuration sections and keys, localization-key prefix, and every custom content ID. Do not ship references to your local game assemblies.
+
+The examples are deliberately concrete rather than a generic content-loader API. Start with [Adding custom content](docs/ADDING_CONTENT.md), especially its checkpoint-storage warning and joint save/restore test, before copying a persistent skill or affliction.
+
 ## Known limitations
 
-- Custom strings are currently English-only.
-- Custom IDs and checkpoint marker slots can conflict with another mod that independently claims the same values.
-- Adrenal Graft has no native registry to join; normal mode inserts it on a deterministic one-in-four eligible surgeon visit. Its force option is intended for testing.
+- Custom strings are currently an English dictionary intercepted at the game's localization boundaries. The fallback works in every language setting, but translated text has not been supplied. Proper multilingual support requires per-language values or registration with the game's I2 localization tables.
+- New icons are not implemented. All four examples reuse visual references already present in the running game.
+- Custom IDs and checkpoint marker slots can conflict with another mod that independently claims the same values. Bulk Up's `SkillType.None` and Leadfoot's `InjuryType.EmptySlot1` bridges belong specifically to those supplied examples; copying either bridge does not create independent storage.
+- Adrenal Graft cannot be appended to a native surgery registry because the tested game exposes none. The native generator constructs each visit's list internally, so normal mode replaces one otherwise eligible returned slot on a deterministic one-in-four visit while preserving the option count. “Deterministic” means the same run/player/visit state gives the same decision rather than rolling fresh random chance every time. The force option bypasses that gate for testing.
+- Bulk Up's trainer card and health effect work, but the full-screen acquisition banner can display another native skill's text. This presentation bug is pending investigation.
+- Removing Bulk Up with the developer menu explicitly resynchronizes its processed-level marker. Removal by another ordinary game mechanic does not use that helper and the remove/reacquire path remains unverified.
 - Removing a skill through the developer menu does not reverse unrelated one-time side effects that skill may have performed when acquired.
 - The developer menu is a testing tool, not a supported multiplayer admin interface.
 - Every game update requires compatibility verification against newly generated BepInEx interop assemblies.
@@ -209,3 +237,4 @@ The repository's `.gitignore` is configured to exclude local analysis output, bi
 ## Disclaimer
 
 This is an unofficial community project and is not affiliated with or endorsed by Featherweight Games. Chained Beasts and its assets belong to their respective owners. The project references assets already loaded by the user's installed game and does not redistribute them.
+
