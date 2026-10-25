@@ -237,4 +237,3 @@ The repository's `.gitignore` is configured to exclude local analysis output, bi
 ## Disclaimer
 
 This is an unofficial community project and is not affiliated with or endorsed by Featherweight Games. Chained Beasts and its assets belong to their respective owners. The project references assets already loaded by the user's installed game and does not redistribute them.
-

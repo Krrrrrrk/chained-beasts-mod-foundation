@@ -124,4 +124,3 @@ If you are adding content inside this repository instead, keep the existing iden
 4. Start with force overrides off, then use one at a time for manual testing.
 5. Check acquisition, removal/reduction, repeated UI refresh, checkpoint/restore, fresh-run reset, original content, and clean exit.
 6. Clearly label any behavior not tested in multiplayer. These examples are scoped and handed off for solo testing.
-
