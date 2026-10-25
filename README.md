@@ -13,6 +13,9 @@ The current build adds four pieces of custom content and an optional solo develo
 | **Leadfoot** | Potion affliction | Reduces movement speed by 10%, 20%, or 30% at one, two, or three skulls. The generated potion's normal healing is preserved. |
 | **Adrenal Graft** | Surgery | Increases stamina recovery speed by 25% for the rest of the run. Currently free. |
 
+> [!IMPORTANT]
+> These additions are technical examples of what custom content can do, not balanced gameplay content. No attempt has been made to tune them for difficulty or progression; individual examples may be extremely overpowered, underpowered, or otherwise unsuitable for a normal run.
+
 Custom content retains the surrounding native behavior: offer eligibility, normal UI interaction, costs, acquisition statistics, ownership checks, and checkpoint bookkeeping. The effects are applied through narrow runtime hooks and do not replace unrelated game systems.
 
 The examples currently reuse sprites, models, and other visual references that are already loaded by Chained Beasts. This project does **not** yet demonstrate importing or assigning brand-new icons, and it does not redistribute the game's assets.
