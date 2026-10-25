@@ -49,13 +49,13 @@ It provides:
 
 The reroll button is context-sensitive: open the offer screen first, then press F1 and choose **Reroll current offers**. It clears any unconfirmed selections on that screen, replaces only the visible offer set, and leaves other future rooms alone.
 
-Surgery rerolls are currently unreliable: the panel refresh animation plays, but the user's test kept all the same options. Treat this as a known issue rather than a working reroll feature. Further surgery-reroll work is deferred. The forced Adrenal Graft option stays pinned when its testing override is enabled.
+Surgery rerolls are currently unreliable: the panel refresh animation plays, but the test kept all the same options. Further surgery-reroll work is deferred. The forced Adrenal Graft option stays pinned when its testing override is enabled.
 
 The run-data tools target player 1 and require the local client to be the host. God mode and infinite stamina reset when the game closes. Health, gold, skills, injuries, and rerolled offers are real run data and can be written into the active checkpoint, so use the menu on disposable test runs.
 
 ## Compatibility
 
-The current build targets this game/loader baseline. The user confirmed version 0.7.3 fixes Bulk Up's acquisition banner, and potion and skill rerolls work in solo play. Surgery rerolls refresh the panel but can leave all offers unchanged:
+The current build targets this game/loader baseline. Test confirmed version 0.7.3 fixes Bulk Up's acquisition banner, and potion and skill rerolls work in solo play. Surgery rerolls refresh the panel but can leave all offers unchanged:
 
 | Component | Tested version |
 |---|---|
@@ -226,8 +226,8 @@ The examples are deliberately concrete rather than a generic content-loader API.
 - New icons are not implemented. All four examples reuse visual references already present in the running game.
 - Custom IDs and checkpoint marker slots can conflict with another mod that independently claims the same values. Bulk Up's `SkillType.None` and Leadfoot's `InjuryType.EmptySlot1` bridges belong specifically to those supplied examples; copying either bridge does not create independent storage.
 - Adrenal Graft cannot be appended to a native surgery registry because the tested game exposes none. The native generator constructs each visit's list internally, so normal mode replaces one otherwise eligible returned slot on a deterministic one-in-four visit while preserving the option count. “Deterministic” means the same run/player/visit state gives the same decision rather than rolling fresh random chance every time. The force option bypasses that gate for testing.
-- Bulk Up's acquisition banner is confirmed fixed in the user's 0.7.3 solo test. The forced offer now updates its stored skill as well as the temporary display list, so selection, acquisition, and reveal use the same ID. The ineffective banner scanner and the earlier 0.7.1 native UI detours remain removed.
-- Potion and skill rerolls passed the user's solo test. Shop refreshes appear in the log but still need explicit visual confirmation. Surgery rerolls animate the refresh but can leave all offers unchanged; this known issue is deferred.
+- Bulk Up's acquisition banner is confirmed fixed in the 0.7.3 solo test. The forced offer now updates its stored skill as well as the temporary display list, so selection, acquisition, and reveal use the same ID. The ineffective banner scanner and the earlier 0.7.1 native UI detours remain removed.
+- Potion and skill rerolls passed test. Shop refreshes appear in the log but still need explicit visual confirmation. Surgery rerolls animate the refresh but can leave all offers unchanged; this known issue is deferred.
 - Removing Bulk Up with the developer menu explicitly resynchronizes its processed-level marker. Removal by another ordinary game mechanic does not use that helper and the remove/reacquire path remains unverified.
 - Removing a skill through the developer menu does not reverse unrelated one-time side effects that skill may have performed when acquired.
 - The developer menu is a testing tool, not a supported multiplayer admin interface.
