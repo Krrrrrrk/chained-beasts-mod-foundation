@@ -44,19 +44,25 @@ It provides:
 - Gold adjustments
 - Add or remove one rank of an offerable skill
 - Add or remove one level of an injury/debuff
+- Reroll the offers on the currently open skill, potion, or shop screen
+- Experimental surgery refresh (currently animates but can keep every offer unchanged)
 
-The run-data tools target player 1 and require the local client to be the host. God mode and infinite stamina reset when the game closes. Health, gold, skills, and injuries are real run data and can be written into the active checkpoint, so use the menu on disposable test runs.
+The reroll button is context-sensitive: open the offer screen first, then press F1 and choose **Reroll current offers**. It clears any unconfirmed selections on that screen, replaces only the visible offer set, and leaves other future rooms alone.
+
+Surgery rerolls are currently unreliable: the panel refresh animation plays, but the user's test kept all the same options. Treat this as a known issue rather than a working reroll feature. Further surgery-reroll work is deferred. The forced Adrenal Graft option stays pinned when its testing override is enabled.
+
+The run-data tools target player 1 and require the local client to be the host. God mode and infinite stamina reset when the game closes. Health, gold, skills, injuries, and rerolled offers are real run data and can be written into the active checkpoint, so use the menu on disposable test runs.
 
 ## Compatibility
 
-The current release is built and manually tested against:
+The current build targets this game/loader baseline. The user confirmed version 0.7.3 fixes Bulk Up's acquisition banner, and potion and skill rerolls work in solo play. Surgery rerolls refresh the panel but can leave all offers unchanged:
 
 | Component | Tested version |
 |---|---|
 | Chained Beasts | `1.0.1` — Steam App ID `3569420` |
 | Unity | `6000.3.21f1` |
 | BepInEx | `6.0.0-be.791+b782da4`, Unity IL2CPP, Windows x64 |
-| Plugin | `ChainedBeasts.ModFoundation 0.6.1` |
+| Plugin | `ChainedBeasts.ModFoundation 0.7.3` |
 | .NET target | `net6.0` |
 | `GameAssembly.dll` SHA-256 | `72f2892607b0772470caae5db766dc07aaf636c3edfe26cefe019a5b9ddae56b` |
 
@@ -91,7 +97,7 @@ No other plugin files or copied game assemblies are required.
 Launch the game. A successful load appears in `BepInEx\LogOutput.log` as:
 
 ```text
-Loading [ChainedBeasts.ModFoundation 0.6.1]
+Loading [ChainedBeasts.ModFoundation 0.7.3]
 [ChainedBeasts.ModFoundation] smoke test loaded
 ```
 
@@ -187,6 +193,7 @@ src/ChainedBeasts.ModFoundation/
   Plugin.cs                          Configuration and feature isolation
   CustomContentIds.cs                Custom IDs and collision guards
   CustomLocalization.cs              Runtime localization boundaries
+  CustomTranslations.cs              I2 term registration and 12-language text
   BulkUpFeature.cs                   Skill example
   Equipment/RunnersWrapsFeature.cs   Equipment example
   Afflictions/LeadfootFeature.cs     Potion-affliction example
@@ -215,11 +222,12 @@ The examples are deliberately concrete rather than a generic content-loader API.
 
 ## Known limitations
 
-- Custom strings are currently an English dictionary intercepted at the game's localization boundaries. The fallback works in every language setting, but translated text has not been supplied. Proper multilingual support requires per-language values or registration with the game's I2 localization tables.
+- Custom strings follow the game's selected language for English, Korean, Japanese, Brazilian Portuguese, Latin American Spanish, German, French, Italian, Simplified Chinese, Traditional Chinese, Russian, and Turkish. These community translations have not yet been reviewed by native speakers; unknown language names fall back to English.
 - New icons are not implemented. All four examples reuse visual references already present in the running game.
 - Custom IDs and checkpoint marker slots can conflict with another mod that independently claims the same values. Bulk Up's `SkillType.None` and Leadfoot's `InjuryType.EmptySlot1` bridges belong specifically to those supplied examples; copying either bridge does not create independent storage.
 - Adrenal Graft cannot be appended to a native surgery registry because the tested game exposes none. The native generator constructs each visit's list internally, so normal mode replaces one otherwise eligible returned slot on a deterministic one-in-four visit while preserving the option count. “Deterministic” means the same run/player/visit state gives the same decision rather than rolling fresh random chance every time. The force option bypasses that gate for testing.
-- Bulk Up's trainer card and health effect work, but the full-screen acquisition banner can display another native skill's text. This presentation bug is pending investigation.
+- Bulk Up's acquisition banner is confirmed fixed in the user's 0.7.3 solo test. The forced offer now updates its stored skill as well as the temporary display list, so selection, acquisition, and reveal use the same ID. The ineffective banner scanner and the earlier 0.7.1 native UI detours remain removed.
+- Potion and skill rerolls passed the user's solo test. Shop refreshes appear in the log but still need explicit visual confirmation. Surgery rerolls animate the refresh but can leave all offers unchanged; this known issue is deferred.
 - Removing Bulk Up with the developer menu explicitly resynchronizes its processed-level marker. Removal by another ordinary game mechanic does not use that helper and the remove/reacquire path remains unverified.
 - Removing a skill through the developer menu does not reverse unrelated one-time side effects that skill may have performed when acquired.
 - The developer menu is a testing tool, not a supported multiplayer admin interface.

@@ -70,6 +70,7 @@ public sealed class DeveloperMenuController : MonoBehaviour
     private bool _catalogReady;
     private int _skillIndex;
     private int _injuryIndex;
+    private int _rerollSequence;
     private string _status = "Open a solo run or lobby to edit run data.";
     private bool _cursorVisibleBeforeOpen;
     private CursorLockMode _cursorLockBeforeOpen;
@@ -177,6 +178,11 @@ public sealed class DeveloperMenuController : MonoBehaviour
             RefreshCatalogs();
         }
         GUILayout.EndHorizontal();
+
+        if (GUILayout.Button("Reroll current offers"))
+        {
+            RerollCurrentOffers();
+        }
 
         GUILayout.Space(10f);
         DrawMoneyControls();
@@ -391,6 +397,28 @@ public sealed class DeveloperMenuController : MonoBehaviour
         catch (Exception exception)
         {
             SetStatus($"Heal failed: {exception.GetType().Name}: {exception.Message}", true);
+        }
+    }
+
+    private void RerollCurrentOffers()
+    {
+        if (!TryGetMutableRunContext(out var manager, out _, out _))
+        {
+            return;
+        }
+
+        try
+        {
+            _rerollSequence++;
+            var success = OfferRerollFeature.TryRerollActiveScreen(
+                manager,
+                _rerollSequence,
+                out var message);
+            SetStatus(message, !success);
+        }
+        catch (Exception exception)
+        {
+            SetStatus($"Offer reroll failed: {exception.GetType().Name}: {exception.Message}", true);
         }
     }
 

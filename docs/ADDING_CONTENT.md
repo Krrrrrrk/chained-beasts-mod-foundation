@@ -28,7 +28,7 @@ Copy `BulkUpFeature.cs` when the new idea is fundamentally a player skill.
 5. Patch the narrow property or acquisition call that owns the effect. Bulk Up patches the final health paths and snapshots `RunDataManager.AddPlayerSkillRPC` so the health change occurs once after a successful native acquisition.
 6. Bulk Up stores a compact marker in the fixed-size checkpoint data because custom `SkillType` keys are not part of the game's native enum-sized skill array. Its run reset hooks clear transient bookkeeping.
 
-Manual check: view the name/description, acquire it through a trainer, compare current/max health, checkpoint/restore the run, and start a fresh run. Confirm other skill offers and ranks are unchanged. The current example has a known presentation bug: its full-screen acquisition banner can show another native skill's text even though the offer card and mechanics are correct.
+Manual check: view the name/description, acquire it through a trainer, confirm the full-screen reveal also names Bulk Up, compare current/max health, checkpoint/restore the run, and start a fresh run. Confirm other skill offers and ranks are unchanged. Runtime I2 term registration is still required, but `CustomLocalization` also patches `I2.Loc.Localize.SetTerm(string)`: a pooled widget can retain the preceding native skill even after a custom term is registered, so the postfix writes recognized custom strings to the exact TextMeshPro target after native I2 processing.
 
 Definitions control identity, availability, ranks, icon references, and tooltip metadata. Health behavior still requires C# because a new enum value has no native switch case.
 
@@ -39,7 +39,7 @@ Copy `Equipment/RunnersWrapsFeature.cs` for a purchasable equipment item.
 1. Choose an unused `PurchaseType` that the game's `GladiatorConsts.IsEquipment` recognizes. Change `RunnersWrapsPurchase` and keep the collision guards.
 2. Change `DisplayName`, `Description`, `Price`, the internal definition name, and the selected asset-source equipment.
 3. `GameLibraryInitPrefix` creates a new `PurchaseDef` before the native dictionaries are built. It copies only the `modelPrefab` and `sprite` references from Running Shoes; category, cost, release state, and identity are set independently. `GetAllPurchaseTypesPostfix` makes the ID visible to normal purchase generation.
-4. `StringManager.GetPurchaseName/GetPurchaseDesc` cover generated tooltips. `CustomLocalization` also handles the numeric `Purchases/2499_*` terms through `StringManager.GetLocalisedTerm` and I2's `GetTranslation/TryGetTranslation`, which are used by offer cards and character-sheet panels. Replace the English map with real translation-table integration if shipping multiple languages.
+4. `StringManager.GetPurchaseName/GetPurchaseDesc` cover generated tooltips. `CustomLocalization` also handles the numeric `Purchases/2499_*` terms through `StringManager.GetLocalisedTerm` and I2's `GetTranslation/TryGetTranslation`, which are used by offer cards and character-sheet panels. `CustomTranslations` registers the canonical and alias terms in the live I2 source with one value per supported game language.
 5. `Player.StaminaCostDash` is the effect hook. Its postfix multiplies the already-computed native result by `0.75` only while `Player.HasEquipment(customId)` is true. This preserves skills, injuries, and other modifiers and cannot accumulate during refreshes.
 6. No extra save state is needed: the game's normal equipment ownership/equipped-slot data owns the lifecycle. Replacing/removing the item makes `HasEquipment` false immediately.
 
@@ -53,7 +53,7 @@ Copy `Afflictions/LeadfootFeature.cs` for a lasting, skull-based potion result.
 
 1. Choose an unused `InjuryType`; change `LeadfootInjury`, the definition name, text terms, severity limit, body part, and sprite source.
 2. `GameLibraryInitPrefix` adds a real `InjuryDef` before native dictionary construction. `GetAllInjuryTypesPostfix` exposes the new ID to injury generation. The example reuses Broken Foot's sprite reference but none of its identity or code paths.
-3. Description terms are severity-specific. The English prototype maps levels 1–3 to 10%, 20%, and 30% slowdowns through all three localization boundaries, including the numeric terms used by character-sheet panels.
+3. Description terms are severity-specific. The translation table maps levels 1–3 to 10%, 20%, and 30% slowdowns through all three localization boundaries, including the numeric terms used by character-sheet panels.
 4. The normal `InjuryGenerator.GeneratePotions` path supplies healing and potion size. Its developer override replaces one non-water result with a new `Potion` that retains `_healAmount`, `potionSize`, and `modelIdx`; only the injury identity and name term change. Native `ConsumePotionRpc` still heals and calls the ordinary injury application path.
 5. `Player.FinalMovementSpeed` is the effect hook. It reads `Player.HasInjury(customId)`, deliberately using the game's effective severity after normal injury suppression/reduction, and multiplies the final native speed once by `0.90`, `0.80`, or `0.70`.
 6. Reducing or curing the injury changes the dictionary value used by `HasInjury`; no cached multiplier exists. The checkpoint bridge stores Leadfoot in the unused native `EmptySlot1` array slot while native validation/restore runs, then restores the custom dictionary entry.
@@ -100,9 +100,9 @@ Do not use a force option to call purchase, potion, surgery, or skill-grant hand
 
 ## Localization
 
-`CustomLocalization` is currently an in-code English term map. It intercepts the `StringManager` and I2 lookup paths needed by the tested cards and detail views, but it does not add language rows to the game's localization source. Players using another language therefore receive the English fallback.
+`CustomTranslations` supplies values for all 12 language choices exposed by the tested game build and registers canonical, numeric, and readable aliases as genuine terms in the live I2 language source. `CustomLocalization` still intercepts the narrow `StringManager` and I2 lookup paths as a fallback. This combination is important for pooled widgets: a lookup hook can return text, but a `Localize` component may reject a term that is absent from the source and leave stale text behind.
 
-To ship translated content, give every custom string a stable, namespaced key and supply one value per supported language, either through a small versioned translation table owned by the plugin or through carefully verified I2 term registration. Keep English as an explicit fallback, do not replace unrelated native terms globally, and manually test offer cards, acquisition/detail views, and character-sheet entries under every claimed language. A copied feature must also change its localization-key prefix so it cannot overwrite the supplied example's text.
+Give every custom string a stable, namespaced key and one value per supported language. Keep English as an explicit fallback, do not replace unrelated native terms globally, and manually test offer cards, acquisition/reveal/detail views, and character-sheet entries under every claimed language. The supplied translations are community-authored and should be reviewed by native speakers. A copied feature must also change its localization-key prefix so it cannot overwrite the supplied example's text.
 
 ## Turning this project into a separate plugin
 

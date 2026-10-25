@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using BepInEx.Logging;
 using HarmonyLib;
-using I2.Loc;
 using UnityEngine;
 
 namespace ChainedBeasts.ModFoundation;
@@ -71,17 +70,6 @@ internal static class BulkUpFeature
         var getSkillName = RequireMethod(typeof(StringManager), nameof(StringManager.GetSkillName), typeof(SkillType));
         var getSkillNameTerm = RequireMethod(typeof(StringManager), nameof(StringManager.GetSkillNameTerm), typeof(SkillType));
         var getSkillDescTerm = RequireMethod(typeof(StringManager), nameof(StringManager.GetSkillDescTerm), typeof(SkillType));
-        var getTranslation = RequireMethod(
-            typeof(LocalizationManager),
-            nameof(LocalizationManager.GetTranslation),
-            typeof(string),
-            typeof(bool),
-            typeof(int),
-            typeof(bool),
-            typeof(bool),
-            typeof(GameObject),
-            typeof(string),
-            typeof(bool));
         var playerDataMaxHealth = AccessTools.PropertyGetter(typeof(PlayerData), nameof(PlayerData.MaxHealth))
             ?? throw new MissingMethodException(typeof(PlayerData).FullName, "get_MaxHealth");
         var playerMaxAttainableHealth = AccessTools.PropertyGetter(typeof(Player), nameof(Player.MaxAttainableHealth))
@@ -121,7 +109,6 @@ internal static class BulkUpFeature
         Patch(harmony, getSkillName, prefix: nameof(GetSkillNamePrefix));
         Patch(harmony, getSkillNameTerm, prefix: nameof(GetSkillNameTermPrefix));
         Patch(harmony, getSkillDescTerm, prefix: nameof(GetSkillDescTermPrefix));
-        Patch(harmony, getTranslation, prefix: nameof(GetTranslationPrefix));
         Patch(harmony, playerDataMaxHealth, postfix: nameof(PlayerDataMaxHealthPostfix));
         Patch(harmony, playerMaxAttainableHealth, prefix: nameof(PlayerMaxAttainableHealthPrefix));
         Patch(
@@ -300,7 +287,7 @@ internal static class BulkUpFeature
             return true;
         }
 
-        __result = BulkUpName;
+        __result = CustomLocalization.GetText(BulkUpNameTerm, BulkUpName);
         return false;
     }
 
@@ -324,23 +311,6 @@ internal static class BulkUpFeature
 
         __result = BulkUpDescriptionTerm;
         return false;
-    }
-
-    private static bool GetTranslationPrefix(string Term, ref string __result)
-    {
-        if (Term is not null && Term.StartsWith(BulkUpNameTerm, StringComparison.Ordinal))
-        {
-            __result = BulkUpName;
-            return false;
-        }
-
-        if (Term is not null && Term.StartsWith(BulkUpDescriptionTerm, StringComparison.Ordinal))
-        {
-            __result = BulkUpDescription;
-            return false;
-        }
-
-        return true;
     }
 
     private static void PlayerDataMaxHealthPostfix(PlayerData __instance, ref int __result)
@@ -521,18 +491,42 @@ internal static class BulkUpFeature
                 }
             }
 
-            if (!__result.Contains(BulkUpSkillType))
+            // GetTrainingSkills returns a new list on every call. Acquisition
+            // and the later reveal each request their own copy. Persist the
+            // forced slot in the backing row so ownership cannot make the
+            // reveal fall back to the native skill that occupied this slot.
+            var layers = __instance.trainingSkills;
+            if (layers is null || layer < 0 || layer >= layers.Count)
             {
-                __result[0] = BulkUpSkillType;
+                return;
             }
+
+            var storedOffer = layers[layer];
+            var offerIndex = 0;
+            for (var index = 0; index < __result.Count; index++)
+            {
+                if (__result[index] == BulkUpSkillType)
+                {
+                    offerIndex = index;
+                    break;
+                }
+            }
+
+            if (storedOffer is null || offerIndex >= storedOffer.Count)
+            {
+                return;
+            }
+
+            storedOffer[offerIndex] = BulkUpSkillType;
+            __result[offerIndex] = BulkUpSkillType;
 
             lock (StateLock)
             {
                 if (ForcedOfferLogLayers.Add(layer))
                 {
                     _logger?.LogInfo(
-                        $"[ChainedBeasts.ModFoundation] Bulk Up forced into retrieved training offer for layer {layer}; " +
-                        "the override remains active until the skill is owned");
+                        $"[ChainedBeasts.ModFoundation] Bulk Up stored in training offer layer {layer}, slot {offerIndex}; " +
+                        "selection, acquisition, and reveal use the same offer");
                 }
             }
         }

@@ -184,7 +184,7 @@ internal static class LeadfootFeature
             return true;
         }
 
-        __result = DisplayName;
+        __result = CustomLocalization.GetText(NameTerm, DisplayName);
         return false;
     }
 

@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>ChainedBeasts.ModFoundation</AssemblyName>
     <RootNamespace>ChainedBeasts.ModFoundation</RootNamespace>
-    <Version>0.6.1</Version>
+    <Version>0.7.3</Version>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
@@ -44,6 +44,10 @@
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>$(BepInExRoot)\interop\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(BepInExRoot)\interop\Unity.TextMeshPro.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Unity.InputSystem">

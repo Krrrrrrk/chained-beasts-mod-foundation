@@ -34,6 +34,7 @@ $requiredReferences = @(
     (Join-Path $bepInExRoot 'interop\Il2Cppmscorlib.dll'),
     (Join-Path $bepInExRoot 'interop\UnityEngine.CoreModule.dll'),
     (Join-Path $bepInExRoot 'interop\UnityEngine.IMGUIModule.dll'),
+    (Join-Path $bepInExRoot 'interop\Unity.TextMeshPro.dll'),
     (Join-Path $bepInExRoot 'interop\Unity.InputSystem.dll'),
     (Join-Path $bepInExRoot 'interop\Unity.Netcode.Runtime.dll')
 )

@@ -153,7 +153,7 @@ internal static class AdrenalGraftFeature
 
         // Unlike the name widget, the surgeon's description field consumes
         // final display text and does not pass it through I2 localization.
-        __result = Description;
+        __result = CustomLocalization.GetText(DescriptionTerm, Description);
         return false;
     }
 
