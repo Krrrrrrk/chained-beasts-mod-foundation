@@ -1,69 +1,97 @@
 # Play Terms & Contusions
 
-Terms & Contusions is the gameplay content pack built on Chained Beasts Mod Foundation. The split is currently a **local 0.8.0 build awaiting manual Solo tests**. Read [installation, packages and rollback](../INSTALLATION.md), [the complete catalog](CATALOG.md) and [delivery status](../STAGE7_HANDOFF.md). The last released/manual-tested product remains the [monolithic v0.7.3 release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.7.3), whose [archived instructions](../history/README-v0.7.3.md) apply to that tag.
+**Terms & Contusions 0.8.3** is the experimental gameplay pack built on Chained Beasts Mod Foundation.
 
-## What exists now
+**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip) includes both required mod DLLs. BepInEx is installed separately.
 
-Stage 1 moved these four existing additions into `src/TermsAndContusions/`. Stage 2 integrated their registration, state and modifiers with Foundation; Stage 3 adds the twelve four-rank skills and Counterweight Sling:
+This page explains the content, settings and limitations. For source builds, use the [developer guide](../foundation/README.md).
 
-| Content | ID | Current implemented behavior | Source |
-|---|---:|---|---|
-| Bulk Up | Skill `11000` | Four ranks: 2x/3x/4x/5x max HP; actual rank changes preserve HP percentage. Shared rank/order; no grant replay. | `BulkUpFeature.cs` |
-| Runner's Wraps | Equipment `2499` | Dodge stamina cost multiplied by 0.75 while equipped; price 40. | `Equipment/RunnersWrapsFeature.cs` |
-| Leadfoot | Injury `11010` | Effective severity 1/2/3 reduces speed 10/20/30%; potion healing preserved. | `Afflictions/LeadfootFeature.cs` |
-| Adrenal Graft | Surgery `11020` | Stamina regeneration multiplied by 1.25 for the run; price 0; confirmed native completion/history. | `Surgeries/SurgeriesFeature.cs` |
+<a id="what-exists-now"></a>
 
-- Stage 6 replaces Adrenal Graft's legacy heuristic with shared confirmed native completion and native history; see [surgeries](STAGE6_SURGERIES.md).
+## What's included
 
-## Complete target catalog
+| Category | Entries | Progression |
+|---|---:|---|
+| Skills | 12 | Four ranks per custom skill |
+| Equipment | 12 | Effects while equipped |
+| Potion afflictions | 11 | One to three skulls |
+| Surgeries | 11 | Once per player per run |
+| **Total** | **46** | |
 
-The machine-readable [manifest](manifest.json) tracks **all 46 required entries**, including their stable namespaced key, existing numeric ID where applicable, current source/status, rank/severity status, persistence status, completion stage, and manual-verification status. Shared registration now rejects key/category-ID/native/legacy-slot collisions. New numeric IDs remain unallocated until their implementation stage verifies each category's native constraints; keys and existing IDs stay stable.
+Custom descriptions start with **`TC:`**. Content uses the game's normal offer and acquisition paths, so a custom item or skill is not guaranteed to appear on the first offer screen. Names and content IDs are unchanged by the description marker.
 
-| Category | Implemented code | Still planned | Target |
-|---|---:|---:|---:|
-| Skills | 12 | 0 | 12 |
-| Equipment | 12 | 0 | 12 |
-| Potion afflictions | 11 | 0 | 11 |
-| Surgeries | 11 | 0 | 11 |
-| **Total** | **46** | **0** | **46** |
+I have made no attempt to balance these additions. They may be overpowered, underpowered, or not work as intended. Treat this as an experimental solo pack.
 
-**Skills, Stage 3 — implemented, runtime unverified:** Bulk Up's four-rank expansion; Measured Violence, Running on Fumes, Catch Your Breath, Expensive Taste, Fresh Meat, Pick Your Moment, Mixed Martial Arts, Payback Plan, Waste Not, Breathing Room, Longshot.
+<a id="complete-target-catalog"></a>
 
-**Equipment, Stages 3–4 — implemented, runtime unverified:** Counterweight Sling (2498, price 45) and Runner's Wraps (2499, price 40) are preserved. Stage 4 implements Executioner's Hood, Lead-Lined Purse, Borrower's Scabbard, Butcher's Apron, Last-Gasp Locket, Mercenary's Ledger, Pickpocket's Mitts, Chalk Bag, Salvager's Hook, and Duelist's Spurs (2488–2497). See [prices, mechanics, configuration and manual checks](STAGE4_EQUIPMENT.md).
+## Complete catalog
 
-**Afflictions, Stage 5 — implemented, runtime unverified:** preserved Leadfoot plus Lead Belly, Brittle Guard, Shaky Resolve, Tin Ear, Burning Lungs, Heavy Landing, Loose Change, Cold Start, Obsessive Focus and Overheating. Native effective severity, potion healing/acquisition/cure paths, pending state and remaining-time persistence are covered in [the affliction guide](STAGE5_AFFLICTIONS.md).
+The [content catalog](CATALOG.md) lists names, effects, scaling and prices. The [manifest](manifest.json) maps all 46 entries to stable keys, numeric IDs, implementation files, configuration, persistence and manual tests.
 
-**Surgeries, Stage 6 — implemented, runtime unverified:** preserved Adrenal Graft plus Anchor Heels, Spring-Loaded Knees, Dense Skeleton, Auxiliary Tendons, Marrow Enrichment, Pain Converter, Emergency Clotting, Counterweight Implant, Fury Pacemaker and Retractable Talons. See [actual mechanics, prices, shared offers/completion and manual checks](STAGE6_SURGERIES.md).
+All entries have implemented source; that does not mean every gameplay case has been verified. For the detailed mechanics and interactions, see:
 
-Recall Ring, Debt Collector, Bowling for Beasts, and Blood Bank Flask are excluded. Exact formulas, timing, exceptions, and interactions remain in the [full specification](../EXPANSION_SPEC.md). All 46 catalog entries have mechanics; the new runtime behavior remains manually unverified.
+| Category | Detailed guide |
+|---|---|
+| Skills and throwing | [Four-rank skills, Longshot and Counterweight Sling](STAGE3_SKILLS.md) |
+| Equipment | [Prices, effects and per-battle allowances](STAGE4_EQUIPMENT.md) |
+| Potion afflictions | [Severity, suppression, reduction and cures](STAGE5_AFFLICTIONS.md) |
+| Surgeries | [Tradeoffs, prices, offers and completion](STAGE6_SURGERIES.md) |
 
-## Build and installation
+Recall Ring, Debt Collector, Bowling for Beasts and Blood Bank Flask remain reserved for later. They are not included in this release.
 
-```powershell
-pwsh -NoProfile -File .\scripts\build-plugins.ps1
-```
+### The four original examples
 
-This builds Foundation first and then the pack. `-GameRoot`/`CHAINED_BEASTS_GAME_DIR` select the existing game/loader references. Pack identity is assembly `TermsAndContusions`, namespace `TermsAndContusions`, GUID `local.chainedbeasts.termsandcontusions`, and dependency Foundation `>=0.8.0 <0.9.0`.
+These additions retain their established identities in the expanded pack:
 
-The split installation contains both intended production DLLs, with the new Foundation replacing the old content-bearing DLL exactly once. Foundation-only users will need just the Foundation DLL. [Missing-content and matching-save policy](../foundation/PERSISTENCE.md) is now implemented in source. Stage 7 provides separate local ZIPs, explicit closed-game deployment, complete backups and paired rollback; build/check commands still never install.
-
-The [standalone skill example](../../examples/StandaloneContentExample/README.md) builds separately and is excluded from normal deployment. No game, loader, Unity, interop, asset, or save files are distributed. Source and documentation remain MIT.
+| Content | ID | Implemented behavior |
+|---|---|---|
+| Bulk Up | Skill `11000` | Four ranks: 2x/3x/4x/5x maximum HP. Actual rank changes preserve the health percentage. |
+| Runner's Wraps | Equipment `2499` | Dodge stamina cost multiplied by 0.75 while equipped; price 40. |
+| Leadfoot | Injury `11010` | Effective severity 1/2/3 reduces movement speed by 10/20/30%; normal potion healing is preserved. |
+| Adrenal Graft | Surgery `11020` | Stamina regeneration multiplied by 1.25 for the run; price 0. |
 
 ## Configuration
 
-The pack's eventual configuration is `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`. Its first-load migration imports the eight legacy content enable/force booleans only where the destination has no explicit value. Force defaults remain false for fresh users; intentionally enabled existing test overrides are preserved. Foundation keeps diagnostics/menu settings and its original configuration path. See the [migration guide](../foundation/CONFIGURATION_MIGRATION.md).
+After the first launch with the pack installed, edit:
 
-English and the other eleven previously supplied language choices are retained, with existing I2 keys and fallback hooks. Their translations are not reviewed by native speakers. Stage 3 supplies current/next four-rank descriptions. New skill/sling/dynamic rank text uses English fallback; the existing twelve-language aliases are retained and Bulk Up's old descriptions now state 2/3/4/5x cumulative HP.
+`BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`
+
+Close the game before editing and restart afterward. The catalog identifies each entry's setting. **Keep content enabled while a saved run owns it.**
+
+Normal offers are the default. Leave `[DeveloperOffers] EnableForcedOffers = false` for normal play. Deliberately forcing one of the four original examples requires that master switch and the corresponding individual `Force*` option. Existing offers already stored in a run are not rewritten.
+
+The first-load configuration migration imports the eight legacy content enable/force choices where no explicit destination value exists. The separate master switch prevents an old true Force setting from silently enabling forced offers. See [configuration migration](../foundation/CONFIGURATION_MIGRATION.md).
+
+Foundation's settings and optional F1 tools remain in:
+
+`BepInEx/config/local.chainedbeasts.modfoundation.cfg`
+
+The F1 menu is for testing and can change real run data. Use a disposable run when experimenting. Skill and potion rerolls have worked in the author's solo tests; surgery rerolls are still unreliable.
+
+## Saves, updates and removal
+
+Read [the update instructions](../INSTALLATION.md#updating-an-existing-install) before replacing an older install.
+
+Custom checkpoint files must stay paired with their matching native save. Back up the complete save folder and corresponding mod DLLs/configuration together. Missing or disabled owned content can block restoring a run, and the old monolithic 0.7.3 plugin cannot read the new checkpoint protocol.
+
+For removal or a return to an older version, follow [uninstalling and rolling back](../INSTALLATION.md#uninstalling-and-rolling-back). The [persistence guide](../foundation/PERSISTENCE.md) explains the protocol for mod developers.
 
 ## Verification and known limitations
 
-- Built DLLs and nongame checks are not gameplay verification. Dependency ordering, configuration import in the actual chainloader, offer presentation, all 46 entries and their acquisitions/effects, developer-tool removal, and save/restore after the split need later manual checks.
-- Shared persistence, one-time import, canonical removal/reacquisition and exact checkpoint association are implemented and checked as production logic. Actual native callbacks/write/restore and HP/HUD behavior await manual testing. Back up native saves and sidecars as one set; unavailable owned content blocks run restoration.
-- The optional menu and rerolls remain in Foundation. Skill/potion rerolls were manually confirmed in 0.7.3. Surgery rerolls animate but kept every option unchanged in the user's test; the issue is deferred. Potion card replacement can leave captured DOTween animation warnings.
-- Developer actions and forced offers now require real Solo mode, one local client/player and host authority; temporary cheats clear on reset/leaving that context. Multiplayer support is not claimed.
-- Existing sprites/models are reused from the installed game; original icon import is not implemented. Existing screenshots are retained on the root page and labeled as the earlier build.
-- Content balance is experimental. All 46 entries have implemented code: twelve skills, twelve equipment items, eleven afflictions and eleven surgeries; runtime unverified.
+- The author reported a **crash-free 0.8.2 playtest** following the native hook fixes. Individual content entries and checkpoint cases were not exhaustively verified.
+- **0.8.3** adds `TC:` descriptions and normal-offer defaults. Builds and nongame checks pass in the recorded release work; these changes still need a fresh gameplay check. See [the current release notes](../COMMUNITY_UPDATE_0.8.3.md) and [manual checklist](../MANUAL_TESTS.md).
+- **Multiplayer is unsupported.** Developer actions and forced offers require the actual Solo session/authority checks.
+- Original icons and models are not included; the pack reuses visuals already present in the installed game.
+- New descriptions use English fallback. Previously supplied translations are retained but have not had native-speaker review.
+- Automatic Steam Cloud synchronization of custom save files is not implemented. Full arena-instance and current-stamina restoration are also outside the supported save behavior.
 
-See [skills/throwing](STAGE3_SKILLS.md), [equipment](STAGE4_EQUIPMENT.md), [afflictions](STAGE5_AFFLICTIONS.md) and [surgeries](STAGE6_SURGERIES.md). Build/check with `pwsh -NoProfile -File .\scripts\test-stage7.ps1`. The game has not run these builds. New equipment/affliction/surgery descriptions use English fallback; native card fit, physical transfer, healing, severity/suppression, shield and crowd behavior remain manual checks.
+## Build and installation
 
-Follow [expansion progress](../EXPANSION_PROGRESS.md) for the next stage. This checkout is not a new published release.
+Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
+
+The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The current code declares Foundation `>=0.8.0 <0.9.0`; use the matching 0.8.3 release DLLs for installation.
+
+Optional teaching examples are separate projects and are excluded from the normal packages and deployment. Game, loader, Unity, generated interop, extracted assets and saves are not redistributed. Original source and documentation remain MIT.
+
+The [expansion specification](../EXPANSION_SPEC.md), [progress log](../EXPANSION_PROGRESS.md) and [historical 0.8.0 handoff](../STAGE7_HANDOFF.md) document how the pack was built. Use the current release notes for its latest publication and verification status.
+

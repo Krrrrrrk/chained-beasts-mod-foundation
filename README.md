@@ -1,65 +1,76 @@
 # Chained Beasts Mod Foundation + Terms & Contusions
 
-I built this as a small starter kit for making custom content in **Chained Beasts**. It includes a reusable mod foundation and my example content pack, **Terms & Contusions**. Feel free to look through the code, copy an example, and make something of your own.
+**Terms & Contusions** is my experimental content pack for Chained Beasts: 46 skills, equipment items, potion afflictions and surgeries. **Mod Foundation** is the shared code behind it, which other modders can use to make their own additions.
 
-**I made zero attempt to balance these additions.** They might be wildly overpowered or just bad **or may not even work at all**. They're examples of what we can do, not a carefully balanced expansion.
+| What do you want to do? | Start here |
+|---|---|
+| **Play with the content I made** | [Quick install](#quick-install) — download the ready-made mod |
+| **Build the project or make your own mod** | [Developer starting point](#make-your-own-mod) — source, examples and tutorials |
 
-Every custom description starts with **`TC:`**, so it's easy to tell my additions apart from vanilla content. Names and internal IDs stay unchanged.
+**This is an experimental, solo-only mod. I made zero attempt to balance these additions.** They might be wildly overpowered, bad, or simply not work yet.
+
+<a id="install"></a>
+
+## Quick install
+
+These steps are for the **Steam version of Chained Beasts on 64-bit Windows**. The current release is **0.8.3**, built for game version **1.0.1**. You do not need Git, PowerShell or a .NET SDK to install the downloads.
+
+**Already using an older version of this mod?** Follow [updating an existing install](docs/INSTALLATION.md#updating-an-existing-install) first.
+
+### 1. Find your game folder and back up your saves
+
+In Steam, right-click **Chained Beasts → Manage → Browse local files**. This opens the folder containing `ChainedBeasts.exe`. Keep that folder open and **close the game**.
+
+Before installing, [back up your saves](docs/INSTALLATION.md#back-up-your-install-and-saves). The guide gives the exact folder to copy.
+
+### 2. Install BepInEx once
+
+BepInEx is the loader that lets the game run mods. **If you already have the working BepInEx 6 IL2CPP x64 setup, skip to step 3.**
+
+1. [**Download the tested BepInEx loader**](https://builds.bepinex.dev/projects/bepinex_be/791/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.791%2Bb782da4.zip): **6.0.0-be.791+b782da4, Unity IL2CPP, Windows x64**.
+2. Open the ZIP and extract **all of its contents into the game folder**, beside `ChainedBeasts.exe`. The `BepInEx` folder belongs directly there, without an extra download-name folder around it.
+3. Launch the game normally. The first launch can take longer while BepInEx prepares its files. Wait for the main menu, then **close the game again**.
+
+Use the linked IL2CPP x64 build; the Mono and x86 downloads are for other game setups. [More loader help](docs/INSTALLATION.md#troubleshooting).
+
+### 3. Install Terms & Contusions
+
+[**Download Terms & Contusions 0.8.3 + Foundation — the recommended mod ZIP**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip)
+
+Open that ZIP and copy its **`BepInEx` folder into the same game folder** from step 1, merging it with the existing `BepInEx` folder.
+
+Both files should now be present:
+
+- `Chained Beasts\BepInEx\plugins\ChainedBeasts.ModFoundation.dll`
+- `Chained Beasts\BepInEx\plugins\TermsAndContusions.dll`
+
+**The recommended ZIP includes both mod DLLs. BepInEx itself is the separate download in step 2.** Use the named mod ZIP above; GitHub's automatic **Source code** downloads are for building the project.
+
+### 4. Launch the game and play Solo
+
+Start the game normally and play **Solo**. The additions appear through the normal trainers, equipment shops, potions and surgeon options. Offers vary, so a custom entry is not guaranteed to appear immediately.
+
+Custom descriptions begin with **`TC:`**, making them easy to spot. You do not need to open the F1 testing menu or enable forced offers to play.
+
+**Need help?** See [troubleshooting](docs/INSTALLATION.md#troubleshooting), [settings](docs/INSTALLATION.md#configuration), or [removing the mod and rolling back](docs/INSTALLATION.md#uninstalling-and-rolling-back). [All release downloads](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3) are available for people who need individual packages.
 
 ## What's included
 
-| Project | What it does |
-|---|---|
-| **Mod Foundation** | Shared registration, localization, stats/combat events, checkpoint state and optional solo F1 tools for other mods to build on. |
-| **Terms & Contusions** | **46 additions:** 12 four-rank skills, 12 equipment items, 11 potion afflictions with three severities, and 11 once-per-run surgeries. |
+| Content | Number | How it works |
+|---|---:|---|
+| Skills | 12 | Four ranks per custom skill |
+| Equipment | 12 | Bonuses while equipped |
+| Potion afflictions | 11 | Three severity levels |
+| Surgeries | 11 | Once per player per run |
 
-See the [complete catalog](docs/terms-and-contusions/CATALOG.md) for the effects and the [content manifest](docs/terms-and-contusions/manifest.json) for IDs, configuration and source files.
-
-## Install
-
-Download [**Terms & Contusions 0.8.3 with Foundation**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip), or choose an individual package on the [release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3). Follow the [installation, migration and rollback guide](docs/INSTALLATION.md). The older 0.7.3 download uses a single plugin and its [archived instructions](docs/history/README-v0.7.3.md).
-
-The current pack uses **two DLLs**: `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. Install both under `BepInEx/plugins` with the game closed. Remove older copies of our plugin, including renamed copies or copies in subfolders. Foundation can also be used on its own without my content pack.
-
-The inspected setup is Windows x64, Chained Beasts **1.0.1**, Unity **6000.3.21f1**, and [**BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64 — download**](https://builds.bepinex.dev/projects/bepinex_be/791/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.791%2Bb782da4.zip). Packages don't include BepInEx, game files or generated runtime bindings.
-
-**Back up your complete saves and matching mod configuration before upgrading.** Custom checkpoint data must stay paired with its native save. Downgrading or removing content from an active run needs the matching backup, not just a DLL swap. Details are in the [persistence guide](docs/foundation/PERSISTENCE.md).
-
-## Configuration and F1 tools
-
-The pack's settings are in `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`. Individual entries can be enabled or disabled there; restart to apply changes. Keep content enabled while a saved run owns it.
-
-Normal offers are the default. The old four `Force*` options only work when `[DeveloperOffers] EnableForcedOffers = true` as well. Leave that master switch false for normal play, even when upgrading a config that still contains old testing flags.
-
-Foundation's optional **F1** menu has god mode, infinite stamina, healing, gold adjustments, skill/injury rank controls, a custom-content filter and offer rerolls. Open an offer screen before using the reroll button. These tools require a solo session with one local host/player and can change real checkpoint data, so I recommend a disposable test run.
-
-Potion and skill rerolls have worked in my solo tests. **Surgery rerolls are still unreliable:** the refresh can animate without changing the options. I've left that issue for later. Multiplayer isn't supported.
-
-## Build and make your own mod
-
-You'll need Git, **PowerShell 7** (`pwsh`), a .NET SDK/targeting pack for **net6.0**, and the installed game's BepInEx-generated interop assemblies. Don't use Cpp2IL inspection stubs as runtime references. Set `CHAINED_BEASTS_GAME_DIR` or pass `-GameRoot` for another install location.
-
-```powershell
-pwsh -NoProfile -File .\scripts\build-plugins.ps1
-pwsh -NoProfile -File .\scripts\test-stage7.ps1
-pwsh -NoProfile -File .\scripts\package-plugins.ps1 -SkipBuild
-```
-
-ZIPs are written to `artifacts/packages/0.8.3`. Build/check commands don't launch the game or deploy. The explicit `scripts/build-and-deploy-plugin.ps1 -Deploy` workflow checks that the game is closed and makes a complete rollback checkpoint before replacing our DLLs.
-
-Start with [the Foundation guide](docs/foundation/README.md), [separate plugin setup](docs/foundation/SEPARATE_MOD.md), or a complete example for a [skill](docs/foundation/tutorials/SKILL.md), [equipment item](docs/foundation/tutorials/EQUIPMENT.md), [affliction](docs/foundation/tutorials/AFFLICTION.md) or [surgery](docs/foundation/tutorials/SURGERY.md).
-
-For a separate mod, change the plugin GUID, assembly/namespace, localization keys, content keys and numeric IDs. When adding content inside this pack, add new identities without changing the existing ones. Use the shared checkpoint API for independent state; copying an old reserved save slot won't create separate storage.
-
-## Testing and limitations
-
-I played **0.8.2 without encountering any crashes** after fixing the earlier hook problems. That doesn't mean I've verified every rank, interaction or save/resume case across all 46 additions. The 0.8.3 description tags and normal-offer update are build checked and still need a fresh in-game check. The [manual checklist](docs/MANUAL_TESTS.md) and [change notes](docs/COMMUNITY_UPDATE_0.8.3.md) track that distinction.
-
-**I haven't implemented custom icons or models.** Everything reuses visual references already present in the game. New text has an English fallback; the older examples retain their supplied translations, which haven't had native-speaker review. Automatic Steam Cloud synchronization of custom sidecars and full arena/current-stamina restoration aren't supported.
+Read the [complete content catalog](docs/terms-and-contusions/CATALOG.md) for names, effects, prices and scaling, or the [content-pack guide](docs/terms-and-contusions/README.md) for more detail.
 
 ## Screenshots
 
-These are from my earlier four-example build; they show the basic cards and F1 tools rather than the full current catalog.
+These are from the earlier four-example build. They show the cards and optional F1 tools; they do not show the entire current catalog.
+
+<details>
+<summary>Show screenshots</summary>
 
 | Bulk Up | Runner's Wraps |
 |---|---|
@@ -69,10 +80,55 @@ These are from my earlier four-example build; they show the basic cards and F1 t
 |---|---|
 | ![Leadfoot potion](docs/images/leadfoot-potion.png) | ![Adrenal Graft surgery](docs/images/adrenal-graft-surgery.png) |
 
-![My optional solo developer menu](docs/images/developer-menu.png)
+![Optional developer menu](docs/images/developer-menu.png)
+
+</details>
+
+## Configuration and F1 tools
+
+After launching with the mod installed, its settings are in:
+
+- **Content pack:** `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`
+- **Foundation and F1 tools:** `BepInEx/config/local.chainedbeasts.modfoundation.cfg`
+
+Close the game before editing these files, then restart. Normal offers are enabled by default. Keep owned content enabled while continuing a saved run; see [configuration and save guidance](docs/INSTALLATION.md#configuration).
+
+**F1 opens an optional testing menu** with healing, gold, skill/injury controls, offer rerolls and temporary cheats. Use a disposable run when experimenting with those controls. Surgery rerolls are still unreliable.
+
+<a id="build-and-make-your-own-mod"></a>
+
+## Make your own mod
+
+Foundation provides shared content registration, localization, stat/combat events, lifecycle handling and custom checkpoint state. **Terms & Contusions is a separate plugin built on it.** You can use Foundation without installing my content pack.
+
+Start with the [developer setup and build guide](docs/foundation/README.md). It covers Git, PowerShell 7, the .NET SDK, installed game references, a fresh checkout and build commands.
+
+Then follow the [separate-mod walkthrough](docs/foundation/SEPARATE_MOD.md) and the [buildable standalone example](examples/StandaloneContentExample/README.md). Each content category also has a tutorial:
+
+| Make a… | Tutorial |
+|---|---|
+| Skill | [Custom skill](docs/foundation/tutorials/SKILL.md) |
+| Equipment item | [Custom equipment](docs/foundation/tutorials/EQUIPMENT.md) |
+| Potion affliction | [Custom affliction](docs/foundation/tutorials/AFFLICTION.md) |
+| Surgery | [Custom surgery](docs/foundation/tutorials/SURGERY.md) |
+
+For deeper work, see [architecture](docs/foundation/ARCHITECTURE.md), [mechanics and events](docs/foundation/MECHANICS.md), [save handling](docs/foundation/PERSISTENCE.md), [native hook safety](docs/foundation/NATIVE_HOOK_SAFETY.md), and the [content manifest](docs/terms-and-contusions/manifest.json).
+
+## Testing and limitations
+
+The inspected setup is **Chained Beasts 1.0.1**, **Unity 6000.3.21f1**, Windows x64, and the BepInEx build linked above.
+
+I played **0.8.2 without encountering crashes** after the earlier hook fixes. The **0.8.3** description tags and normal-offer update are build checked and still need a fresh in-game check. I haven't verified every rank, interaction or save/resume case. See the [current change notes](docs/COMMUNITY_UPDATE_0.8.3.md) and [manual test checklist](docs/MANUAL_TESTS.md).
+
+- **Multiplayer is unsupported.**
+- Icons and models reuse the game's existing visuals.
+- New text uses English fallback; supplied translations have not had native-speaker review.
+- Custom save data is not automatically synchronized through Steam Cloud. Back up the complete save folder and matching mods/configs together.
+- Full arena-instance and current-stamina restoration are not supported.
 
 ## License
 
-My original project code and documentation are under [MIT](LICENSE). BepInEx, HarmonyX, Unity, IL2CPP bindings and the game keep their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). Game/runtime binaries, generated bindings, extracted assets, saves, backups and private logs aren't included in source control or packages.
+My original project code and documentation are under [MIT](LICENSE). BepInEx, HarmonyX, Unity, IL2CPP bindings and the game keep their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
 
 This is an unofficial project, unaffiliated with Featherweight Games.
+

@@ -1,16 +1,42 @@
 # Make your own mod with Chained Beasts Mod Foundation
 
-Foundation supplies reusable registration, checkpoint state, modifiers and lifecycle integration. Separate plugins own definitions and gameplay rules. **0.8.0 is locally built, runtime unverified and unpublished.** Read [installation and rollback](../INSTALLATION.md) before migration. See the [separate mod walkthrough](SEPARATE_MOD.md), [mechanics](MECHANICS.md) and [localization/visuals](LOCALIZATION_VISUALS.md).
+**Just want to play Terms & Contusions?** Use the [player quick install](../../README.md#quick-install). This page is for building source and making mods.
+
+Foundation supplies reusable registration, checkpoint state, modifiers and lifecycle integration. Separate plugins own their definitions and gameplay rules. The current public release is [**0.8.3**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3). Foundation can be installed without Terms & Contusions.
+
+Start with the setup below, then follow the [separate-mod walkthrough](SEPARATE_MOD.md). The author reported a crash-free 0.8.2 playtest; the 0.8.3 presentation/offer changes and individual mechanics still need manual checks. See [current verification notes](../COMMUNITY_UPDATE_0.8.3.md).
 
 ## Products and prerequisites
 
 | Product | Assembly | BepInEx GUID | Built version |
 |---|---|---|---|
-| Foundation | `ChainedBeasts.ModFoundation.dll` | `local.chainedbeasts.modfoundation` | `0.8.0`, unreleased |
-| Terms & Contusions | `TermsAndContusions.dll` | `local.chainedbeasts.termsandcontusions` | `0.8.0`, unreleased |
+| Foundation | `ChainedBeasts.ModFoundation.dll` | `local.chainedbeasts.modfoundation` | `0.8.3`, published |
+| Terms & Contusions | `TermsAndContusions.dll` | `local.chainedbeasts.termsandcontusions` | `0.8.3`, published |
 | Optional teaching example | `StandaloneContentExample.dll` | `example.chainedbeasts.standalonecontent` | `0.8.0`, not shipped with pack |
 
-Use Windows x64, PowerShell 7 (`pwsh`), a .NET SDK/targeting pack capable of `net6.0`, the inspected game/Unity `6000.3.21f1`, and BepInEx `6.0.0-be.791+b782da4`. References come from the existing loader's `BepInEx/interop`; never substitute inspection stubs or redistribute those DLLs. `-GameRoot` or `CHAINED_BEASTS_GAME_DIR` selects another installation. Installed native Newtonsoft.Json is used only inside the checkpoint adapter, with a separate reference alias.
+Install these development prerequisites:
+
+- **Git** to clone the source.
+- **PowerShell 7** (`pwsh`) to run the repository scripts.
+- A **.NET SDK/targeting pack supporting `net6.0`**.
+- The inspected Windows x64 game setup: **Chained Beasts 1.0.1**, Unity **6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**.
+
+Complete the [BepInEx first-time setup](../INSTALLATION.md#2-install-bepinex-once) and one normal game launch before building, then close the game. References come from the loader's generated `BepInEx/interop` directory; never substitute Cpp2IL inspection stubs or redistribute those DLLs. Installed native Newtonsoft.Json is used only inside the checkpoint adapter, with a separate reference alias.
+
+## Clone and build
+
+```powershell
+git clone https://github.com/Krrrrrrk/chained-beasts-mod-foundation.git
+cd chained-beasts-mod-foundation
+```
+
+The scripts default to `C:\Program Files (x86)\Steam\steamapps\common\Chained Beasts`. For another installation, set this variable to the actual game folder **before building**:
+
+```powershell
+$env:CHAINED_BEASTS_GAME_DIR = 'D:\Games\Chained Beasts'
+```
+
+From the repository folder, build and check the project:
 
 ```powershell
 pwsh -NoProfile -File .\scripts\build-plugins.ps1
@@ -18,9 +44,17 @@ pwsh -NoProfile -File .\scripts\test-stage7.ps1
 dotnet build .\examples\StandaloneContentExample\StandaloneContentExample.csproj -c Release
 ```
 
+Create local release ZIPs after a successful build:
+
+```powershell
+pwsh -NoProfile -File .\scripts\package-plugins.ps1 -SkipBuild
+```
+
+Packages are written to `artifacts/packages/0.8.3`. For deployment and paired rollback, read the [advanced script section of the installation guide](../INSTALLATION.md#building-and-scripted-installation) before using the release helpers.
+
 The build command supports `-FoundationOnly`. The check command builds both production projects and the independent example, checks configuration/metadata, then exercises production pure logic without initializing Unity. These commands never deploy or launch the game. Deployment requires explicit -Deploy and makes a matching complete checkpoint; default build/check invocations cannot install.
 
-The pack and example declare a hard dependency on Foundation `>=0.8.0 <0.9.0`. The installed BepInEx API interprets a bare version as exact, so the range is intentional. Missing/incompatible Foundation blocks the dependent plugin. A failed shared-core install leaves `FoundationServices.IsReady=false`; dependent plugins explicitly refuse to initialize.
+The current pack and example declare a hard dependency on Foundation `>=0.8.0 <0.9.0`. Use the matching **0.8.3** production DLLs for the current release; the declaration alone does not establish that every older pairing is tested. The installed BepInEx API interprets a bare version as exact, so the range is intentional. Missing/incompatible Foundation blocks the dependent plugin. A failed shared-core install leaves `FoundationServices.IsReady=false`; dependent plugins explicitly refuse to initialize.
 
 ## Public extension points
 
@@ -43,13 +77,13 @@ Stage 3 adds `CombatServices.AttackCommitted`, `PreparingDirectHit`, `DirectHitR
 
 Foundation references no TermsAndContusions assembly/content type and creates no pack definitions by itself. Surgeries have no native library registry; shared surgery offers and confirmed completion are implemented in Stage 6. Stages 3–6 provide direct-attack/normal-break/normal-throw provenance, confirmed executions, physical weapon/enemy allowances and explicit generated native damage. The pack supplies Talons bleed state through these public services.
 
-Start with the [buildable standalone skill](../../examples/StandaloneContentExample/README.md), [current content guide](../ADDING_CONTENT.md), [persistence protocol and rollback policy](PERSISTENCE.md), [architecture](ARCHITECTURE.md), and [native evidence](STAGE2_EVIDENCE.md). Do not copy legacy reserved-slot bridges.
+Start with the [buildable standalone skill](../../examples/StandaloneContentExample/README.md), [current content guide](../ADDING_CONTENT.md), [persistence protocol and rollback policy](PERSISTENCE.md), [architecture](ARCHITECTURE.md), and [native evidence](STAGE2_EVIDENCE.md). For runtime hooks and presentation, see [mechanics and events](MECHANICS.md) and [localization and visuals](LOCALIZATION_VISUALS.md). Do not copy legacy reserved-slot bridges.
 
 ## Configuration, runtime status and next work
 
 Foundation retains `BepInEx/config/local.chainedbeasts.modfoundation.cfg` for diagnostics and developer tools; content booleans migrate to the pack's own configuration. See [configuration migration](CONFIGURATION_MIGRATION.md). God mode and infinite stamina begin false and clear on run reset/leaving the allowed Solo context.
 
-Expected new startup markers below are source expectations, **not observed runtime evidence**:
+The following startup markers help confirm which components initialized. Their presence alone does not verify gameplay behavior:
 
 ```text
 [Foundation] checkpoint bridge installed; sidecars publish only after successful native platform writes
@@ -60,4 +94,5 @@ Manual verification is still required for chainloader/dependency behavior, real 
 
 Stages 3–5 implement skills/throwing, equipment and afflictions; runtime verification remains manual. Stage 4 adds `AttackRecord.Weapon`, stable pre-hit `DirectHit.TargetId`/`IsBackstab`, flat-aware `MultiplyDamage`, confirmed `ExecutionConfirmed`, `WeaponRecovered`, queued `ConsumeOpeningDurability`, and `GameplayTick` (consumers gate mutations outside Solo). See [Stage 4 API evidence](STAGE4_EVIDENCE.md).
 
-Stage 5 adds actual stamina-spend/recovery, melee-payment, shield-feedback, dodge-completion and player crowd-contribution events, target/action context and a separate regeneration-grant channel covering normal/haste branches. The two-argument stat-context constructor and existing channel values remain compatible. Native effective severity and timed/counter mechanics remain in the pack. See [Stage 5 API evidence](STAGE5_EVIDENCE.md) and [affliction manual checks](../terms-and-contusions/STAGE5_AFFLICTIONS.md). Stage 6 adds shared surgery offers/confirmed completion, maximum-stamina/dodge-distance/healing channels, special-payment and unarmed provenance, generated native damage and validated surgery timers. See [Stage 6 evidence](STAGE6_EVIDENCE.md) and [surgery mechanics/manual checks](../terms-and-contusions/STAGE6_SURGERIES.md). Stage 7 supplies [category tutorials](SEPARATE_MOD.md), [installation/packages](../INSTALLATION.md) and [local delivery status](../STAGE7_HANDOFF.md). See [progress](../EXPANSION_PROGRESS.md). Original code/docs are MIT; game and loader binaries are not distributed.
+Stage 5 adds actual stamina-spend/recovery, melee-payment, shield-feedback, dodge-completion and player crowd-contribution events, target/action context and a separate regeneration-grant channel covering normal/haste branches. The two-argument stat-context constructor and existing channel values remain compatible. Native effective severity and timed/counter mechanics remain in the pack. See [Stage 5 API evidence](STAGE5_EVIDENCE.md) and [affliction manual checks](../terms-and-contusions/STAGE5_AFFLICTIONS.md). Stage 6 adds shared surgery offers/confirmed completion, maximum-stamina/dodge-distance/healing channels, special-payment and unarmed provenance, generated native damage and validated surgery timers. See [Stage 6 evidence](STAGE6_EVIDENCE.md) and [surgery mechanics/manual checks](../terms-and-contusions/STAGE6_SURGERIES.md). Stage 7 supplies [category tutorials](SEPARATE_MOD.md), [installation/packages](../INSTALLATION.md) and [current release status](../COMMUNITY_UPDATE_0.8.3.md). The [progress log](../EXPANSION_PROGRESS.md) and [0.8.0 handoff](../STAGE7_HANDOFF.md) retain the implementation history. Original code/docs are MIT; game and loader binaries are not distributed.
+
