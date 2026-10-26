@@ -126,6 +126,16 @@ I played **0.8.2 without encountering crashes** after the earlier hook fixes. Th
 - Custom save data is not automatically synchronized through Steam Cloud. Back up the complete save folder and matching mods/configs together.
 - Full arena-instance and current-stamina restoration are not supported.
 
+## Bug reports
+
+If you submit a bug report, **please include your `Player.log`** so I can investigate what happened. You can find it here:
+
+```text
+%USERPROFILE%\AppData\LocalLow\Featherweight Games\ChainedBeasts\Player.log
+```
+
+If available, also attach `Player-prev.log` from the same folder and `BepInEx\LogOutput.log` from your game folder. Include your mod version and what you were doing when the issue occurred. Copy the logs before launching the game again so the relevant session isn't overwritten.
+
 ## License
 
 My original project code and documentation are under [MIT](LICENSE). BepInEx, HarmonyX, Unity, IL2CPP bindings and the game keep their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
