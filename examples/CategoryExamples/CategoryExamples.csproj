@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\src\Directory.Build.props" />
+  <PropertyGroup><AssemblyName>CategoryExamples</AssemblyName><RootNamespace>CategoryExamples</RootNamespace><Version>0.8.0</Version></PropertyGroup>
+  <ItemGroup><ProjectReference Include="..\..\src\ChainedBeasts.ModFoundation\ChainedBeasts.ModFoundation.csproj" Private="false" /></ItemGroup>
+</Project>

@@ -5,10 +5,8 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
-using ChainedBeasts.ModFoundation.Afflictions;
 using ChainedBeasts.ModFoundation.DevTools;
-using ChainedBeasts.ModFoundation.Equipment;
-using ChainedBeasts.ModFoundation.Surgeries;
+using ChainedBeasts.ModFoundation.Runtime;
 using HarmonyLib;
 using UnityEngine.InputSystem;
 
@@ -19,7 +17,7 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.modfoundation";
     public const string PluginName = "ChainedBeasts.ModFoundation";
-    public const string PluginVersion = "0.7.3";
+    public const string PluginVersion = "0.8.3";
 
     private static ManualLogSource _logger;
     private static int _diagnosticSnapshotWritten;
@@ -27,35 +25,28 @@ public sealed class Plugin : BasePlugin
     public override void Load()
     {
         _logger = Log;
-        Log.LogInfo("[ChainedBeasts.ModFoundation] smoke test loaded");
+        FoundationServices.Logger = Log;
+        DeveloperToolsEvents.Logger = Log;
+        Log.LogInfo("[ChainedBeasts.ModFoundation] Foundation loaded; gameplay content is supplied by separate plugins");
+        InstallFeature("shared checkpoint/ownership infrastructure", "runtime", true, harmony =>
+        {
+            NativeCatalogAndStats.Install(harmony);
+            NativePersistence.Install(harmony, Log);
+            NativeOwnership.Install(harmony);
+            FoundationText.Install(harmony);
+            NativeCombat.Install(harmony);
+            NativeThrowing.Install(harmony);
+            NativeWeaponIdentity.Install(harmony);
+            NativeActionEvents.Install(harmony);
+            NativeSurgeries.Install(harmony);
+            NativeSurgeryStats.Install(harmony);
+            AddComponent<FoundationRuntimeController>();
+            FoundationServices.IsReady = true;
+        });
 
         var enableDiagnostics = BindToggle(
             "Diagnostics", "EnableDiagnostics", false,
             "Install the read-only UIMainMenu lifecycle diagnostic hook on the next game launch.");
-        var enableBulkUp = BindToggle(
-            "BulkUp", "EnableBulkUp", true,
-            "Register the one-rank Bulk Up skill on the next game launch.");
-        var forceBulkUp = BindToggle(
-            "BulkUp", "ForceBulkUpFirstOffer", false,
-            "Developer override: put Bulk Up in the first eligible solo offer until acquired.");
-        var enableRunnersWraps = BindToggle(
-            "RunnersWraps", "EnableRunnersWraps", true,
-            "Register the Runner's Wraps equipment on the next game launch.");
-        var forceRunnersWraps = BindToggle(
-            "RunnersWraps", "ForceRunnersWrapsNextOffer", false,
-            "Developer override: replace an eligible equipment-shop slot with Runner's Wraps.");
-        var enableLeadfoot = BindToggle(
-            "Leadfoot", "EnableLeadfoot", true,
-            "Register the Leadfoot potion affliction on the next game launch.");
-        var forceLeadfoot = BindToggle(
-            "Leadfoot", "ForceLeadfootNextOffer", false,
-            "Developer override: replace an eligible potion slot with Leadfoot.");
-        var enableAdrenalGraft = BindToggle(
-            "AdrenalGraft", "EnableAdrenalGraft", true,
-            "Register the Adrenal Graft surgery on the next game launch.");
-        var forceAdrenalGraft = BindToggle(
-            "AdrenalGraft", "ForceAdrenalGraftNextOffer", false,
-            "Developer override: show the free Adrenal Graft at the next surgeon.");
         var enableDeveloperMenu = BindToggle(
             "DeveloperMenu", "EnableDeveloperMenu", true,
             "Enable the solo testing panel and its native god-mode/stamina overrides on the next launch.");
@@ -64,39 +55,9 @@ public sealed class Plugin : BasePlugin
             "Keyboard key that opens and closes the solo testing panel.");
 
         LogSetting(enableDiagnostics);
-        LogSetting(enableBulkUp);
-        LogSetting(forceBulkUp);
-        LogSetting(enableRunnersWraps);
-        LogSetting(forceRunnersWraps);
-        LogSetting(enableLeadfoot);
-        LogSetting(forceLeadfoot);
-        LogSetting(enableAdrenalGraft);
-        LogSetting(forceAdrenalGraft);
         LogSetting(enableDeveloperMenu);
         Log.LogInfo($"[ChainedBeasts.ModFoundation] MenuKey={developerMenuKey.Value}");
 
-        InstallFeature(
-            "custom localization", "localization",
-            enableBulkUp.Value || enableRunnersWraps.Value || enableLeadfoot.Value || enableAdrenalGraft.Value,
-            harmony => CustomLocalization.Install(
-                harmony,
-                Log,
-                enableBulkUp.Value,
-                enableRunnersWraps.Value,
-                enableLeadfoot.Value,
-                enableAdrenalGraft.Value));
-        InstallFeature(
-            "Bulk Up", "bulkup", enableBulkUp.Value,
-            harmony => BulkUpFeature.Install(harmony, Log, forceBulkUp.Value));
-        InstallFeature(
-            "Runner's Wraps", "runnerswraps", enableRunnersWraps.Value,
-            harmony => RunnersWrapsFeature.Install(harmony, Log, forceRunnersWraps.Value));
-        InstallFeature(
-            "Leadfoot", "leadfoot", enableLeadfoot.Value,
-            harmony => LeadfootFeature.Install(harmony, Log, forceLeadfoot.Value));
-        InstallFeature(
-            "Adrenal Graft", "adrenalgraft", enableAdrenalGraft.Value,
-            harmony => AdrenalGraftFeature.Install(harmony, Log, forceAdrenalGraft.Value));
         InstallFeature(
             "developer menu", "developermenu", enableDeveloperMenu.Value,
             harmony =>

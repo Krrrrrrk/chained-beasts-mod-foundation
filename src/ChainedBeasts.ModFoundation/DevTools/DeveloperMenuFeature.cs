@@ -1,4 +1,6 @@
 using System;
+using ChainedBeasts.ModFoundation.Content;
+using ChainedBeasts.ModFoundation.Runtime;
 using System.Collections.Generic;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -25,6 +27,7 @@ internal static class DeveloperMenuFeature
         MenuKey = menuKey == Key.None ? Key.F1 : menuKey;
         GodModeEnabled = false;
         InfiniteStaminaEnabled = false;
+        FoundationServices.RunReset += ClearTemporaryOverrides;
 
         FeaturePatcher.Patch(
             harmony,
@@ -43,9 +46,12 @@ internal static class DeveloperMenuFeature
         logger?.LogInfo(
             $"[ChainedBeasts.ModFoundation] developer menu ready; press {MenuKey} to toggle it");
     }
+    private static void ClearTemporaryOverrides()
+    { GodModeEnabled = false; InfiniteStaminaEnabled = false; }
 
     private static void GodModePostfix(ref bool __result)
     {
+        if (!SessionAccess.CanUseDeveloperTools) { GodModeEnabled = false; return; }
         if (GodModeEnabled)
         {
             __result = true;
@@ -54,6 +60,7 @@ internal static class DeveloperMenuFeature
 
     private static void IgnoreStaminaPostfix(ref bool __result)
     {
+        if (!SessionAccess.CanUseDeveloperTools) { InfiniteStaminaEnabled = false; return; }
         if (InfiniteStaminaEnabled)
         {
             __result = true;
@@ -85,6 +92,13 @@ public sealed class DeveloperMenuController : MonoBehaviour
     {
         try
         {
+            if (!SessionAccess.CanUseDeveloperTools)
+            {
+                DeveloperMenuFeature.GodModeEnabled = false;
+                DeveloperMenuFeature.InfiniteStaminaEnabled = false;
+                if (_menuOpen) SetMenuOpen(false);
+                return;
+            }
             var keyboard = Keyboard.current;
             var menuKey = DeveloperMenuFeature.MenuKey;
             if (keyboard is not null && keyboard[menuKey] is not null && keyboard[menuKey].wasPressedThisFrame)
@@ -188,6 +202,8 @@ public sealed class DeveloperMenuController : MonoBehaviour
         DrawMoneyControls();
 
         GUILayout.Space(10f);
+        var customOnly = GUILayout.Toggle(_customOnly, "Custom catalog only (skills / injuries)");
+        if (customOnly != _customOnly) { _customOnly = customOnly; _catalogReady = false; _skillIndex = _injuryIndex = 0; }
         RefreshCatalogs();
         DrawSkillControls();
 
@@ -258,7 +274,8 @@ public sealed class DeveloperMenuController : MonoBehaviour
         {
             _skillIndex = WrapIndex(_skillIndex - 1, _skills.Count);
         }
-        GUILayout.Label($"{GetSkillName(selected)}  [{(int)selected}]  owned: {owned}");
+        var maximum = FoundationServices.Content.TryGet(ContentCategory.Skill, (int)selected, out var content) ? content.MaximumLevel : GameLibrary.Instance.SkillDict[selected].MaxLevelOfferable;
+        GUILayout.Label($"{GetSkillName(selected)}  [{(int)selected}]  rank: {owned}/{maximum}");
         if (GUILayout.Button(">"))
         {
             _skillIndex = WrapIndex(_skillIndex + 1, _skills.Count);
@@ -299,7 +316,7 @@ public sealed class DeveloperMenuController : MonoBehaviour
         {
             _injuryIndex = WrapIndex(_injuryIndex - 1, _injuries.Count);
         }
-        GUILayout.Label($"{GetInjuryName(selected)}  [{(int)selected}]  severity: {severity}");
+        GUILayout.Label($"{GetInjuryName(selected)}  [{(int)selected}]  severity: {severity}/3");
         if (GUILayout.Button(">"))
         {
             _injuryIndex = WrapIndex(_injuryIndex + 1, _injuries.Count);
@@ -318,6 +335,7 @@ public sealed class DeveloperMenuController : MonoBehaviour
         GUILayout.EndHorizontal();
     }
 
+    private bool _customOnly;
     private void RefreshCatalogs()
     {
         if (_catalogReady || !GameLibrary.InstanceExists)
@@ -334,6 +352,7 @@ public sealed class DeveloperMenuController : MonoBehaviour
                 for (var index = 0; index < skills.Count; index++)
                 {
                     var skillType = skills[index];
+                    if (_customOnly && !FoundationServices.Content.TryGet(ContentCategory.Skill, (int)skillType, out _)) continue;
                     if ((int)skillType < 0 || !GameLibrary.Instance.SkillDict.ContainsKey(skillType))
                     {
                         continue;
@@ -354,6 +373,7 @@ public sealed class DeveloperMenuController : MonoBehaviour
                 for (var index = 0; index < injuries.Count; index++)
                 {
                     var injuryType = injuries[index];
+                    if (_customOnly && !FoundationServices.Content.TryGet(ContentCategory.Affliction, (int)injuryType, out _)) continue;
                     var enumName = Enum.GetName(typeof(InjuryType), injuryType) ?? string.Empty;
                     if ((int)injuryType < 0 || enumName.StartsWith("EmptySlot", StringComparison.Ordinal) ||
                         !GameLibrary.Instance.InjuryDict.ContainsKey(injuryType))
@@ -504,14 +524,16 @@ public sealed class DeveloperMenuController : MonoBehaviour
             var oldHealth = GetCurrentHealth(playerData);
             playerData.RemoveSkill(skillType, 1);
 
-            if ((int)skillType == CustomContentIds.BulkUpSkill)
-            {
-                BulkUpFeature.SynchronizeProcessedLevel(playerData);
-            }
+            DeveloperToolsEvents.NotifySkillRemoved(playerData, skillType);
 
-            var newMaximum = Math.Max(1, playerData.MaxHealth);
-            var proportionalHealth = (int)Math.Round(oldHealth * (double)newMaximum / oldMaximum);
-            SetCurrentHealth(playerData, Math.Max(0, Math.Min(newMaximum, proportionalHealth)));
+            // Registered content owns its canonical transition callback. Repeating
+            // the generic adjustment here could undo an attainable-health cap.
+            if (!FoundationServices.Content.TryGet(ContentCategory.Skill, (int)skillType, out var custom) || !custom.Enabled)
+            {
+                var newMaximum = Math.Max(1, playerData.MaxHealth);
+                var proportionalHealth = (int)Math.Round(oldHealth * (double)newMaximum / oldMaximum);
+                SetCurrentHealth(playerData, Math.Max(0, Math.Min(newMaximum, proportionalHealth)));
+            }
             manager.NotifyPlayerDataChanged(playerIndex);
             SetStatus($"Removed one rank of {GetSkillName(skillType)} from player {playerIndex + 1}");
         }
@@ -612,9 +634,9 @@ public sealed class DeveloperMenuController : MonoBehaviour
             return false;
         }
 
-        if (!manager.IsServer)
+        if (!SessionAccess.CanUseDeveloperTools)
         {
-            SetStatus("Run-data editing is disabled because this client is not the host");
+            SetStatus("Editing requires Solo mode, one local client, one player, and host authority");
             return false;
         }
 

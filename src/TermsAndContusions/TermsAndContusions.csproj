@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>TermsAndContusions</AssemblyName>
+    <RootNamespace>TermsAndContusions</RootNamespace>
+    <Version>0.8.3</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChainedBeasts.ModFoundation\ChainedBeasts.ModFoundation.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

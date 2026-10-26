@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RollForward>LatestMajor</RollForward>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- These ARE the production implementations, with no Unity/IL2CPP initialization. -->
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Content\*.cs" Link="Production\Content\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\State\*.cs" Link="Production\State\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Logic\*.cs" Link="Production\Logic\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Stats\*.cs" Link="Production\Stats\%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

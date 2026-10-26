@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net6.0</TargetFramework><RollForward>LatestMajor</RollForward>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><LangVersion>latest</LangVersion><CheckEolTargetFramework>false</CheckEolTargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\TermsAndContusions\PackText.cs" Link="Production\PackText.cs" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Logic\*.cs" Link="Production\Logic\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Stats\*.cs" Link="Production\Stats\%(Filename)%(Extension)" />
+    <Compile Include="..\..\src\TermsAndContusions\CustomContentIds.cs" Link="Production\CustomContentIds.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Skills\SkillDefinitions.cs" Link="Production\SkillDefinitions.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Skills\SkillMath.cs" Link="Production\SkillMath.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Skills\SkillCombatState.cs" Link="Production\SkillCombatState.cs" />
+  </ItemGroup>
+</Project>

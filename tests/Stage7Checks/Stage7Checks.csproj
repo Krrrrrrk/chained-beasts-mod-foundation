@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net6.0</TargetFramework><RollForward>LatestMajor</RollForward><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable><LangVersion>latest</LangVersion><CheckEolTargetFramework>false</CheckEolTargetFramework></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\TermsAndContusions\PackText.cs" Link="Production\PackText.cs" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Logic\NativeEntryClaims.cs" Link="Production\NativeEntryClaims.cs" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Logic\NativeHookPolicy.cs" Link="Production\NativeHookPolicy.cs" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Logic\VisualReferenceSelection.cs" Link="Production\VisualReferenceSelection.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\CustomContentIds.cs" Link="Production\CustomContentIds.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Skills\SkillDefinitions.cs" Link="Production\SkillDefinitions.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Skills\SkillMath.cs" Link="Production\SkillMath.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Equipment\EquipmentDefinitions.cs" Link="Production\EquipmentDefinitions.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Afflictions\AfflictionDefinitions.cs" Link="Production\AfflictionDefinitions.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Afflictions\AfflictionMath.cs" Link="Production\AfflictionMath.cs" />
+    <Compile Include="..\..\src\TermsAndContusions\Surgeries\SurgeryDefinitions.cs" Link="Production\SurgeryDefinitions.cs" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Logic\ContributionMath.cs" Link="Production\ContributionMath.cs" />
+    <Compile Include="..\..\src\ChainedBeasts.ModFoundation\Stats\ModifierPipeline.cs" Link="Production\ModifierPipeline.cs" />
+  </ItemGroup>
+</Project>
