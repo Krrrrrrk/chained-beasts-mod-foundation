@@ -1,6 +1,6 @@
 # Mechanics, lifecycle and safe composition
 
-The implemented API lives in `src/ChainedBeasts.ModFoundation/{Content,Runtime,Stats,State,Logic}`. The pack provides balance/mechanic decisions; Foundation handles native provenance/authority and generic state. See [architecture](ARCHITECTURE.md), [native evidence](STAGE6_EVIDENCE.md), [complete catalog](../terms-and-contusions/CATALOG.md) and [persistence](PERSISTENCE.md). Public surfaces are specific to the inspected build, not a generic Unity mod SDK.
+The implemented API lives in `src/ChainedBeasts.ModFoundation/{Content,Runtime,Stats,State,Logic}`. The pack provides balance/mechanic decisions; Foundation handles native provenance/authority and generic state. See [architecture](ARCHITECTURE.md), [native hook safety](MECHANICS.md#native-hook-safety), [complete catalog](../terms-and-contusions/CATALOG.md) and [persistence](PERSISTENCE.md). Public surfaces are specific to the inspected build, not a generic Unity mod SDK.
 
 ## Fresh stats versus one-time events
 
@@ -44,4 +44,10 @@ Physical weapon GUIDs are independent tokens transferred through observed held/d
 
 For additional state, use `FoundationServices.PlayerState(data).SetFeature(yourVersionedKey,value)` during `CheckpointCapturing`; validate every player's `GetFeature<T>` during `CheckpointValidating`; restore remaining durations in `CheckpointRestored` without any live acquisition/resource call. The pack's SkillCombatState, EquipmentBattleState, AfflictionBattleState and SurgeryBattleState are complete concrete implementations, not independent global "latest state" files. Capture/validation is fail-closed, whereas advisory event failures are logged. Unknown schemas, missing content and older backups follow the [exact checkpoint protocol](PERSISTENCE.md).
 
-New mechanics outside these channels/events need installed-interop/native inspection: weapon-specific attack families, custom original assets, networking/authority, offhand/projectile systems and arena reconstruction aren't invented by adding a descriptor. See the [manual matrix](../MANUAL_TESTS.md) for remaining native evidence.
+New mechanics outside these channels/events need installed-interop/native inspection: weapon-specific attack families, custom original assets, networking/authority, offhand/projectile systems and arena reconstruction aren't invented by adding a descriptor. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3) for remaining native evidence.
+
+## Native hook safety
+
+An interop wrapper does not prove that its native body is unique or safe to detour. Inspect the actual installed method and signature before patching. `FeaturePatcher` rejects known unsafe targets and different wrappers sharing one native entry, while permitting multiple features on the same wrapper.
+
+On the inspected build, `Projectile.OnDespawn` is a shared native no-op. Charged-weapon Attack wrappers also share a body and delegate to the separately observed `Weapon.Attack`. Leave those wrappers native; use the existing lifecycle/combat services instead. These guards cover calls through the helper, not arbitrary patches installed directly by other plugins. Reinspect after game updates.

@@ -169,7 +169,7 @@ All packages are available on the [0.8.3 release page](https://github.com/Krrrrr
 
 Use matching **0.8.3** DLLs for this release. Packages also contain installation/license notices and a checksum manifest. They exclude the loader, game files, extracted assets, saves, configuration files, and optional teaching examples.
 
-**Testing status:** the author reported a crash-free **0.8.2** playtest. The **0.8.3** description tags and normal-offer changes are build checked and still need a fresh in-game check. Individual mechanics, interactions, and save/restore cases are not exhaustively verified. See the [current release notes](COMMUNITY_UPDATE_0.8.3.md) and [manual checklist](MANUAL_TESTS.md).
+**Testing status:** the author reported a crash-free **0.8.2** playtest. The **0.8.3** description tags and normal-offer changes are build checked and still need a fresh in-game check. Individual mechanics, interactions, and save/restore cases are not exhaustively verified. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3).
 
 <a id="fresh-checkout-and-local-workflow"></a>
 

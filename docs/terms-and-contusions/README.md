@@ -26,18 +26,17 @@ I have made no attempt to balance these additions. They may be overpowered, unde
 
 ## Complete catalog
 
-The [content catalog](CATALOG.md) lists names, effects, scaling and prices. The [manifest](manifest.json) maps all 46 entries to stable keys, numeric IDs, implementation files, configuration, persistence and manual tests.
+The [content catalog](CATALOG.md) lists names, effects, scaling and prices. The [manifest](manifest.json) maps all 46 entries to stable keys, numeric IDs, implementation files, configuration and source files.
 
 All entries have implemented source; that does not mean every gameplay case has been verified. For the detailed mechanics and interactions, see:
 
 | Category | Detailed guide |
 |---|---|
-| Skills and throwing | [Four-rank skills, Longshot and Counterweight Sling](STAGE3_SKILLS.md) |
-| Equipment | [Prices, effects and per-battle allowances](STAGE4_EQUIPMENT.md) |
-| Potion afflictions | [Severity, suppression, reduction and cures](STAGE5_AFFLICTIONS.md) |
-| Surgeries | [Tradeoffs, prices, offers and completion](STAGE6_SURGERIES.md) |
+| Skills and throwing | [Four-rank skills, Longshot and Counterweight Sling](SKILLS.md) |
+| Equipment | [Prices, effects and per-battle allowances](EQUIPMENT.md) |
+| Potion afflictions | [Severity, suppression, reduction and cures](AFFLICTIONS.md) |
+| Surgeries | [Tradeoffs, prices, offers and completion](SURGERIES.md) |
 
-Recall Ring, Debt Collector, Bowling for Beasts and Blood Bank Flask remain reserved for later. They are not included in this release.
 
 ### The four original examples
 
@@ -79,7 +78,7 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 ## Verification and known limitations
 
 - The author reported a **crash-free 0.8.2 playtest** following the native hook fixes. Individual content entries and checkpoint cases were not exhaustively verified.
-- **0.8.3** adds `TC:` descriptions and normal-offer defaults. Builds and nongame checks pass in the recorded release work; these changes still need a fresh gameplay check. See [the current release notes](../COMMUNITY_UPDATE_0.8.3.md) and [manual checklist](../MANUAL_TESTS.md).
+- **0.8.3** adds `TC:` descriptions and normal-offer defaults. Builds and nongame checks pass in the recorded release work; these changes still need a fresh gameplay check. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3).
 - **Multiplayer is unsupported.** Developer actions and forced offers require the actual Solo session/authority checks.
 - Original icons and models are not included; the pack reuses visuals already present in the installed game.
 - New descriptions use English fallback. Previously supplied translations are retained but have not had native-speaker review.
@@ -92,6 +91,3 @@ Players can install the [ready-made release](https://github.com/Krrrrrrk/chained
 The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The current code declares Foundation `>=0.8.0 <0.9.0`; use the matching 0.8.3 release DLLs for installation.
 
 Optional teaching examples are separate projects and are excluded from the normal packages and deployment. Game, loader, Unity, generated interop, extracted assets and saves are not redistributed. Original source and documentation remain MIT.
-
-The [expansion specification](../EXPANSION_SPEC.md), [progress log](../EXPANSION_PROGRESS.md) and [historical 0.8.0 handoff](../STAGE7_HANDOFF.md) document how the pack was built. Use the current release notes for its latest publication and verification status.
-

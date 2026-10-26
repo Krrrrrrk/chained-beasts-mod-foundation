@@ -112,13 +112,13 @@ Then follow the [separate-mod walkthrough](docs/foundation/SEPARATE_MOD.md) and 
 | Potion affliction | [Custom affliction](docs/foundation/tutorials/AFFLICTION.md) |
 | Surgery | [Custom surgery](docs/foundation/tutorials/SURGERY.md) |
 
-For deeper work, see [architecture](docs/foundation/ARCHITECTURE.md), [mechanics and events](docs/foundation/MECHANICS.md), [save handling](docs/foundation/PERSISTENCE.md), [native hook safety](docs/foundation/NATIVE_HOOK_SAFETY.md), and the [content manifest](docs/terms-and-contusions/manifest.json).
+For deeper work, see [architecture](docs/foundation/ARCHITECTURE.md), [mechanics and events](docs/foundation/MECHANICS.md), [save handling](docs/foundation/PERSISTENCE.md), [native hook safety](docs/foundation/MECHANICS.md#native-hook-safety), and the [content manifest](docs/terms-and-contusions/manifest.json).
 
 ## Testing and limitations
 
 The inspected setup is **Chained Beasts 1.0.1**, **Unity 6000.3.21f1**, Windows x64, and the BepInEx build linked above.
 
-I played **0.8.2 without encountering crashes** after the earlier hook fixes. The **0.8.3** description tags and normal-offer update are build checked and still need a fresh in-game check. I haven't verified every rank, interaction or save/resume case. See the [current change notes](docs/COMMUNITY_UPDATE_0.8.3.md) and [manual test checklist](docs/MANUAL_TESTS.md).
+I played **0.8.2 without encountering crashes** after the earlier hook fixes. The **0.8.3** description tags and normal-offer update are build checked and still need a fresh in-game check. I haven't verified every rank, interaction or save/resume case. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3).
 
 - **Multiplayer is unsupported.**
 - Icons and models reuse the game's existing visuals.
@@ -131,4 +131,3 @@ I played **0.8.2 without encountering crashes** after the earlier hook fixes. Th
 My original project code and documentation are under [MIT](LICENSE). BepInEx, HarmonyX, Unity, IL2CPP bindings and the game keep their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
 
 This is an unofficial project, unaffiliated with Featherweight Games.
-

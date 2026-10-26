@@ -58,3 +58,6 @@ steam_autocloud.vdf
 /winhttp.dll
 /.doorstop_version
 
+
+# Local maintainer tests, investigations, specifications and historical notes
+/tests/

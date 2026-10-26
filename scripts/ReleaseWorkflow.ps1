@@ -52,7 +52,12 @@ function New-ModCheckpoint([string]$GameRoot,[string]$UserDataRoot,[string]$Labe
     New-Item -ItemType Directory -Force -Path $base | Out-Null
     $target=Assert-ChildPath $base (Join-Path $base ("expansion-stage7-$Label-"+(Get-Date -Format yyyyMMdd-HHmmss-fff)))
     New-Item -ItemType Directory -Path $target | Out-Null
-    foreach($folder in @('src','docs','scripts','tests','examples')) { Copy-Item -LiteralPath (Join-Path $repo $folder) -Destination $target -Recurse }
+    foreach($folder in @('src','docs','scripts','tests','examples')) {
+        $sourceFolder=Join-Path $repo $folder
+        # The maintainer-only tests folder is absent from public checkouts.
+        if ($folder -eq 'tests' -and !(Test-Path -LiteralPath $sourceFolder -PathType Container)) { continue }
+        Copy-Item -LiteralPath $sourceFolder -Destination $target -Recurse
+    }
     foreach($file in @('README.md','LICENSE','.gitignore','THIRD_PARTY_NOTICES.md')) {
         if (Test-Path -LiteralPath (Join-Path $repo $file)) { Copy-Item -LiteralPath (Join-Path $repo $file) -Destination $target }
     }
