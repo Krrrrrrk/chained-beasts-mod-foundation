@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>ChainedBeasts.ModFoundation</AssemblyName>
     <RootNamespace>ChainedBeasts.ModFoundation</RootNamespace>
-    <Version>0.8.3</Version>
+    <Version>0.9.1</Version>
   </PropertyGroup>
 
 </Project>

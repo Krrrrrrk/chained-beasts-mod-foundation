@@ -4,6 +4,7 @@ using System.Linq;
 using BepInEx.Logging;
 using ChainedBeasts.ModFoundation;
 using ChainedBeasts.ModFoundation.Runtime;
+using ChainedBeasts.ModFoundation.Networking;
 using ChainedBeasts.ModFoundation.State;
 using ChainedBeasts.ModFoundation.Stats;
 using HarmonyLib;
@@ -21,7 +22,7 @@ internal static class SurgeriesFeature
     private static readonly Dictionary<CustomSurgery, string> Descriptions = new();
     private static readonly Dictionary<int, SurgeryBattleState> States = new();
     private static ManualLogSource _logger;
-    private static bool Active => SessionAccess.CanUseDeveloperTools;
+    private static bool Active => SessionAccess.GameplayReady;
     private static double Now => Time.timeAsDouble;
     private static bool Enabled(SurgeryEntry entry) => entry is not null && FoundationServices.Content.TryGet(entry.Key, out var content) && content.Enabled;
     private static bool Has(PlayerData data, CustomSurgery kind) => Active && Enabled(SurgeryDefinitions.Get(kind)) && SurgeryServices.IsOwned(data, SurgeryDefinitions.Get(kind).Key);
@@ -90,12 +91,15 @@ internal static class SurgeriesFeature
     }
     private static void EnemyDamage(Player player, int actual)
     {
-        if (!Active || player.IsDead || !player.IsOwner || actual <= 0) return;
-        if (Has(player.PlayerData, CustomSurgery.PainConverter)) RestoreStamina(player, SurgeryMath.Pain(actual, player.MaxHealth, player.StaminaMax));
-        State(player.PlayerData).Clot(Has(player.PlayerData, CustomSurgery.EmergencyClotting), actual, player.MaxHealth, !player.IsDead, Now);
+        if (!Active || !CombatServices.ConfirmedAlive(player) || !player.IsOwner || actual <= 0) return;
+        if (Has(player.PlayerData, CustomSurgery.PainConverter)) RestoreStamina(player, CustomSurgery.PainConverter, SurgeryMath.Pain(actual, player.MaxHealth, player.StaminaMax));
+        State(player.PlayerData).Clot(Has(player.PlayerData, CustomSurgery.EmergencyClotting), actual, player.MaxHealth, true, Now);
     }
-    private static void RestoreStamina(Player player, double amount)
-    { CombatServices.RestoreStaminaGrant(player, amount); }
+    private static void RestoreStamina(Player player, CustomSurgery kind, double amount)
+    {
+        var restored = CombatServices.RestoreStaminaGrantWithReceipt(player, amount);
+        CombatServices.NotifyActivation(player, SurgeryDefinitions.Get(kind).Key, restored);
+    }
     private static void Preparing(DirectHit hit)
     {
         if (!Active || hit.Kind != DirectAttackKind.Melee) return;
@@ -113,11 +117,15 @@ internal static class SurgeriesFeature
         var player = hit.Attack.Player; var state = State(player.PlayerData);
         if (hit.Tags.ContainsKey(CounterTag))
         {
-            state.ResolveCounterweight(hit.Id, hit.ActualHpLoss);
+            if (state.ResolveCounterweight(hit.Id, hit.ActualHpLoss))
+                CombatServices.NotifyActivation(player, SurgeryDefinitions.Get(CustomSurgery.CounterweightImplant).Key, hit.ActualHpLoss);
             if (hit.ActualHpLoss <= 0 && hit.Attack.Tags.TryGetValue(KnockbackTag, out var value)) ((Dictionary<string, DirectHit>)value).Remove(hit.TargetId);
         }
-        if (hit.ActualHpLoss > 0 && hit.TargetIsHostileEnemy && !hit.Target.IsDead && hit.Kind == DirectAttackKind.Melee && hit.Attack.IsUnarmed && Has(player.PlayerData, CustomSurgery.RetractableTalons))
+        if (hit.ActualHpLoss > 0 && hit.TargetIsHostileEnemy && CombatServices.ConfirmedAlive(hit.Target) && !string.IsNullOrWhiteSpace(hit.TargetId) && hit.Kind == DirectAttackKind.Melee && hit.Attack.IsUnarmed && Has(player.PlayerData, CustomSurgery.RetractableTalons))
+        {
             state.BleedHit(hit.TargetId, Now);
+            CombatServices.NotifyActivation(player, SurgeryDefinitions.Get(CustomSurgery.RetractableTalons).Key, hit.ActualHpLoss);
+        }
     }
     private static double Knockback(AttackRecord attack, NetworkAgent target)
     {
@@ -142,9 +150,9 @@ internal static class SurgeriesFeature
             var candidate = dataList[i].PlayerObject;
             if (candidate?.AttackEffects?.Pointer == effects.Pointer) { player = candidate; break; }
         }
-        if (player is null || !player.IsOwner || !Has(player.PlayerData, CustomSurgery.FuryPacemaker)) return true;
+        if (player is null || !Has(player.PlayerData, CustomSurgery.FuryPacemaker)) return true;
         // Reserve before restoring stamina. Nested/repeated callbacks still suppress fury without another grant.
-        if (!player.IsDead && State(player.PlayerData).Fury(true, Now)) RestoreStamina(player, .3 * player.StaminaMax);
+        if (player.IsOwner && CombatServices.ConfirmedAlive(player) && State(player.PlayerData).Fury(true, Now)) RestoreStamina(player, CustomSurgery.FuryPacemaker, .3 * player.StaminaMax);
         return false;
     }
     private static bool Incapacitated(Player player) => player.IsEffectActive(NetworkAttackEffects.eType.Stun) || player.IsEffectActive(NetworkAttackEffects.eType.StunSilent) || player.IsEffectActive(NetworkAttackEffects.eType.Trip);
@@ -158,7 +166,9 @@ internal static class SurgeriesFeature
             var state = State(data);
             if (player.IsDead || !player.InBattle) { state.DiscardLiveEffects(); continue; }
             state.Recovery(Incapacitated(player), Has(data, CustomSurgery.CounterweightImplant), Now, !player.IsIncapacitated);
-            var heal = state.ClotTick(Now); if (heal > 0 && Has(data, CustomSurgery.EmergencyClotting)) player.HealRpc(heal);
+            var heal = state.ClotTick(Now);
+            if (heal > 0 && Has(data, CustomSurgery.EmergencyClotting))
+                CombatServices.RestoreHealthGrant(player, SurgeryDefinitions.Get(CustomSurgery.EmergencyClotting).Key, heal);
             foreach (var tick in state.BleedTick(Now))
             {
                 var target = CombatServices.FindLiveTarget(tick.Key); var enemy = target?.TryCast<Enemy>();
@@ -169,7 +179,7 @@ internal static class SurgeriesFeature
         }
     }
     private static void Capture(RunDataManager manager)
-    { for (var i = 0; i < manager.playerDatas.Count; i++) { var data = manager.playerDatas[i]; FoundationServices.PlayerState(data).SetFeature(StateKey, State(data).Capture(Now)); } }
+    { for (var i = 0; i < manager.playerDatas.Count; i++) { var data = manager.playerDatas[i]; if (!MultiplayerServices.CapturePlayer(data)) continue; FoundationServices.PlayerState(data).SetFeature(StateKey, State(data).Capture(Now)); } }
     private static void Validate(CheckpointEnvelope snapshot)
     { foreach (var player in snapshot.Players.Values) { var value = player.GetFeature<SurgerySnapshot>(StateKey); if (value is not null) SurgeryBattleState.Restore(value, 0); } }
     private static void Restore()

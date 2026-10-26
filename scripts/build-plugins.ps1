@@ -19,7 +19,7 @@ $requiredReferences = @(
     'core\Il2CppInterop.Runtime.dll', 'interop\Assembly-CSharp.dll', 'interop\Il2Cppmscorlib.dll',
     'interop\UnityEngine.CoreModule.dll', 'interop\UnityEngine.IMGUIModule.dll',
     'interop\Unity.TextMeshPro.dll', 'interop\Unity.InputSystem.dll', 'interop\Unity.Netcode.Runtime.dll',
-    'interop\Newtonsoft.Json.dll'
+    'interop\Newtonsoft.Json.dll', 'interop\Unity.Collections.dll'
 )
 foreach ($reference in $requiredReferences) {
     $referencePath = Join-Path $bepInExRoot $reference

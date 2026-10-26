@@ -11,6 +11,13 @@ public sealed class ThrowLaunch
 
 public static class ThrowPhysics
 {
+    // The native RPC serializes the owner's launch vector. Only the observed
+    // normal-held-throw dispatch may change it; Execute/replays and offhands
+    // must use those exact serialized values on every peer.
+    public static ThrowLaunch ForDispatch(double force, double angleDegrees, double multiplier,
+        bool owner, bool nativeExecute, bool normalHeldThrow) => owner && !nativeExecute && normalHeldThrow
+            ? Extend(force, angleDegrees, multiplier) : new ThrowLaunch(force, angleDegrees);
+
     // Scale horizontal velocity only. Vertical flight, launch height, gravity and
     // time to ground remain unchanged, so unobstructed horizontal range scales M.
     public static ThrowLaunch Extend(double force, double angleDegrees, double multiplier)

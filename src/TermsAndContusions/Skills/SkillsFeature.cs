@@ -5,6 +5,7 @@ using BepInEx.Logging;
 using ChainedBeasts.ModFoundation;
 using ChainedBeasts.ModFoundation.Content;
 using ChainedBeasts.ModFoundation.Runtime;
+using ChainedBeasts.ModFoundation.Networking;
 using ChainedBeasts.ModFoundation.Stats;
 using HarmonyLib;
 using I2.Loc;
@@ -78,6 +79,7 @@ internal static class SkillsFeature
         CombatServices.AttackCommitted += Committed;
         CombatServices.PreparingDirectHit += Preparing;
         CombatServices.DirectHitResolved += Resolved;
+        CombatServices.AttackHpConfirmed += HpConfirmed;
         CombatServices.EnemyHpLost += HpLost;
         CombatServices.WeaponBroken += Broken;
         CombatServices.IncomingDamage += Incoming;
@@ -153,8 +155,14 @@ internal static class SkillsFeature
         SetDescription(__instance.description, data is null ? Descriptions[entry.Kind] : RankTerms[(entry.Kind, Rank(data, entry.Kind))]);
     }
     private static void SetDescription(Localize label, string term) { if (label is not null) label.SetTerm(term); }
-    private static PlayerData SoloData() => SessionAccess.IsSoloMode && NetworkSession.InstanceExists && NetworkSession.Instance.runDataManager?.playerDatas?.Count == 1
-        ? NetworkSession.Instance.runDataManager.playerDatas[0] : null;
+    private static PlayerData SoloData()
+    {
+        if (!NetworkSession.InstanceExists) return null;
+        var manager = NetworkSession.Instance.runDataManager;
+        for (var i = 0; i < (manager?.playerDatas?.Count ?? 0); i++)
+            if (MultiplayerServices.IsPlayerOwner(manager.playerDatas[i])) return manager.playerDatas[i];
+        return null;
+    }
     private static bool Stationary(Player player)
     { var velocity = player?.CurrentVelocity ?? Vector3.zero; return player is not null && velocity.x * velocity.x + velocity.z * velocity.z <= .0001f; }
     private static int Gold() => NetworkSession.InstanceExists ? NetworkSession.Instance.runDataManager?.Money ?? 0 : 0;
@@ -181,16 +189,41 @@ internal static class SkillsFeature
         if (attack is null || context.Data is null || !attack.Tags.TryGetValue(PickTag, out var ready) || ready is not true ||
             !attack.Tags.TryGetValue(PickTag + "/epoch", out var epoch)) return 1;
         // Attempt-wide bonus also covers an attributed area attack. Direct-contact processing must not add it again.
-        return SkillMath.CommittedPick(Rank(context.Data, CustomSkill.PickYourMoment), true, (int)epoch, PickEpoch(context.Data));
+        var factor = SkillMath.CommittedPick(Rank(context.Data, CustomSkill.PickYourMoment), true, (int)epoch, PickEpoch(context.Data));
+        if (factor > 1) attack.Tags[PickTag + "/applied"] = factor;
+        return factor;
     }
     private static void Resolved(DirectHit hit)
     {
         if (hit.Tags.TryGetValue(PlanTag, out var value))
-            State(hit.Attack.Player).Resolve((HitPlan)value, hit.ActualHpLoss > 0, Now, Rank(hit.Attack.Player.PlayerData, CustomSkill.MixedMartialArts));
+        {
+            var plan = (HitPlan)value; var first = !plan.Resolved;
+            State(hit.Attack.Player).Resolve(plan, hit.ActualHpLoss > 0, Now, Rank(hit.Attack.Player.PlayerData, CustomSkill.MixedMartialArts));
+            if (first && hit.ActualHpLoss > 0)
+            {
+                if (plan.UsesPrime && plan.Multiplier > 1)
+                    CombatServices.NotifyActivation(hit.Attack.Player, SkillDefinitions.Get(CustomSkill.MixedMartialArts).Key, plan.Multiplier - 1);
+                if (plan.Payback > 0)
+                    CombatServices.NotifyActivation(hit.Attack.Player, SkillDefinitions.Get(CustomSkill.PaybackPlan).Key, plan.Payback);
+            }
+        }
+    }
+    private static void HpConfirmed(AttackRecord attack, int actualHpLoss)
+    {
+        if (actualHpLoss > 0 && attack.Tags.TryGetValue(PickTag + "/applied", out var factor) &&
+            !attack.Tags.ContainsKey(PickTag + "/feedback"))
+        {
+            attack.Tags[PickTag + "/feedback"] = true;
+            CombatServices.NotifyActivation(attack.Player, SkillDefinitions.Get(CustomSkill.PickYourMoment).Key, (double)factor - 1);
+        }
     }
     private static void HpLost(Player player, int actualLoss) => State(player).EnemyDamage(Now, Rank(player.PlayerData, CustomSkill.PaybackPlan), actualLoss, player.MaxHealth);
     private static void Broken(Player player)
-    { var amount = SkillMath.BreakStamina(Rank(player.PlayerData, CustomSkill.WasteNot), player.StaminaMax); CombatServices.RestoreStaminaGrant(player, amount); }
+    {
+        var amount = SkillMath.BreakStamina(Rank(player.PlayerData, CustomSkill.WasteNot), player.StaminaMax);
+        var restored = CombatServices.RestoreStaminaGrantWithReceipt(player, amount);
+        if (restored > 0) CombatServices.NotifyActivation(player, SkillDefinitions.Get(CustomSkill.WasteNot).Key, restored);
+    }
     private static double Incoming(Player player, double damage)
     {
         var rank = Rank(player.PlayerData, CustomSkill.BreathingRoom);
@@ -217,18 +250,18 @@ internal static class SkillsFeature
     {
         for (var i = 0; i < manager.playerDatas.Count; i++)
         {
-            var data = manager.playerDatas[i];
+            var data = manager.playerDatas[i]; if (!MultiplayerServices.CapturePlayer(data)) continue;
             if (!States.TryGetValue(data.playerID, out var state)) States[data.playerID] = state = new SkillCombatState(_battleStartedAt);
             FoundationServices.PlayerState(data).SetFeature(FeatureStateKey, state.Capture(Now, data.MaxHealth));
         }
     }
     private static void Restore()
     {
-        if (!SessionAccess.CanUseDeveloperTools) return;
+        if (!SessionAccess.GameplayReady) return;
         var manager = NetworkSession.Instance.runDataManager;
         for (var i = 0; i < manager.playerDatas.Count; i++)
         {
-            var data = manager.playerDatas[i];
+            var data = manager.playerDatas[i]; if (!MultiplayerServices.CapturePlayer(data)) continue;
             var saved = FoundationServices.PlayerState(data).GetFeature<SkillStateSnapshot>(FeatureStateKey);
             if (saved is not null) States[data.playerID] = SkillCombatState.Restore(saved, Now);
         }

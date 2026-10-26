@@ -7,6 +7,7 @@ using ChainedBeasts.ModFoundation.Configuration;
 using ChainedBeasts.ModFoundation.DevTools;
 using ChainedBeasts.ModFoundation.Content;
 using ChainedBeasts.ModFoundation.Runtime;
+using ChainedBeasts.ModFoundation.Networking;
 using HarmonyLib;
 using TermsAndContusions.Afflictions;
 using TermsAndContusions.Equipment;
@@ -24,8 +25,8 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.termsandcontusions";
     public const string PluginName = "Terms & Contusions";
-    public const string PluginVersion = "0.8.3";
-    public const string FoundationVersionRange = ">=0.8.0 <0.9.0";
+    public const string PluginVersion = "0.9.1";
+    public const string FoundationVersionRange = ">=0.9.1 <0.10.0";
 
     public override void Load()
     {
@@ -122,6 +123,13 @@ public sealed class Plugin : BasePlugin
         claims.AddRange(SurgeryDefinitions.All.Where(entry => entry.Kind != CustomSurgery.AdrenalGraft).Select(entry =>
             new ContentDescriptor(entry.Key, PluginGuid, ContentCategory.Surgery, entry.Id, 1, surgeryEnabled[entry.Kind])));
         FoundationServices.Content.RegisterMany(claims);
+        MultiplayerServices.RegisterGoldRule(EquipmentDefinitions.Get(CustomEquipment.PickpocketsMitts).Key, true, 1);
+        MultiplayerServices.RegisterGoldRule(AfflictionDefinitions.Get(CustomAffliction.LooseChange).Key, false, 3);
+        MultiplayerServices.RegisterCompatibility(PluginGuid, PluginVersion, string.Join(";", surgeryPrices.OrderBy(x => x.Key).Select(x => x.Key + "=" + x.Value)));
+        MultiplayerServices.RegisterBinary(typeof(Plugin).Assembly);
+        MultiplayerServices.RegisterHealthGrantRule(EquipmentDefinitions.Get(CustomEquipment.ButchersApron).Key, .03, true);
+        MultiplayerServices.RegisterHealthGrantRule(SurgeryDefinitions.Get(CustomSurgery.EmergencyClotting).Key, .25, false);
+        ActivationFeedback.Install(Config, Log);
 
         InstallFeature("custom localization", "localization",
             enableBulkUp.Value || enableRunnersWraps.Value || enableLeadfoot.Value || enableAdrenalGraft.Value,

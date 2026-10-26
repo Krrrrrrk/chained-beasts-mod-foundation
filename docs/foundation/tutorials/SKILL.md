@@ -20,7 +20,7 @@ namespace StandaloneContentExample;
 
 // Optional teaching plugin, outside the 46-entry pack. Build scripts never deploy it.
 [BepInPlugin(Guid, "Standalone Content Example", "0.8.0")]
-[BepInDependency(ChainedBeasts.ModFoundation.Plugin.PluginGuid, ">=0.8.0 <0.9.0")]
+[BepInDependency(ChainedBeasts.ModFoundation.Plugin.PluginGuid, ">=0.9.0 <0.10.0")]
 public sealed class Plugin : BasePlugin
 {
     public const string Guid = "example.chainedbeasts.standalonecontent";

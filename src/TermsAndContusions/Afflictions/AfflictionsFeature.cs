@@ -4,6 +4,7 @@ using System.Linq;
 using BepInEx.Logging;
 using ChainedBeasts.ModFoundation;
 using ChainedBeasts.ModFoundation.Runtime;
+using ChainedBeasts.ModFoundation.Networking;
 using ChainedBeasts.ModFoundation.State;
 using ChainedBeasts.ModFoundation.Stats;
 using HarmonyLib;
@@ -25,7 +26,7 @@ internal static class AfflictionsFeature
     private static double _battleStart;
     private static ManualLogSource _logger;
     private static double Now => Time.timeAsDouble;
-    private static bool Active => SessionAccess.CanUseDeveloperTools;
+    private static bool Active => SessionAccess.GameplayReady;
     private static bool Enabled(AfflictionEntry entry) => entry is not null && FoundationServices.Content.TryGet(entry.Key, out var value) && value.Enabled;
     private static int Effective(Player player, CustomAffliction kind) => Active && player is not null && Enabled(AfflictionDefinitions.Get(kind))
         ? AfflictionMath.Severity(player.HasInjury((InjuryType)AfflictionDefinitions.Get(kind).Id)) : 0;
@@ -168,8 +169,14 @@ internal static class AfflictionsFeature
         }
         if (state.Loose(Now, loose, actualLoss))
         {
-            var manager = NetworkSession.Instance.runDataManager; var loss = AfflictionMath.GoldLoss(loose, manager.Money);
-            if (loss > 0) manager.ModifyMoney(-loss);
+            if (SessionAccess.IsSoloMode)
+            {
+                var manager = NetworkSession.Instance.runDataManager; var loss = AfflictionMath.GoldLoss(loose, manager.Money);
+                if (loss > 0) manager.ModifyMoney(-loss);
+            }
+            // Server money may be ahead of this owner's periodically updated replica.
+            // Submit effective severity; the host clamps the actual loss to its money.
+            else MultiplayerServices.RequestGold(player, AfflictionDefinitions.Get(CustomAffliction.LooseChange).Key, -loose);
         }
     }
     private static void Blocked(ShieldBlock block)
@@ -180,7 +187,7 @@ internal static class AfflictionsFeature
     {
         if (!Active || !PlayerManager.InstanceExists || PlayerManager.Instance.PlayerCount == 0) return;
         var data = NetworkSession.Instance.runDataManager.playerDatas;
-        for (var i = 0; i < data.Count; i++) { var player = data[i].PlayerObject; if (player is not null) DelayUpdating(player); }
+        for (var i = 0; i < data.Count; i++) { var player = data[i].PlayerObject; if (player?.IsOwner == true) DelayUpdating(player); }
     }
     private static void Tick() => RefreshRuntime();
     private static void Clear()
@@ -190,7 +197,7 @@ internal static class AfflictionsFeature
         Delays.Clear(); States.Clear(); _battleStart = Now;
     }
     private static void Capture(RunDataManager manager)
-    { for (var i = 0; i < manager.playerDatas.Count; i++) { var data = manager.playerDatas[i]; FoundationServices.PlayerState(data).SetFeature(StateKey, State(data).Capture(Now)); } }
+    { for (var i = 0; i < manager.playerDatas.Count; i++) { var data = manager.playerDatas[i]; if (!MultiplayerServices.CapturePlayer(data)) continue; FoundationServices.PlayerState(data).SetFeature(StateKey, State(data).Capture(Now)); } }
     private static void Validate(CheckpointEnvelope snapshot)
     { foreach (var player in snapshot.Players.Values) { var value = player.GetFeature<AfflictionSnapshot>(StateKey); if (value is not null) AfflictionBattleState.Restore(value, 0); } }
     private static void Restore()

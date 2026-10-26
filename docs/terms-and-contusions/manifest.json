@@ -1,10 +1,13 @@
 {
   "schemaVersion": 2,
   "pack": "Terms & Contusions",
-  "version": "0.8.3",
+  "version": "0.9.1",
   "pluginGuid": "local.chainedbeasts.termsandcontusions",
-  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3",
-  "status": "Experimental Solo content; individual interactions and save/restore cases are not exhaustively verified.",
+  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1",
+  "releaseChannel": "prerelease",
+  "stableReleaseVersion": "0.8.3",
+  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3",
+  "status": "Experimental mechanics-audit and activation-feedback prerelease. All 46 entries source/logic reviewed; solo/host/client gameplay and checkpoint verification pending.",
   "entries": [
     {
       "key": "terms-and-contusions:skill/bulk-up",
@@ -466,5 +469,17 @@
       "sourceFile": "src/TermsAndContusions/Surgeries/SurgeriesFeature.cs",
       "price": 45
     }
-  ]
+  ],
+  "mechanicsReview": {
+    "version": "0.9.1",
+    "reviewedEntries": 46,
+    "scope": "Source, formulas, native integration and nongame checks; live gameplay verification pending.",
+    "gameplayVerified": false,
+    "feedbackConfiguration": "[Feedback] EnableActivationFeedback",
+    "guide": "docs/ACTIVATION_FEEDBACK.md",
+    "knownMultiplayerLimits": [
+      "Attacker-view target HP thresholds under latency",
+      "Physical weapon allowances are per player; global cross-player transfer ledger is not implemented"
+    ]
+  }
 }

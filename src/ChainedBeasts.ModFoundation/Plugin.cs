@@ -7,6 +7,7 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using ChainedBeasts.ModFoundation.DevTools;
 using ChainedBeasts.ModFoundation.Runtime;
+using ChainedBeasts.ModFoundation.Networking;
 using HarmonyLib;
 using UnityEngine.InputSystem;
 
@@ -17,7 +18,7 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.modfoundation";
     public const string PluginName = "ChainedBeasts.ModFoundation";
-    public const string PluginVersion = "0.8.3";
+    public const string PluginVersion = "0.9.1";
 
     private static ManualLogSource _logger;
     private static int _diagnosticSnapshotWritten;
@@ -30,6 +31,7 @@ public sealed class Plugin : BasePlugin
         Log.LogInfo("[ChainedBeasts.ModFoundation] Foundation loaded; gameplay content is supplied by separate plugins");
         InstallFeature("shared checkpoint/ownership infrastructure", "runtime", true, harmony =>
         {
+            NativeMultiplayer.VerifyGame();
             NativeCatalogAndStats.Install(harmony);
             NativePersistence.Install(harmony, Log);
             NativeOwnership.Install(harmony);
@@ -40,6 +42,10 @@ public sealed class Plugin : BasePlugin
             NativeActionEvents.Install(harmony);
             NativeSurgeries.Install(harmony);
             NativeSurgeryStats.Install(harmony);
+            NativeMultiplayer.Install(harmony);
+            NetworkCombat.Initialize();
+            NativeHealthGrants.Initialize();
+            NetworkCheckpoints.Install(harmony);
             AddComponent<FoundationRuntimeController>();
             FoundationServices.IsReady = true;
         });

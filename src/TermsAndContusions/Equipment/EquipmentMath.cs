@@ -12,5 +12,10 @@ public static class EquipmentMath
     public static bool Full(int durability, int maximum, bool isDefault) => !isDefault && maximum > 0 && durability >= maximum;
     public static int Repair(int current, int maximum) => current > 0 && maximum > 0 ? Math.Min(maximum, current >= maximum ? current : current + 1) : Math.Max(0, current);
     public static int ExecutionHeal(int maximum, int current, int attainable) => (int)Math.Min(Math.Max(0L, (long)attainable - current), Math.Ceiling(Math.Max(0, maximum) * .03d));
+    // Submit the base grant. The server applies healing factors and its current HP cap.
+    // A client replica's current HP must not suppress an otherwise valid execution heal.
+    public static int ExecutionHealBase(int maximum) => (int)Math.Ceiling(Math.Max(0, maximum) * .03d);
+    public static bool ChalkReleaseEligible(bool alive, bool owner, bool offhand, bool hasHeldWeapon, bool stationary) =>
+        alive && owner && !offhand && hasHeldWeapon && stationary;
     public static double LocketStamina(double hp, double maxHp, double maxStamina, int enemyLoss) => enemyLoss > 0 && hp > 0 && maxHp > 0 && hp < .25d * maxHp ? Math.Max(0, maxStamina) * .5d : 0d;
 }

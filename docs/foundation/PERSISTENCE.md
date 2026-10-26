@@ -19,7 +19,7 @@ The four pack identities remain:
 
 ## Exact checkpoint association
 
-Schema 1 records mode, native `runSeed`, native `runStartTime`, ordered native player IDs, a generation token, the canonical SHA-256 of the complete native run checkpoint, and player state keyed by native `playerID`. The current game adapter supports Solo only; it never guesses a player from a process pointer or remaps a multiplayer roster.
+Schema 1 records mode, native `runSeed`, native `runStartTime`, ordered native player IDs, a generation token, the canonical SHA-256 of the complete native run checkpoint, and player state keyed by native `playerID`. The published 0.8.3 adapter is Solo-only. The 0.9.0 source additionally supports matched-party Local/Online checkpoint exchange; it never guesses a player from a process pointer or remaps a multiplayer roster. Owner-state snapshots and host restore acknowledgements are described in [the experimental multiplayer guide](../MULTIPLAYER.md); live save/restore verification remains pending.
 
 One shared discriminator uses the already-reserved `SkillType.None` array index (135 in the inspected build): `skillLevels[index] = -20301`, `skillOrder[index] = positive generation token`. This is **checkpoint metadata, not a content rank or an additional per-feature save slot**. A unique token is needed because two otherwise identical native checkpoints can have different external state. Merely hashing the unmarked native JSON could not distinguish them. The occupied-slot check refuses conflicts, and tokens check both disk archives and outstanding captures before allocation.
 
@@ -31,7 +31,7 @@ Storage is under:
 <Application.persistentDataPath>/ModFoundation/checkpoints/<run-key>/<generation>.json
 ```
 
-The investigated user path is `C:\Users\Krrrrrrk\AppData\LocalLow\Featherweight Games\ChainedBeasts\ModFoundation\checkpoints`. A run key hashes mode, seed and start time; it is not the seed alone. Native JSON object-property order and whitespace are canonicalized; array order and values remain significant. Restoration selects **the exact token and fingerprint**, never the newest sidecar. Restoring an older native checkpoint therefore selects its older immutable custom snapshot.
+The Windows user path is `%USERPROFILE%\AppData\LocalLow\Featherweight Games\ChainedBeasts\ModFoundation\checkpoints`. A run key hashes mode, seed and start time; it is not the seed alone. Native JSON object-property order and whitespace are canonicalized; array order and values remain significant. Restoration selects **the exact token and fingerprint**, never the newest sidecar. Restoring an older native checkpoint therefore selects its older immutable custom snapshot.
 
 ## Native write success and failure
 

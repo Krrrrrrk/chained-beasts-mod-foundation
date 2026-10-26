@@ -8,6 +8,10 @@
 
 These instructions are for the **Windows 64-bit Steam version** of Chained Beasts. The current release is **0.8.3**, for **Solo play**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
 
+The current source branch builds **0.9.1**, available as an [experimental multiplayer prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1).
+For its matching DLLs, party requirements and pending tests, use
+[the multiplayer guide](MULTIPLAYER.md). The release links below remain 0.8.3.
+
 Already using an older version of this mod? Follow [Updating an existing install](#updating-an-existing-install) first.
 
 ## Fresh install: play Terms & Contusions

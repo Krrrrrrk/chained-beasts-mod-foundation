@@ -70,6 +70,7 @@ internal static class NativeCatalogAndStats
 
     internal static double Evaluate(StatChannel channel, double original, PlayerData data, Player player, NetworkHealthObject target = null, AttackRecord attack = null)
     {
+        if (Networking.NativeMultiplayer.Online && !SessionAccess.GameplayReady) return original;
         try { return FoundationServices.Modifiers.Evaluate(channel, original, new NativeStatContext(data, player, target, attack)); }
         catch (Exception exception)
         {
@@ -82,7 +83,7 @@ internal static class NativeCatalogAndStats
             NativeCombat.AttributedAttack?.Player?.Pointer == __instance.Pointer ? NativeCombat.AttributedAttack : null);
     private static void RecoveryClock(Player __instance)
     {
-        if (!SessionAccess.CanUseDeveloperTools) return;
+        if (!SessionAccess.GameplayReady || !__instance.IsOwner) return;
         CombatServices.UpdatingRecovery(__instance);
         if (__instance.staminaRecoveryTimer <= 0) return;
         var rate = Evaluate(StatChannel.RecoveryDelayClockRate, 1d, __instance.PlayerData, __instance);

@@ -1,6 +1,6 @@
 # Shared local-only packaging/deployment helpers. Dot-source; importing never builds, deploys or launches.
 Set-StrictMode -Version Latest
-$script:ReleaseVersion = '0.8.3'
+$script:ReleaseVersion = '0.9.1'
 $script:ExpectedGameHash = '72f2892607b0772470caae5db766dc07aaf636c3edfe26cefe019a5b9ddae56b'
 $script:ProductNames = @('ChainedBeasts.ModFoundation','TermsAndContusions')
 function Get-RepositoryRoot { [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')) }
@@ -33,6 +33,12 @@ function Get-ProductFiles([string]$Configuration='Release') {
         if ($assembly.Name -ne $name -or $assembly.Version.ToString(3) -ne $script:ReleaseVersion) { throw "Unexpected assembly identity/version: $path" }
         [pscustomobject]@{name=$name;path=$path;sha256=(Get-Sha $path);version=$script:ReleaseVersion}
     }
+}
+function Get-BattleNumbersProduct([string]$Configuration='Release') {
+    $path=Join-Path (Get-RepositoryRoot) "chained-beasts-battle-numbers/src/ChainedBeasts.BattleNumbers/bin/$Configuration/net6.0/ChainedBeasts.BattleNumbers.dll"
+    $assembly=[Reflection.AssemblyName]::GetAssemblyName($path)
+    if($assembly.Name -ne 'ChainedBeasts.BattleNumbers' -or $assembly.Version.ToString(3) -ne '0.2.0'){throw 'Build the multiplayer Battle Numbers 0.2.0 companion first.'}
+    [pscustomobject]@{name='ChainedBeasts.BattleNumbers';path=$path;sha256=(Get-Sha $path);version='0.2.0'}
 }
 function Copy-Verified([string]$Source,[string]$Destination) {
     New-Item -ItemType Directory -Force -Path (Split-Path -Parent $Destination) | Out-Null
@@ -106,7 +112,7 @@ function Install-ModProducts([object[]]$Products,[string]$GameRoot,[string]$User
             Copy-Verified $product.path (Join-Path $pluginRoot ($name+'.dll'))
         }
         $installed=@(Get-OwnedPluginFiles $pluginRoot)
-        if ($installed.Count -ne 2) { throw 'Duplicate/missing product assemblies after installation.' }
+        if ($installed.Count -ne $script:ProductNames.Count) { throw 'Duplicate/missing product assemblies after installation.' }
     }
     catch {
         foreach($name in $script:ProductNames) {

@@ -9,6 +9,7 @@ using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using ChainedBeasts.ModFoundation.Content;
 using ChainedBeasts.ModFoundation.State;
+using ChainedBeasts.ModFoundation.Networking;
 using UnityEngine;
 using NativeTask = Il2CppSystem.Threading.Tasks.Task;
 using NativeJson = GameJson::Newtonsoft.Json.JsonConvert;
@@ -27,6 +28,9 @@ internal static class NativePersistence
     private static readonly HashSet<string> CaptureFailures = new(StringComparer.Ordinal);
     private static CheckpointEnvelope _restoring;
     internal static bool IsRestoring => _restoring is not null;
+    internal static string Mode => GameManager.InstanceExists ? GameManager.Instance.CurrentGameMode.ToString() : "Solo";
+    internal static string RunKey => State.RunKey;
+    internal static string BattleKey => State.BattleKey;
 
     private sealed class WriteTicket
     {
@@ -69,8 +73,8 @@ internal static class NativePersistence
 
     private static string SnapshotKey(CheckpointIdentity identity) => identity.RunKey + ":" + identity.Token + ":" + identity.NativeFingerprint;
     private static string Serialize(RunDataManager.Checkpoint checkpoint) => NativeJson.SerializeObject(checkpoint);
-    private static CheckpointIdentity Identity(RunDataManager.Checkpoint checkpoint) => CheckpointJson.Identify(Serialize(checkpoint), "Solo", _noneIndex);
-    private static CheckpointIdentity CurrentRun(RunDataManager manager) => new("Solo", manager.RunSeed, manager.runStartTime,
+    private static CheckpointIdentity Identity(RunDataManager.Checkpoint checkpoint) => CheckpointJson.Identify(Serialize(checkpoint), Mode, _noneIndex);
+    private static CheckpointIdentity CurrentRun(RunDataManager manager) => new(Mode, manager.RunSeed, manager.runStartTime,
         0, new string('0', 64), PlayerIds(manager));
 
     private static int[] PlayerIds(RunDataManager manager)
@@ -79,6 +83,7 @@ internal static class NativePersistence
         for (var index = 0; index < result.Length; index++) result[index] = manager.playerDatas[index].playerID;
         return result;
     }
+    internal static PlayerData PlayerById(RunDataManager manager, int id) => FindPlayer(manager, id);
     private static PlayerData FindPlayer(RunDataManager manager, int id)
     {
         for (var index = 0; index < manager.playerDatas.Count; index++)
@@ -97,8 +102,8 @@ internal static class NativePersistence
 
     internal static PlayerContentState PlayerState(PlayerData player)
     {
-        if (!SessionAccess.CanUseDeveloperTools || player is null)
-            throw new InvalidOperationException("Persistent feature state requires a host-owned, single-player Solo run.");
+        if (!SessionAccess.GameplayReady || player is null)
+            throw new InvalidOperationException("Persistent feature state requires an active compatible game session.");
         var manager = NetworkSession.Instance.runDataManager;
         if (FindPlayer(manager, player.playerID).Pointer != player.Pointer)
             throw new InvalidOperationException("Preview/stale PlayerData cannot mutate live persistent feature state.");
@@ -109,9 +114,9 @@ internal static class NativePersistence
 
     private static void Capture(RunDataManager __instance, RunDataManager.Checkpoint __result)
     {
-        if (!SessionAccess.IsSoloMode || !__instance.IsServer || __result?.playerDatas is null || __result.playerCount != 1) return;
+        if (!__instance.IsServer || __result?.playerDatas is null || __result.playerCount < 1 || (!SessionAccess.IsSoloMode && !NativeMultiplayer.Ready)) return;
         EnsureRun(__instance);
-        try { NativeCombat.RequireSettledCheckpoint(); FoundationServices.CaptureFeatures(__instance); }
+        try { NativeCombat.RequireSettledCheckpoint(); FoundationServices.CaptureFeatures(__instance); NetworkCheckpoints.RequireOwners(__instance); }
         catch { CaptureFailures.Add(CurrentRun(__instance).RunKey); throw; }
         if (!FoundationServices.Content.Entries.Any(value => value.Storage == OwnershipStorage.ExternalCheckpoint) &&
             !State.Players.Values.Any(value => value.Ownership.Count > 0 || value.Features.Count > 0)) return;
@@ -144,9 +149,12 @@ internal static class NativePersistence
                 state.Ownership.Add(definition.Key, new OwnedContentState(definition.Category, definition.NumericId, level, order));
             }
             state.SetFeature("foundation:battle-key", State.BattleKey);
+            if (NativeMultiplayer.Online) state.SetFeature("foundation:ledger-paid", MultiplayerServices.LedgerPaid(player.playerID));
+            if (NativeMultiplayer.Online) state.SetFeature("foundation:gold-guard", NativeMultiplayer.CaptureGoldGuard(player.playerID));
             envelope.Players.Add(checkpointPlayer.playerID, state);
         }
         Captured.Add(SnapshotKey(identity), envelope.Clone());
+        if (NativeMultiplayer.Online) NetworkCheckpoints.Publish(envelope);
         CaptureFailures.Remove(identity.RunKey);
     }
 
@@ -169,7 +177,7 @@ internal static class NativePersistence
         {
             var payload = Encoding.UTF8.GetString(data.ToArray());
             var ticket = new WriteTicket();
-            foreach (var identity in CheckpointJson.FromSave(payload, _noneIndex).Where(value => value.Mode == "Solo"))
+            foreach (var identity in CheckpointJson.FromSave(payload, _noneIndex))
             {
                 if (CaptureFailures.Contains(identity.RunKey)) throw new InvalidDataException("Feature state capture failed for this native run checkpoint.");
                 if (Captured.TryGetValue(SnapshotKey(identity), out var snapshot)) _store.Prepare(snapshot);
@@ -267,7 +275,8 @@ internal static class NativePersistence
 
     private static bool AllowRestore(NetworkSession __instance)
     {
-        if (!SessionAccess.IsSoloMode || !__instance.IsServer) return true;
+        if (!__instance.IsServer) return true;
+        if (NativeMultiplayer.Online && !NativeMultiplayer.Ready) return false;
         try
         {
             var checkpoint = __instance.LastCheckpoint?.runData;
@@ -276,6 +285,7 @@ internal static class NativePersistence
                 var envelope = Load(checkpoint);
                 foreach (var state in envelope.Players.Values) StateProjection.RequireAvailableOwnership(state, FoundationServices.Content);
                 FoundationServices.ValidateFeatures(envelope);
+                if (NativeMultiplayer.Online && !NetworkCheckpoints.AllowRestore(__instance, envelope)) return false;
             }
             return true;
         }
@@ -288,7 +298,7 @@ internal static class NativePersistence
     }
     private static void RestoreBefore(RunDataManager.Checkpoint checkpoint)
     {
-        if (!SessionAccess.IsSoloMode) return;
+        if (!SessionAccess.IsSoloMode && !NativeMultiplayer.Ready) return;
         _restoring = Load(checkpoint);
         FoundationServices.ValidateFeatures(_restoring);
         foreach (var state in _restoring.Players.Values) StateProjection.RequireAvailableOwnership(state, FoundationServices.Content);
@@ -297,21 +307,29 @@ internal static class NativePersistence
     }
     private static void RestoreAfter()
     {
-        if (_restoring is not null) FoundationServices.PublishRestore(_restoring.Identity.NativeFingerprint);
+        if (_restoring is not null)
+        {
+            NativeMultiplayer.Ledger.Clear();
+            NativeMultiplayer.LedgerBattle = State.BattleKey;
+            foreach (var entry in _restoring.Players) if (entry.Value.GetFeature<bool>("foundation:ledger-paid")) NativeMultiplayer.Ledger.Add(entry.Key);
+            NativeMultiplayer.RestoreGoldGuards(_restoring);
+            FoundationServices.PublishRestore(_restoring.Identity.NativeFingerprint);
+            NetworkCheckpoints.RestoreApplied();
+        }
     }
     private static Exception RestoreFinally(Exception __exception) { _restoring = null; return __exception; }
 
     private static void PlayerRestoreBefore(PlayerData.Checkpoint checkpoint, out PlayerRestoreScope __state)
     {
         __state = new PlayerRestoreScope();
-        if (SessionAccess.IsSoloMode)
+        if (SessionAccess.IsSoloMode || NativeMultiplayer.Ready)
         {
             var snapshot = _restoring;
             if (snapshot is null)
             {
                 // The native character-preview path restores PlayerData directly.
                 // Only use the saved root if this player checkpoint is an exact match.
-                var root = PersistentData.Current?.CheckpointSolo?.runData;
+                var root = (Mode == "Online" ? PersistentData.Current?.CheckpointOnline : Mode == "Local" ? PersistentData.Current?.CheckpointLocal : PersistentData.Current?.CheckpointSolo)?.runData;
                 if (root?.playerDatas is not null)
                 {
                     var wanted = CheckpointJson.Fingerprint(NativeJson.SerializeObject(checkpoint));
@@ -402,24 +420,66 @@ internal static class NativePersistence
     }
     private static void Cleared(NetworkSession __instance)
     {
-        if (SessionAccess.IsSoloMode && __instance.IsServer && __instance.LastCheckpoint is null) Reset();
+        if (__instance.IsServer && __instance.LastCheckpoint is null) Reset();
     }
     private static void NewRun(RunDataManager __instance)
     {
-        if (SessionAccess.IsSoloMode && __instance.runStartTime != 0) EnsureRun(__instance);
+        if ((SessionAccess.IsSoloMode || NativeMultiplayer.Ready) && __instance.runStartTime != 0) EnsureRun(__instance);
     }
     private static void LevelStateChanged(GameLevel __instance, int stateIdx)
     {
-        if (stateIdx != (int)GameLevel.eSceneState.RUNNING || !SessionAccess.IsSoloMode || !NetworkSession.InstanceExists) return;
+        if (stateIdx != (int)GameLevel.eSceneState.RUNNING || !SessionAccess.GameplayReady || !NetworkSession.InstanceExists) return;
         var manager = NetworkSession.Instance.runDataManager;
         EnsureRun(manager);
         if (State.EnterBattle(manager.CompletedLevels)) FoundationServices.PublishBattle(State.BattleKey);
+    }
+    internal static Dictionary<int, PlayerContentState> ExportOwnedFeatures()
+    {
+        var manager = NetworkSession.Instance.runDataManager; EnsureRun(manager); NativeCombat.RequireSettledCheckpoint();
+        FoundationServices.CaptureFeatures(manager);
+        var exported = State.Players.Where(pair => MultiplayerServices.IsPlayerOwner(FindPlayer(manager, pair.Key)))
+            .ToDictionary(pair => pair.Key, pair => Clone(pair.Value));
+        foreach (var value in exported.Values) foreach (var key in value.Features.Keys.Where(key => key.StartsWith("foundation:", StringComparison.Ordinal)).ToArray()) value.Features.Remove(key);
+        return exported;
+    }
+    internal static void ImportOwnerFeatures(int id, PlayerContentState value)
+    {
+        var manager = NetworkSession.Instance.runDataManager; EnsureRun(manager); FindPlayer(manager, id);
+        var copy = Clone(value); copy.Ownership.Clear();
+        if (copy.Features.Count > 32 || copy.Features.Keys.Any(key => key.StartsWith("foundation:", StringComparison.Ordinal) || !key.Contains(':'))) throw new InvalidDataException("Invalid remote feature namespace.");
+        var validation = new CheckpointEnvelope { Identity = CurrentRun(manager), Players = new() { [id] = copy } };
+        FoundationServices.ValidateFeatures(validation);
+        if (State.Players.TryGetValue(id, out var prior))
+            foreach (var feature in prior.Features.Where(feature => feature.Key.StartsWith("foundation:", StringComparison.Ordinal))) copy.Features[feature.Key] = feature.Value;
+        State.Players[id] = copy;
+    }
+    internal static void AcceptEnvelope(CheckpointEnvelope envelope, bool applyOwnership = true)
+    {
+        CheckpointStore.Validate(envelope, envelope.Identity);
+        foreach (var state in envelope.Players.Values) StateProjection.RequireAvailableOwnership(state, FoundationServices.Content);
+        FoundationServices.ValidateFeatures(envelope);
+        Captured[SnapshotKey(envelope.Identity)] = envelope.Clone(); _store.Prepare(envelope);
+        if (applyOwnership && NetworkSession.Instance.runDataManager is { } run && CurrentRun(run).RunKey == envelope.Identity.RunKey)
+            foreach (var pair in envelope.Players) ApplyExternalOwnership(FindPlayer(run, pair.Key), pair.Value);
+    }
+    private static void ApplyExternalOwnership(PlayerData data, PlayerContentState state)
+    {
+        foreach (var content in FoundationServices.Content.Entries)
+        {
+            if (content.Category == ContentCategory.Skill) { data.skills.Remove((SkillType)content.NumericId); data.skillOrder.Remove((SkillType)content.NumericId); }
+            if (content.Category == ContentCategory.Affliction) { data.injuries.Remove((InjuryType)content.NumericId); data.injuryOrder.Remove((InjuryType)content.NumericId); }
+        }
+        foreach (var entry in StateProjection.Active(state, FoundationServices.Content))
+        {
+            if (entry.Value.Category == ContentCategory.Skill) { Set(data.skills, (SkillType)entry.Value.NumericId, entry.Value.Level); Set(data.skillOrder, (SkillType)entry.Value.NumericId, entry.Value.Order); }
+            if (entry.Value.Category == ContentCategory.Affliction) { Set(data.injuries, (InjuryType)entry.Value.NumericId, entry.Value.Level); Set(data.injuryOrder, (InjuryType)entry.Value.NumericId, entry.Value.Order); }
+        }
     }
 }
 
 public sealed class FoundationRuntimeController : MonoBehaviour
 {
     public FoundationRuntimeController(IntPtr pointer) : base(pointer) { }
-    public void Update() { NativePersistence.Tick(); NativeCombat.Tick(); NativeThrowing.Tick(); FoundationServices.PublishTick(); }
+    public void Update() { NativeMultiplayer.Tick(); NetworkCheckpoints.Tick(); NativePersistence.Tick(); NativeCombat.Tick(); NativeThrowing.Tick(); FoundationServices.PublishTick(); }
     public void OnApplicationQuit() => NativePersistence.Tick();
 }

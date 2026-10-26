@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="Unity.Collections"><HintPath>$(BepInExRoot)\interop\Unity.Collections.dll</HintPath><Private>false</Private><Aliases>GameCollections</Aliases></Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(BepInExRoot)\interop\Newtonsoft.Json.dll</HintPath>
       <Private>false</Private>

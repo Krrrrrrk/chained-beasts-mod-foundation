@@ -78,7 +78,8 @@ public sealed class AfflictionBattleState
     }
     public void SuccessfulDirectHit(AfflictionAttack attack, string target, ulong stableOrder, double now, int severity, int actualHpLoss)
     {
-        if (severity <= 0 || actualHpLoss <= 0 || string.IsNullOrEmpty(target)) return;
+        if (severity <= 0 || actualHpLoss <= 0 || string.IsNullOrEmpty(target) ||
+            attack.FocusCaptured && attack.FocusEpoch != _focusEpoch) return;
         // All targets of one action used the same prior focus. Select its next focus independently of callback order.
         if (attack.ChosenTarget is null || stableOrder < attack.ChosenOrder || stableOrder == attack.ChosenOrder && string.CompareOrdinal(target, attack.ChosenTarget) < 0)
         { attack.ChosenOrder = stableOrder; attack.ChosenTarget = target; }

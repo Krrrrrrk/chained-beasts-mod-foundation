@@ -7,6 +7,7 @@ using HarmonyLib;
 using Unity.Netcode;
 using UnityEngine;
 using ChainedBeasts.ModFoundation.Logic;
+using ChainedBeasts.ModFoundation.Networking;
 
 namespace ChainedBeasts.ModFoundation.Runtime;
 
@@ -29,6 +30,7 @@ internal static class NativeCombat
         internal bool Executed;
         internal bool Warned;
         internal ExecutionReceipt Execution;
+        internal AttackRecord AttributedAttack;
     }
     internal sealed class Receipt
     {
@@ -37,6 +39,8 @@ internal static class NativeCombat
         internal Player Player;
         internal DamageScope Scope;
         internal ExecutionReceipt Execution;
+        internal string NetworkKey;
+        internal ulong Origin;
     }
     internal sealed class ExecutionReceipt { internal Player Player; internal Enemy Enemy; internal ulong Source; internal string TargetId; }
     [ThreadStatic] private static ExecutionReceipt _execution;
@@ -75,14 +79,14 @@ internal static class NativeCombat
     private static readonly DamageReceiptQueue<DamageScope> Dispatches = new();
     private static readonly HashSet<IntPtr> Breaking = new();
     private static long _sequence;
-    internal static bool Active => SessionAccess.CanUseDeveloperTools;
+    internal static bool Active => SessionAccess.GameplayReady;
     internal static AttackRecord CurrentAttack => _contact?.Attack;
     internal static AttackRecord AttributedAttack => _contact?.Attack ?? _attribution;
     internal static AttackRecord CurrentPayment => _payment;
     internal static NetworkHealthObject FindLiveTarget(string token) => TargetReferences.Values.FirstOrDefault(target => target != null && !target.IsDead && Targets.Get(target.Pointer, target.NetworkObjectId) == token);
     internal static void GeneratedDamage(Player source, NetworkHealthObject target, int amount)
     {
-        if (!Active || source == null || !source.IsOwner || source.IsDead || target == null || target.IsDead || !target.IsServer || amount <= 0) return;
+        if (!Active || source == null || !source.IsOwner || source.IsDead || target == null || target.IsDead || amount <= 0) return;
         var before = _generated; _generated = true;
         try { target.TakeDamage(amount, 0, DamageType.Slash, new DamageEventSourceExternalDirectionless(source.NetworkObject), false, false, false, false); }
         finally { _generated = before; }
@@ -126,7 +130,7 @@ internal static class NativeCombat
         __state = _contact;
         if (!Active) return;
         var player = __instance.holderAgent?.TryCast<Player>();
-        if (player is null || player.IsDead) return;
+        if (player is null || player.IsDead || !player.IsOwner) return;
         var kind = __instance.TryCast<WeaponBow>() is not null ? DirectAttackKind.OtherRanged : DirectAttackKind.Melee;
         var attack = _contact?.Weapon == __instance.Pointer && _contact.Attack?.Player?.Pointer == player.Pointer
             ? _contact.Attack : Commit(player, __instance, kind);
@@ -150,7 +154,7 @@ internal static class NativeCombat
         __state = _contact;
         if (!Active) return;
         var player = __instance.holderAgent?.TryCast<Player>();
-        if (player is null || player.IsDead) return;
+        if (player is null || player.IsDead || !player.IsOwner) return;
         var kind = __instance.TryCast<WeaponBow>() is not null ? DirectAttackKind.OtherRanged : DirectAttackKind.Melee;
         var attack = WeaponAttempts.TryGetValue(__instance.Pointer, out var attempt) && attempt.Started == player.AttackStartTimestamp
             ? attempt.Attack : Commit(player, __instance, kind);
@@ -159,7 +163,7 @@ internal static class NativeCombat
     private static void CostBefore(Player __instance, bool specialMelee, out PaymentScope __state)
     {
         __state = new PaymentScope { Attack = _payment, Special = SpecialPayment };
-        if (!Active || __instance.IsDead) return;
+        if (!Active || __instance.IsDead || !__instance.IsOwner) return;
         var attack = _contact?.Attack ?? Commit(__instance, __instance.CurrentWeapon, DirectAttackKind.Melee);
         _payment = attack;
         SpecialPayment = specialMelee;
@@ -175,7 +179,7 @@ internal static class NativeCombat
     private static void ExecutionBefore(Player __instance, Enemy targetAgent, out ExecutionReceipt __state)
     {
         __state = _execution;
-        _execution = Active && !__instance.IsDead && targetAgent is not null && !targetAgent.IsDead && !targetAgent.IsPlayerTeam
+        _execution = Active && __instance.IsOwner && !__instance.IsDead && targetAgent is not null && !targetAgent.IsDead && !targetAgent.IsPlayerTeam
             ? new ExecutionReceipt { Player = __instance, Enemy = targetAgent, Source = __instance.NetworkObjectId, TargetId = TargetIdentity(targetAgent) } : null;
     }
     private static Exception ExecutionFinally(Exception __exception, ExecutionReceipt __state) { _execution = __state; return __exception; }
@@ -189,7 +193,7 @@ internal static class NativeCombat
         // other generated damage never inherit a nearby/last attack by accident.
         _contact = null;
         _attribution = null;
-        if (Active && NativeThrowing.TryGetAttack(__instance, out var attack))
+        if (Active && NativeThrowing.TryGetAttack(__instance, out var attack) && attack.Player?.IsOwner == true)
         { _attribution = attack; if (!isAOE) _contact = new Contact { Parent = __state.Parent, Attack = attack }; }
     }
     private static Exception ProjectileFinally(Exception __exception, Contact __state)
@@ -205,6 +209,8 @@ internal static class NativeCombat
         __state.Source = damageSource?.SourceNetworkObject?.NetworkObjectId ?? ulong.MaxValue;
         if (Active && damage > 0)
         {
+            if (!_generated && !ignoreInvulnerabilityThisIsExecution && _damage is null && AttributedAttack?.Player?.IsOwner == true &&
+                dealer?.Pointer == AttributedAttack.Player.Pointer) __state.AttributedAttack = AttributedAttack;
             if (ignoreInvulnerabilityThisIsExecution && _execution?.Enemy?.Pointer == __instance.Pointer && !Executions.Contains(_execution))
             { __state.Execution = _execution; Executions.Add(_execution); }
             var victim = __instance.TryCast<Player>();
@@ -241,7 +247,7 @@ internal static class NativeCombat
             FoundationServices.Logger?.LogError("[Foundation] damage attempt failed with an unresolved native receipt; charge remains reserved until receipt or run/battle reset");
         return __exception;
     }
-    private static void ReceiptBefore(NetworkHealthObject __instance, ulong damageSourceID, bool isInternalDamageSource, out Receipt __state)
+    private static void ReceiptBefore(NetworkHealthObject __instance, ulong damageSourceID, bool isInternalDamageSource, RpcParams rpcParams, out Receipt __state)
     {
         __state = null;
         if (!Active) return;
@@ -262,13 +268,33 @@ internal static class NativeCombat
         var execution = scope?.Execution;
         if (execution is not null) Executions.Remove(execution);
         __state = new Receipt { Before = Math.Max(0, __instance.health.Value), Player = __instance.TryCast<Player>(), Source = source, Scope = scope, Execution = execution };
+        if (NativeMultiplayer.Online)
+        {
+            __state.Origin = rpcParams?.Receive.SenderClientId ?? __instance.NetworkManager.LocalClientId;
+            __state.NetworkKey = NetworkCombat.Begin(__state.Origin, __instance.NetworkObjectId, damageSourceID);
+        }
     }
     private static void ReceiptAfter(NetworkHealthObject __instance, Receipt __state)
     {
         if (__state is null) return;
+        if (__state.NetworkKey is not null)
+        {
+            void Apply(MultiplayerPacket packet)
+            {
+                var actual = Math.Clamp(packet.Before - packet.After, 0, packet.Before);
+                if (__state.Scope is not null)
+                { CombatServices.Resolve(__state.Scope.Hit, actual); CombatServices.ConfirmAttack(__state.Scope.AttributedAttack, actual); Pending.Remove(__state.Scope); }
+                if (actual > 0 && __state.Player?.IsOwner == true && packet.EnemySource) CombatServices.LostHp(__state.Player, actual);
+                if (actual > 0 && __state.Execution is not null && packet.Dead) CombatServices.Executed(__state.Execution.Player, __state.Execution.Enemy, __state.Execution.TargetId);
+            }
+            if (__instance.IsServer) NetworkCombat.Confirm(__state.NetworkKey, __instance, __state.Source, __state.Origin, __state.Before, Apply);
+            else if (__state.Scope?.Hit is not null || __state.Scope?.AttributedAttack is not null || __state.Execution is not null || (__state.Player?.IsOwner == true && __state.Source?.TryCast<Enemy>() is not null))
+                NetworkCombat.Await(__state.NetworkKey, Apply);
+            return;
+        }
         var loss = Math.Clamp(__state.Before - Math.Max(0, __instance.health.Value), 0, __state.Before);
         if (__state.Scope is not null)
-        { CombatServices.Resolve(__state.Scope.Hit, loss); Pending.Remove(__state.Scope); }
+        { CombatServices.Resolve(__state.Scope.Hit, loss); CombatServices.ConfirmAttack(__state.Scope.AttributedAttack, loss); Pending.Remove(__state.Scope); }
         if (loss > 0 && __state.Player is not null && __state.Source is not null && __state.Source.isEnemy && !__state.Source.IsPlayerTeam)
             CombatServices.LostHp(__state.Player, loss);
         if (loss > 0 && __state.Execution is not null && __instance.IsDead)
@@ -285,8 +311,9 @@ internal static class NativeCombat
     }
     private static void BreakAfter(BreakScope __state)
     {
-        if (__state is not null && __state.Owner && __state.Player is not null && !__state.Player.IsDead &&
-            DurabilityTransition.IsBreak(__state.Before, __state.Pickup.durability, __state.Amount, __state.Destroyed, false)) CombatServices.Broken(__state.Player);
+        if (__state is not null && __state.Owner && __state.Player?.IsOwner == true && !__state.Player.IsDead &&
+            DurabilityTransition.IsBreak(__state.Before, __state.Pickup.durability, __state.Amount, __state.Destroyed, false) &&
+            NativeWeaponIdentity.MarkBroken(__state.Pickup)) CombatServices.Broken(__state.Player);
     }
     private static void DestroyedDuringLoss(NetworkAgent __instance, bool destroyedOnExecution)
     { if (!destroyedOnExecution && _breakingScope?.Player?.Pointer == __instance.Pointer) _breakingScope.Destroyed = true; }
@@ -305,10 +332,11 @@ internal static class NativeCombat
     }
     internal static void RequireSettledCheckpoint()
     {
+        NetworkCombat.RequireSettled();
         NativeWeaponIdentity.FlushCosts();
         if (Pending.Any(value => value.Hit?.Resolved == false) || Executions.Count > 0 || Dispatches.Count > 0)
             throw new InvalidOperationException("Custom checkpoint awaits unresolved direct-hit HP receipts; previous save preserved");
     }
     private static void Reset()
-    { foreach (var pending in Pending.ToArray()) CombatServices.Resolve(pending.Hit, 0); Pending.Clear(); Dispatches.Clear(); Executions.Clear(); Actions.Clear(); WeaponAttempts.Clear(); Breaking.Clear(); if (!NativePersistence.IsRestoring) { Targets.Clear(); TargetReferences.Clear(); } _contact = null; _attribution = null; _payment = null; SpecialPayment = false; _generated = false; _damage = null; _breakingScope = null; _execution = null; }
+    { NetworkCombat.Reset(); foreach (var pending in Pending.ToArray()) CombatServices.Resolve(pending.Hit, 0); Pending.Clear(); Dispatches.Clear(); Executions.Clear(); Actions.Clear(); WeaponAttempts.Clear(); Breaking.Clear(); if (!NativePersistence.IsRestoring) { Targets.Clear(); TargetReferences.Clear(); } _contact = null; _attribution = null; _payment = null; SpecialPayment = false; _generated = false; _damage = null; _breakingScope = null; _execution = null; }
 }

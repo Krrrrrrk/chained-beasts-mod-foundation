@@ -2,6 +2,8 @@
 
 **Terms & Contusions 0.8.3** is the experimental gameplay pack built on Chained Beasts Mod Foundation.
 
+The current source builds **0.9.1**, available as an [experimental prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1) with [multiplayer support](../MULTIPLAYER.md). The stable-install links below still install the Solo 0.8.3 release.
+
 **Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip) includes both required mod DLLs. BepInEx is installed separately.
 
 This page explains the content, settings and limitations. For source builds, use the [developer guide](../foundation/README.md).
@@ -88,6 +90,6 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
 
-The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The current code declares Foundation `>=0.8.0 <0.9.0`; use the matching 0.8.3 release DLLs for installation.
+The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The current code declares Foundation `>=0.8.0 <0.9.1`; use the matching 0.8.3 release DLLs for installation.
 
 Optional teaching examples are separate projects and are excluded from the normal packages and deployment. Game, loader, Unity, generated interop, extracted assets and saves are not redistributed. Original source and documentation remain MIT.

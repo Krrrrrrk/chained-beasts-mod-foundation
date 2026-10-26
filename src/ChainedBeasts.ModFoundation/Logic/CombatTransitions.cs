@@ -16,6 +16,8 @@ public sealed class AttackAttemptLedger<T>
 
 public static class DurabilityTransition
 {
+    public static bool IsThrownBreak(bool shatters, bool locallyOwned, bool physicalWeapon, int startingDurability, int currentDurability, bool alreadyRecorded) =>
+        shatters && locallyOwned && physicalWeapon && startingDurability > 0 && currentDurability <= 0 && !alreadyRecorded;
     public static bool IsBreak(int beforeEffective, int afterRaw, int positiveLoss, bool nativeDestroyedDuringLoss, bool isDefault) =>
         !isDefault && positiveLoss > 0 && beforeEffective > 0 && (afterRaw <= 0 || nativeDestroyedDuringLoss);
 }

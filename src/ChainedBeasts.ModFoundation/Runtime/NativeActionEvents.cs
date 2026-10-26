@@ -40,7 +40,7 @@ internal static class NativeActionEvents
     private static void SpendBefore(Player __instance, bool skipRecoverDelay, ref float amount, out SpendScope __state)
     {
         __state = null;
-        if (!NativeCombat.Active || __instance.IsDead) return;
+        if (!NativeCombat.Active || __instance.IsDead || !__instance.IsOwner) return;
         var attack = NativeCombat.CurrentPayment;
         if (!skipRecoverDelay && amount > 0 && attack?.Player?.Pointer == __instance.Pointer)
             amount = (float)Math.Clamp(amount * CombatServices.PaymentMultiplier(attack), 0, float.MaxValue);

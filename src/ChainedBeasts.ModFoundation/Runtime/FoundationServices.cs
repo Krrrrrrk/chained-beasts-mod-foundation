@@ -6,6 +6,7 @@ using ChainedBeasts.ModFoundation.Content;
 using ChainedBeasts.ModFoundation.Logic;
 using ChainedBeasts.ModFoundation.State;
 using ChainedBeasts.ModFoundation.Stats;
+using ChainedBeasts.ModFoundation.Networking;
 
 namespace ChainedBeasts.ModFoundation.Runtime;
 
@@ -101,6 +102,7 @@ public static class FoundationServices
 
 public static class SessionAccess
 {
+    public static bool GameplayReady => CanUseDeveloperTools || MultiplayerServices.Ready;
     public static bool IsSoloMode
     {
         get

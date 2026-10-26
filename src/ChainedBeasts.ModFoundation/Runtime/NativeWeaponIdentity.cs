@@ -18,6 +18,8 @@ public sealed class PhysicalWeapon
     internal int FlyingGeneration;
     internal int LastThrower = -1;
     internal bool AwaitingRecovery;
+    internal int FlyingStartedWithDurability;
+    internal bool BreakRecorded;
     public int Durability => Flying != null && Flying.LaunchGeneration == FlyingGeneration ? Flying.durability : Data?.durability ?? 0;
     public int MaximumDurability => Data is not null && GameLibrary.InstanceExists && GameLibrary.Instance.PickupDict.ContainsKey(Data.pickupType)
         ? GameLibrary.Instance.PickupDict[Data.pickupType].StartingDurability : 0;
@@ -51,16 +53,23 @@ internal static class NativeWeaponIdentity
     }
     private static void Bind(PickupData data, PhysicalWeapon weapon)
     { if (data is not null && weapon is not null) { Aliases[data.Pointer] = (data, weapon); weapon.Data = data; } }
-    internal static void Launched(Projectile projectile, AttackRecord attack)
+    internal static void Launched(Projectile projectile, AttackRecord attack, int startingDurability)
     {
         Flying.Remove(projectile.Pointer);
         var weapon = attack?.Weapon;
         if (weapon is null || attack.Kind != DirectAttackKind.ThrownWeapon) return;
         weapon.Held = null; weapon.Ground = null; weapon.Flying = projectile; weapon.FlyingGeneration = projectile.LaunchGeneration;
         weapon.LastThrower = attack.Player.PlayerData.playerID; weapon.AwaitingRecovery = true;
+        weapon.FlyingStartedWithDurability = startingDurability;
         Flying[projectile.Pointer] = (projectile.LaunchGeneration, weapon);
     }
     private static PhysicalWeapon ProjectileWeapon(Projectile projectile) => Flying.TryGetValue(projectile.Pointer, out var value) && value.Generation == projectile.LaunchGeneration ? value.Weapon : null;
+    internal static bool MarkBroken(PickupData data)
+    {
+        var weapon = ForData(data);
+        if (weapon is null || weapon.BreakRecorded) return false;
+        weapon.BreakRecorded = true; weapon.AwaitingRecovery = false; return true;
+    }
     internal static void ExtraDurability(PhysicalWeapon weapon)
     {
         if (!NativeCombat.Active || weapon is null || weapon.Durability <= 0) return;
@@ -101,6 +110,7 @@ internal static class NativeWeaponIdentity
         Patch(typeof(PickupManager), nameof(PickupManager.SpawnPickup), nameof(SpawnBefore), nameof(SpawnAfter), nameof(Finally),
             typeof(Vector3), typeof(Quaternion), typeof(PickupType), typeof(int), typeof(int), typeof(EnemyType), typeof(int), typeof(Vector3), typeof(Vector3), typeof(ulong), typeof(bool), typeof(int));
         Patch(typeof(Projectile), nameof(Projectile.ToPickup), after: nameof(ToPickup));
+        Patch(typeof(Projectile), nameof(Projectile.TriggerImpactVisualAndSoundEffects), nameof(ShatterBefore), nameof(ShatterAfter), args: new[] { typeof(bool) });
         Patch(typeof(Player), nameof(Player.HasEquipment), nameof(AdditionalCostEquipment), args: new[] { typeof(PurchaseType) });
         // These observed native scopes cover ordinary landed/dropped/embedded pickups, including recursive helpers.
         foreach (var name in new[] { "FixedUpdate", "LandedOnGround", "HandleTriggerWithOtherHealthObject", "HandleTriggerWithAgent", "EmbedInTarget" })
@@ -134,7 +144,7 @@ internal static class NativeWeaponIdentity
         {
             var own = physical.LastThrower == __instance.PlayerData.playerID;
             physical.AwaitingRecovery = false;
-            CombatServices.Recovered(__instance, weapon, physical, own);
+            if (__instance.IsOwner) CombatServices.Recovered(__instance, weapon, physical, own);
         }
     }
     private static void DropBefore(Player __instance, EquipType equipType, out Scope __state)
@@ -169,6 +179,22 @@ internal static class NativeWeaponIdentity
     private static void ProjectileBefore(Projectile __instance, out Scope __state)
     { __state = _scope; _scope = new Scope { Parent = _scope, Weapon = ProjectileWeapon(__instance) }; }
     private static void ToPickup(Projectile __instance, PickupData __result) => Bind(__result, ProjectileWeapon(__instance));
+    private static void ShatterBefore(Projectile __instance, bool shattersOnImpact, out PhysicalWeapon __state)
+    {
+        __state = null;
+        if (!NativeCombat.Active) return;
+        var weapon = ProjectileWeapon(__instance);
+        if (!Logic.DurabilityTransition.IsThrownBreak(shattersOnImpact, __instance.IsOwnerOfThrower, weapon is not null,
+            weapon?.FlyingStartedWithDurability ?? 0, __instance.durability, weapon?.BreakRecorded ?? false)) return;
+        __state = weapon;
+    }
+    private static void ShatterAfter(PhysicalWeapon __state)
+    {
+        if (__state is null || __state.BreakRecorded) return;
+        __state.BreakRecorded = true; __state.AwaitingRecovery = false;
+        var player = NativePersistence.PlayerById(NetworkSession.Instance.runDataManager, __state.LastThrower)?.PlayerObject;
+        if (player?.IsOwner == true && CombatServices.ConfirmedAlive(player)) CombatServices.Broken(player);
+    }
     private static Exception Finally(Exception __exception, Scope __state) { _scope = __state; return __exception; }
     private static void Reset() { ExtraCosts.Clear(); if (!NativePersistence.IsRestoring) { Aliases.Clear(); Flying.Clear(); } _scope = null; _extraCostWeapon = null; }
 }

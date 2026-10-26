@@ -61,3 +61,6 @@ steam_autocloud.vdf
 
 # Local maintainer tests, investigations, specifications and historical notes
 /tests/
+
+# Separate companion repository; never add its checkout as a nested gitlink.
+/chained-beasts-battle-numbers/

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ChainedBeasts.ModFoundation;
 using ChainedBeasts.ModFoundation.Runtime;
+using ChainedBeasts.ModFoundation.Networking;
 using ChainedBeasts.ModFoundation.State;
 using ChainedBeasts.ModFoundation.Stats;
 using HarmonyLib;
@@ -15,11 +16,14 @@ internal static class EquipmentFeature
     private const string StateKey = "terms-and-contusions:equipment/battle-v1";
     private const string OpeningTag = "terms-and-contusions:scabbard-plan";
     private const string ChalkTag = "terms-and-contusions:chalk-release";
+    private const string ChalkFeedbackTag = "terms-and-contusions:chalk-confirmed";
+    private const string HoodTag = "terms-and-contusions:hood-hit";
+    private const string SpursTag = "terms-and-contusions:spurs-hit";
     private static readonly Dictionary<int, EquipmentBattleState> States = new();
     private static readonly Dictionary<CustomEquipment, string> Names = new(), Descriptions = new();
     private static readonly HashSet<string> Added = new();
     private static double Now => Time.timeAsDouble;
-    private static bool Active => SessionAccess.CanUseDeveloperTools;
+    private static bool Active => SessionAccess.GameplayReady;
     private static EquipmentBattleState State(PlayerData data)
     { if (!States.TryGetValue(data.playerID, out var value)) States.Add(data.playerID, value = new EquipmentBattleState()); return value; }
     private static bool Enabled(EquipmentEntry entry) => entry is not null && FoundationServices.Content.TryGet(entry.Key, out var value) && value.Enabled;
@@ -40,7 +44,7 @@ internal static class EquipmentFeature
         if (Enabled(EquipmentDefinitions.Get(CustomEquipment.MercenarysLedger)))
             FoundationServices.RegisterModifier(EquipmentDefinitions.Get(CustomEquipment.MercenarysLedger).Key, StatChannel.AttackDamage,
                 context => Active && context.Player is not null && context.Player.InBattle
-                    ? EquipmentMath.Ledger(Has(context.Data, CustomEquipment.MercenarysLedger), State(context.Data).LedgerPaid) : 1d);
+                    ? EquipmentMath.Ledger(Has(context.Data, CustomEquipment.MercenarysLedger), SessionAccess.IsSoloMode ? State(context.Data).LedgerPaid : MultiplayerServices.LedgerPaid(context.Data.playerID)) : 1d);
         CombatServices.PreparingDirectHit += Prepare;
         CombatServices.DirectHitResolved += Resolved;
         CombatServices.IncomingDamage += Incoming;
@@ -79,7 +83,7 @@ internal static class EquipmentFeature
     private static void Battle(string key)
     {
         States.Clear();
-        if (!Active) return;
+        if (!Active || (!SessionAccess.IsSoloMode && !MultiplayerServices.IsHost)) return;
         var manager = NetworkSession.Instance.runDataManager;
         for (var i = 0; i < manager.playerDatas.Count; i++)
         {
@@ -87,14 +91,19 @@ internal static class EquipmentFeature
             if (state.BeginBattle(Has(data, CustomEquipment.MercenarysLedger), before) == 0) continue;
             manager.ModifyMoney(-5);
             state.ConfirmPayment(before, manager.Money);
+            MultiplayerServices.SetLedgerPaid(data.playerID, state.LedgerPaid);
         }
+        MultiplayerServices.PublishSharedMoney();
     }
     private static void Prepare(DirectHit hit)
     {
         if (!Active) return;
         var player = hit.Attack.Player; var melee = hit.Kind == DirectAttackKind.Melee;
-        hit.MultiplyDamage(EquipmentMath.Hood(Has(player, CustomEquipment.ExecutionersHood), melee, hit.TargetIsHostileEnemy, hit.HealthBefore, hit.EffectiveMaximumBefore));
-        hit.MultiplyDamage(EquipmentMath.Spurs(Has(player, CustomEquipment.DuelistsSpurs), melee, SoleHostile(player, hit.Target)));
+        var hood = EquipmentMath.Hood(Has(player, CustomEquipment.ExecutionersHood), melee, hit.TargetIsHostileEnemy, hit.HealthBefore, hit.EffectiveMaximumBefore);
+        var spurs = EquipmentMath.Spurs(Has(player, CustomEquipment.DuelistsSpurs), melee, SoleHostile(player, hit.Target));
+        hit.MultiplyDamage(hood); hit.MultiplyDamage(spurs);
+        if (hood > 1d) hit.Tags[HoodTag] = true;
+        if (spurs > 1d) hit.Tags[SpursTag] = true;
         if (hit.Kind == DirectAttackKind.ThrownWeapon && Has(player, CustomEquipment.ChalkBag) && hit.Attack.Tags.TryGetValue(ChalkTag, out var chalk) && chalk is true) hit.MultiplyDamage(1.4d);
         var weapon = hit.Attack.Weapon;
         if (weapon is not null)
@@ -110,23 +119,40 @@ internal static class EquipmentFeature
         if (!Active) return;
         var player = hit.Attack.Player; var state = State(player.PlayerData);
         if (hit.Tags.TryGetValue(OpeningTag, out var plan) && state.ResolveOpening((OpeningPlan)plan, hit.ActualHpLoss > 0))
+        {
             CombatServices.ConsumeOpeningDurability(hit.Attack.Weapon);
+            CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.BorrowersScabbard).Key, hit.ActualHpLoss);
+        }
+        if (hit.ActualHpLoss > 0)
+        {
+            if (hit.Tags.ContainsKey(HoodTag)) CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.ExecutionersHood).Key, hit.ActualHpLoss);
+            if (hit.Tags.ContainsKey(SpursTag)) CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.DuelistsSpurs).Key, hit.ActualHpLoss);
+            if (hit.Kind == DirectAttackKind.ThrownWeapon && hit.Attack.Tags.TryGetValue(ChalkTag, out var chalk) && chalk is true && hit.Attack.Tags.TryAdd(ChalkFeedbackTag, true))
+                CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.ChalkBag).Key, hit.ActualHpLoss);
+        }
         if (hit.TargetIsHostileEnemy && state.ClaimBackstab(Has(player, CustomEquipment.PickpocketsMitts), hit.ActualHpLoss > 0 && hit.IsBackstab, hit.TargetId))
-            AddGold();
+            AddGold(player);
     }
-    private static void AddGold()
-    { var manager = NetworkSession.Instance.runDataManager; if (manager.Money < int.MaxValue) manager.ModifyMoney(1); }
+    private static void AddGold(Player player)
+    {
+        if (!SessionAccess.IsSoloMode) { MultiplayerServices.RequestGold(player, EquipmentDefinitions.Get(CustomEquipment.PickpocketsMitts).Key, 1); return; }
+        var manager = NetworkSession.Instance.runDataManager; var before = manager.Money;
+        if (before < int.MaxValue) manager.ModifyMoney(1);
+        if (manager.Money > before) CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.PickpocketsMitts).Key, manager.Money - before);
+    }
     private static double Incoming(Player player, double damage) => damage * EquipmentMath.Purse(Active && Has(player, CustomEquipment.LeadLinedPurse), Active ? Gold : 0);
     private static void LostHp(Player player, int actualLoss)
     {
-        if (Active && State(player.PlayerData).ClaimLocket(Has(player, CustomEquipment.LastGaspLocket), actualLoss, player.health.Value, player.MaxHealth))
-            CombatServices.RestoreStaminaGrant(player, .5d * player.StaminaMax);
+        if (Active && State(player.PlayerData).ClaimLocket(Has(player, CustomEquipment.LastGaspLocket), actualLoss, CombatServices.ConfirmedHealth(player), player.MaxHealth))
+        {
+            var granted = CombatServices.RestoreStaminaGrantWithReceipt(player, .5d * player.StaminaMax);
+            if (granted > 0) CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.LastGaspLocket).Key, granted);
+        }
     }
     private static void Execution(Player player, Enemy enemy, string targetId)
     {
         if (!Active || player.IsDead || !State(player.PlayerData).ClaimExecution(Has(player, CustomEquipment.ButchersApron), true, targetId)) return;
-        var amount = EquipmentMath.ExecutionHeal(player.MaxHealth, player.health.Value, player.MaxAttainableHealth);
-        if (amount > 0) player.HealRpc(amount);
+        CombatServices.RestoreHealthGrant(player, EquipmentDefinitions.Get(CustomEquipment.ButchersApron).Key, EquipmentMath.ExecutionHealBase(player.MaxHealth));
     }
     private static bool Stationary(Player player)
     { var velocity = player.CurrentVelocity; return velocity.x * velocity.x + velocity.z * velocity.z <= .0001f; }
@@ -141,15 +167,22 @@ internal static class EquipmentFeature
     }
     private static void Committed(AttackRecord attack)
     {
-        if (attack.Kind != DirectAttackKind.ThrownWeapon) return;
-        attack.Tags[ChalkTag] = State(attack.Player.PlayerData).ReleaseThrow(Now, Has(attack.Player, CustomEquipment.ChalkBag), AimEligible(attack.Player));
+        if (!Active || attack.Kind != DirectAttackKind.ThrownWeapon || attack.Player is not { } player) return;
+        // Native FinalizeWindup has already changed AttackState to WindDown before
+        // ExecuteThrow commits this action. IsAimingThrow is false at this point.
+        // The accumulated preparation still comes solely from eligible aiming ticks.
+        var eligible = EquipmentMath.ChalkReleaseEligible(!player.IsDead, player.IsOwner, player.ThrowOffhandActive,
+            player.CurrentWeapon is not null, Stationary(player));
+        attack.Tags[ChalkTag] = State(player.PlayerData).ReleaseThrow(Now, Has(player, CustomEquipment.ChalkBag), eligible);
     }
     private static void Recovered(Player player, Weapon weapon, PhysicalWeapon physical, bool ownThrow)
     {
         if (!Active || !State(player.PlayerData).ClaimRepair(Has(player, CustomEquipment.SalvagersHook), ownThrow, physical.Id, physical.Durability, physical.MaximumDurability)) return;
-        physical.Data.durability = EquipmentMath.Repair(physical.Data.durability, physical.MaximumDurability);
+        var before = physical.Data.durability;
+        physical.Data.durability = EquipmentMath.Repair(before, physical.MaximumDurability);
         player.RefreshWeaponDurabilityDisplay(weapon);
         weapon.CheckDurabilityPulse();
+        if (physical.Data.durability > before) CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.SalvagersHook).Key, physical.Data.durability - before);
     }
     private static bool SoleHostile(Player player, NetworkHealthObject target)
     {
@@ -164,7 +197,7 @@ internal static class EquipmentFeature
         return count == 1 && sole?.Pointer == target.Pointer;
     }
     private static void Capture(RunDataManager manager)
-    { for (var i = 0; i < manager.playerDatas.Count; i++) { var data = manager.playerDatas[i]; FoundationServices.PlayerState(data).SetFeature(StateKey, State(data).Capture(Now)); } }
+    { for (var i = 0; i < manager.playerDatas.Count; i++) { var data = manager.playerDatas[i]; if (!MultiplayerServices.CapturePlayer(data)) continue; FoundationServices.PlayerState(data).SetFeature(StateKey, State(data).Capture(Now)); } }
     private static void Validate(CheckpointEnvelope snapshot)
     { foreach (var player in snapshot.Players.Values) { var saved = player.GetFeature<EquipmentSnapshot>(StateKey); if (saved is not null) EquipmentBattleState.Restore(saved); } }
     private static void Restore()

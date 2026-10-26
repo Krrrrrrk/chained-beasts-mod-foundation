@@ -5,6 +5,7 @@ using ChainedBeasts.ModFoundation.Content;
 using ChainedBeasts.ModFoundation.Logic;
 using HarmonyLib;
 using Unity.Netcode;
+using ChainedBeasts.ModFoundation.Networking;
 
 namespace ChainedBeasts.ModFoundation.Runtime;
 
@@ -48,7 +49,7 @@ internal static class NativeSurgeries
     }
     private static void Offers(PlayerData playerData, int numberOfOptions, int remainingMoney, RunDataManager runDataManager, Il2CppSystem.Collections.Generic.List<Surgery> __result)
     {
-        if (!SessionAccess.CanUseDeveloperTools || playerData is null || __result is null) return;
+        if (!SessionAccess.GameplayReady || playerData is null || __result is null) return;
         var providers = SurgeryServices.Offers.Values.Where(offer => FoundationServices.Content.TryGet(offer.Key, out var entry) && entry.Enabled &&
             !SurgeryServices.IsOwned(playerData, offer.Key) && remainingMoney >= offer.Price).OrderBy(offer => offer.Key, StringComparer.Ordinal).ToArray();
         if (providers.Length == 0) return;
@@ -86,10 +87,22 @@ internal static class NativeSurgeries
             throw new InvalidOperationException("Invalid surgery factory: " + offer.Key);
         return replacement;
     }
-    private static bool Before(RunDataManager __instance, int playerIndex, int surgeryIndex, out Operation __state)
+    private static bool Before(RunDataManager __instance, int playerIndex, int surgeryIndex, int optionIndex, out Operation __state)
     {
         __state = new Operation { Parent = _operation };
-        if (!SessionAccess.CanUseDeveloperTools || __instance.__rpc_exec_stage != NetworkBehaviour.__RpcExecStage.Execute) return true;
+        if (!SessionAccess.GameplayReady) return true;
+        if (__instance.__rpc_exec_stage != NetworkBehaviour.__RpcExecStage.Execute)
+        {
+            if (!NativeMultiplayer.Online) return true;
+            var outbound = __instance.GetPlayerDataByIndex(playerIndex);
+            if (outbound?.surgeryOptions is null || surgeryIndex < 0 || surgeryIndex >= outbound.surgeryOptions.Count) return true;
+            var choice = outbound.surgeryOptions[surgeryIndex];
+            if (choice is null || !FoundationServices.Content.TryGet(ContentCategory.Surgery, (int)choice.surgeryType, out var definition)) return true;
+            if (__instance.IsServer) return Eligible(__instance, outbound, choice, definition);
+            if (MultiplayerServices.IsPlayerOwner(outbound)) NativeMultiplayer.Send(NetworkManager.ServerClientId, new() { Kind = "surgery", Run = NativePersistence.RunKey,
+                Player = playerIndex, Amount = surgeryIndex, Before = optionIndex, Target = (ulong)(int)choice.surgeryType });
+            return false;
+        }
         var data = __instance.GetPlayerDataByIndex(playerIndex);
         if (data?.surgeryOptions is null || surgeryIndex < 0 || surgeryIndex >= data.surgeryOptions.Count) return true;
         var surgery = data.surgeryOptions[surgeryIndex];
@@ -100,7 +113,7 @@ internal static class NativeSurgeries
         // Native RPC itself does not guard money or repeat ownership. Do so only for our registered content before charging anything.
         var providerPresent = SurgeryServices.Offers.TryGetValue(entry.Key, out var offer);
         if (!SurgeryEligibility.CanAcquire(entry.Enabled, providerPresent, SurgeryServices.IsOwned(data, entry.Key), offer?.Price ?? -1,
-            surgery.moneyCost, __instance.Money, _operation.Parent?.Data?.Pointer == data.Pointer))
+            surgery.moneyCost, NativeMultiplayer.Online && !__instance.IsServer ? int.MaxValue : __instance.Money, _operation.Parent?.Data?.Pointer == data.Pointer))
         { __instance.__rpc_exec_stage = (NetworkBehaviour.__RpcExecStage)0; return false; }
         __state.Entry = entry; __state.Money = __instance.Money; __state.Maximum = data.MaxHealth;
         var player = LivePlayer(data);
@@ -111,7 +124,8 @@ internal static class NativeSurgeries
         _operation?.Receipt.Observe(_operation.Data?.Pointer == __instance.Pointer, (int)awardType, value);
     private static void After(RunDataManager __instance, Operation __state)
     {
-        if (__state?.Entry is null || !__state.Receipt.Commit(true, SurgeryServices.IsOwned(__state.Data, __state.Entry.Key), __instance.Money == __state.Money - __state.Surgery.moneyCost)) return;
+        if (__state?.Entry is null || !__state.Receipt.Commit(true, SurgeryServices.IsOwned(__state.Data, __state.Entry.Key),
+            NativeMultiplayer.Online && !__instance.IsServer || __instance.Money == __state.Money - __state.Surgery.moneyCost)) return;
         var data = __state.Data; var player = LivePlayer(data);
         // Native history is the sole ownership source and is already serialized in native checkpoints.
         data.previousSurgeries.Add((SurgeryType)__state.Entry.NumericId);
@@ -124,6 +138,24 @@ internal static class NativeSurgeries
         if (player?.IsOwner == true && __state.StaminaMaximum > 0 && player.StaminaMax != __state.StaminaMaximum)
             player.stamina = (float)Math.Clamp(player.Stamina / __state.StaminaMaximum * player.StaminaMax, 0, player.StaminaMax);
         FoundationServices.Logger?.LogInfo("[Foundation] confirmed surgery completion: " + __state.Entry.Key + ", player=" + data.playerID);
+        MultiplayerServices.PublishSharedMoney();
+    }
+    private static bool Eligible(RunDataManager manager, PlayerData data, Surgery surgery, ContentDescriptor entry) =>
+        SurgeryServices.Offers.TryGetValue(entry.Key, out var provider) && SurgeryEligibility.CanAcquire(entry.Enabled, true,
+            SurgeryServices.IsOwned(data, entry.Key), provider.Price, surgery.moneyCost, manager.Money, false);
+    internal static void RemoteRequest(ulong sender, MultiplayerPacket packet)
+    {
+        if (!MultiplayerServices.IsHost || !NativeMultiplayer.Ready || packet.Run != NativePersistence.RunKey || packet.Player < 0 || packet.Amount is < 0 or > 15 || packet.Before is < -1 or > 15) return;
+        var session = NetworkSession.Instance;
+        var manager = session.runDataManager;
+        if (packet.Player >= manager.playerDatas.Count) return;
+        var data = manager.GetPlayerDataByIndex(packet.Player);
+        var owner = data is null ? null : session.GetClientByPlayerIndex((ulong)data.playerID);
+        if (owner is null || owner.NetworkID != sender) return;
+        if (data?.surgeryOptions is null || packet.Amount >= data.surgeryOptions.Count) return;
+        var surgery = data.surgeryOptions[packet.Amount];
+        if (surgery is null || (ulong)(int)surgery.surgeryType != packet.Target || !FoundationServices.Content.TryGet(ContentCategory.Surgery, (int)surgery.surgeryType, out var entry) || !Eligible(manager, data, surgery, entry)) return;
+        manager.PerformSurgeryRpc(packet.Player, packet.Amount, packet.Before);
     }
     internal static Player LivePlayer(PlayerData data) => PlayerManager.InstanceExists && PlayerManager.Instance.PlayerCount > 0 ? data?.PlayerObject : null;
     private static Exception Finally(Exception __exception, Operation __state) { _operation = __state?.Parent; return __exception; }

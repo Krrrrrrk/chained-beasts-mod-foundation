@@ -46,12 +46,28 @@ public sealed class ShieldBlock
     public int AdditionalDurabilityLoss { get; set; }
 }
 
-/// <summary>Solo authoritative direct contact and actual HP-loss events. No generated-effect recursion.</summary>
+/// <summary>Owner direct contacts and server-confirmed HP-loss events. No generated-effect recursion.</summary>
 public static class CombatServices
 {
+    public static int ConfirmedHealth(Player player) => Networking.NetworkCombat.Current?.Target == player.NetworkObjectId
+        ? Networking.NetworkCombat.Current.After : player.health.Value;
+    public static bool ConfirmedAlive(NetworkHealthObject target) => target is not null &&
+        (Networking.NetworkCombat.Current?.Target == target.NetworkObjectId
+            ? !Networking.NetworkCombat.Current.Dead && Networking.NetworkCombat.Current.After > 0
+            : !target.IsDead && target.health.Value > 0);
+    public static event Action<Player, string, double> AbilityActivated;
+    public static void NotifyActivation(Player player, string contentKey, double actualBenefit = 1)
+    {
+        if (!NativeCombat.Active || NativePersistence.IsRestoring || player?.IsOwner != true || !ConfirmedAlive(player) ||
+            !double.IsFinite(actualBenefit) || actualBenefit <= 0 || string.IsNullOrEmpty(contentKey) ||
+            !FoundationServices.Content.TryGet(contentKey, out var content) || !content.Enabled) return;
+        Invoke(AbilityActivated, callback => callback(player, contentKey, actualBenefit));
+    }
+    public static void RestoreHealthGrant(Player player, string contentKey, int rawBaseAmount) => NativeHealthGrants.Request(player, contentKey, rawBaseAmount);
     public static event Action<AttackRecord> AttackCommitted;
     public static event Action<DirectHit> PreparingDirectHit;
     public static event Action<DirectHit> DirectHitResolved;
+    public static event Action<AttackRecord, int> AttackHpConfirmed;
     public static event Action<Player, int> EnemyHpLost;
     public static event Action<Player> WeaponBroken;
     public static event Action<Player, Enemy, string> ExecutionConfirmed;
@@ -71,10 +87,14 @@ public static class CombatServices
     public static void DealGeneratedDamage(Player source, NetworkHealthObject target, int amount) => NativeCombat.GeneratedDamage(source, target, amount);
     public static NetworkHealthObject FindLiveTarget(string token) => NativeCombat.FindLiveTarget(token);
     public static void RestoreStaminaGrant(Player player, double amount)
+        => RestoreStaminaGrantWithReceipt(player, amount);
+    public static double RestoreStaminaGrantWithReceipt(Player player, double amount)
     {
-        if (!NativeCombat.Active || player is null || !player.IsOwner || player.IsDead || !double.IsFinite(amount)) return;
+        if (!NativeCombat.Active || player is null || !player.IsOwner || !ConfirmedAlive(player) || !double.IsFinite(amount)) return 0;
+        var before = player.Stamina;
         var grant = Math.Clamp(amount, 0, Math.Max(0, player.StaminaMax - player.Stamina));
         if (grant > 0) NativeActionEvents.GrantStamina(player, (float)grant);
+        return Math.Max(0, player.Stamina - before);
     }
     internal static bool NeedsDirectContacts => PreparingDirectHit is not null || DirectHitResolved is not null;
 
@@ -86,6 +106,8 @@ public static class CombatServices
         hit.Resolved = true; hit.ActualHpLoss = Math.Max(0, loss);
         Invoke(DirectHitResolved, action => action(hit));
     }
+    internal static void ConfirmAttack(AttackRecord attack, int loss)
+    { if (attack?.Player?.IsOwner == true && loss > 0) Invoke(AttackHpConfirmed, callback => callback(attack, loss)); }
     internal static void LostHp(Player player, int loss)
     { if (loss > 0) Invoke(EnemyHpLost, action => action(player, loss)); }
     internal static void Broken(Player player) => Invoke(WeaponBroken, action => action(player));

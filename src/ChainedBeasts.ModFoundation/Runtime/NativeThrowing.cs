@@ -7,6 +7,7 @@ using UnityEngine;
 using Il2CppSystem.Collections;
 using ChainedBeasts.ModFoundation.Logic;
 using ChainedBeasts.ModFoundation.Stats;
+using Unity.Netcode;
 
 namespace ChainedBeasts.ModFoundation.Runtime;
 
@@ -68,7 +69,7 @@ internal static class NativeThrowing
         __state = null;
         if (!NativeCombat.Active || __instance.attackMode != NetworkAgent.eAttackMode.ThrowWeapon || __instance.__1__state is not (0 or 1)) return;
         var player = __instance.__4__this?.TryCast<Player>();
-        if (player is null || player.IsDead || __instance.weaponInstance is null ||
+        if (player is null || !player.IsOwner || player.IsDead || __instance.weaponInstance is null ||
             player.CurrentWeapon?.Pointer != __instance.weaponInstance.Pointer) return;
         __state = new ClockScope { First = __instance.__1__state == 0,
             Extra = ThrowPhysics.ExtraClockStep(Time.deltaTime, Factor(player, StatChannel.ThrowChargeSpeed)) };
@@ -88,48 +89,65 @@ internal static class NativeThrowing
     private static void ReleaseBefore(NetworkAgent __instance, Weapon weaponInstance, NetworkAgent.eAttackMode attackMode, out LaunchInfo __state)
     {
         __state = _release;
+        _release = null; // A nested offhand/NPC launch must not inherit an outer normal-throw scope.
         if (!NativeCombat.Active || attackMode != NetworkAgent.eAttackMode.ThrowWeapon || weaponInstance is null) return;
         var player = __instance.TryCast<Player>();
-        if (player is null || player.IsDead) return;
+        if (player is null || !player.IsOwner || player.IsDead) return;
         _release = new LaunchInfo { Attack = NativeCombat.Commit(player, weaponInstance, DirectAttackKind.ThrownWeapon),
             Range = Factor(player, StatChannel.ThrowRange), Created = Time.unscaledTimeAsDouble };
     }
     private static Exception ReleaseFinally(Exception __exception, LaunchInfo __state) { _release = __state; return __exception; }
     private static string RequestKey(NetworkAgent player, double serverTime, PickupType pickup, ulong origin) =>
         player.NetworkObjectId + ":" + serverTime.ToString("R", CultureInfo.InvariantCulture) + ":" + (int)pickup + ":" + origin;
-    private static void RequestBefore(NetworkAgent __instance, double startServerTime, PickupType pickupType, ulong originNetworkObjectID, out LaunchInfo __state)
+    private static void RequestBefore(NetworkAgent __instance, double startServerTime, PickupType pickupType, ulong originNetworkObjectID,
+        ref float throwForce, ref float throwAngle, out LaunchInfo __state)
     {
         __state = _launch;
-        if (!NativeCombat.Active || __instance.TryCast<Player>() is null) return;
+        _launch = null;
+        var player = __instance.TryCast<Player>();
+        if (!NativeCombat.Active || player is null) return;
         var key = RequestKey(__instance, startServerTime, pickupType, originNetworkObjectID);
-        if (_release is not null) Requests.TryAdd(key, _release);
-        // Bow projectiles use this same native RPC but are not normal held throws.
-        else if (NativeCombat.CurrentAttack?.Kind == DirectAttackKind.OtherRanged)
-            Requests.TryAdd(key, new LaunchInfo { Attack = NativeCombat.CurrentAttack, Range = 1, Created = Time.unscaledTimeAsDouble });
+        var execute = __instance.__rpc_exec_stage == NetworkBehaviour.__RpcExecStage.Execute;
+        var normalThrow = _release?.Attack?.Player?.Pointer == player.Pointer && _release.Attack.Kind == DirectAttackKind.ThrownWeapon;
+        var serialized = ThrowPhysics.ForDispatch(throwForce, throwAngle, _release?.Range ?? 1, player.IsOwner, execute, normalThrow);
+        throwForce = (float)serialized.Force; throwAngle = (float)serialized.AngleDegrees;
+        if (player.IsOwner && !execute)
+        {
+            // An explicit owner scope supplies attack provenance. In particular,
+            // a non-arrow remote projectile is NOT evidence of a normal throw:
+            // offhand attacks also use this RPC.
+            var attack = normalThrow ? _release.Attack : NativeCombat.CurrentAttack;
+            if (attack?.Player?.Pointer == player.Pointer && (normalThrow || attack.Kind == DirectAttackKind.OtherRanged))
+                Requests.TryAdd(key, new LaunchInfo { Attack = attack, Range = 1, Created = Time.unscaledTimeAsDouble });
+        }
         _launch = Requests.TryGetValue(key, out var info) ? info : null;
     }
     private static Exception RequestFinally(Exception __exception, LaunchInfo __state) { _launch = __state; return __exception; }
     private static void Created(IEnumerator __result)
     { if (_launch is not null && __result is not null) Coroutines[__result.Pointer] = _launch; }
     private static void LaunchBefore(NetworkAgent._LaunchThrowPostDelay_d__476 __instance, out LaunchInfo __state)
-    { __state = _launch; _launch = Coroutines.TryGetValue(__instance.Pointer, out var info) ? info : null; }
+    {
+        __state = _launch;
+        if (Coroutines.TryGetValue(__instance.Pointer, out var info)) { _launch = info; return; }
+        // The inspected native RPC inlines coroutine construction instead of
+        // calling LaunchThrowPostDelay's factory. Unity starts its first step
+        // within this observed RPC scope; retain that explicit provenance across
+        // subsequent yields rather than erasing it on the initial MoveNext.
+        if (__instance.__1__state == 0 && _launch?.Attack?.Player is { } source && source.Pointer == __instance.__4__this?.Pointer)
+        { Coroutines[__instance.Pointer] = _launch; return; }
+        _launch = null;
+    }
     private static void LaunchAfter(NetworkAgent._LaunchThrowPostDelay_d__476 __instance, bool __result)
     { if (!__result) Coroutines.Remove(__instance.Pointer); }
     private static Exception LaunchFinally(Exception __exception, LaunchInfo __state) { _launch = __state; return __exception; }
-    private static void ProjectileBefore(ref float throwForce, ref float launchAngle, out LaunchInfo __state)
-    {
-        __state = _launch;
-        if (_launch is null || _launch.Range == 1) return;
-        var extended = ThrowPhysics.Extend(throwForce, launchAngle, _launch.Range);
-        throwForce = (float)extended.Force; launchAngle = (float)extended.AngleDegrees;
-    }
-    private static void ProjectileAfter(Projectile __instance, LaunchInfo __state)
+    private static void ProjectileBefore(out LaunchInfo __state) => __state = _launch;
+    private static void ProjectileAfter(Projectile __instance, int durability, LaunchInfo __state)
     {
         Projectiles.Remove(__instance.Pointer);
         if (__state is not null)
         {
             Projectiles[__instance.Pointer] = (__instance.LaunchGeneration, __state.Attack);
-            NativeWeaponIdentity.Launched(__instance, __state.Attack);
+            NativeWeaponIdentity.Launched(__instance, __state.Attack, durability);
         }
     }
     internal static bool TryGetAttack(Projectile projectile, out AttackRecord attack)

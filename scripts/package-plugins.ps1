@@ -1,10 +1,17 @@
 [CmdletBinding()]
-param([ValidateSet('Debug','Release')][string]$Configuration='Release',[string]$GameRoot,[string]$OutputRoot,[switch]$SkipBuild)
+param([ValidateSet('Debug','Release')][string]$Configuration='Release',[string]$GameRoot,[string]$OutputRoot,[switch]$SkipBuild,[switch]$IncludeBattleNumbers)
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'ReleaseWorkflow.ps1')
 $repo=Get-RepositoryRoot
 if(!$SkipBuild){& (Join-Path $PSScriptRoot 'build-plugins.ps1') -Configuration $Configuration -GameRoot (Resolve-GameRoot $GameRoot)}
 $products=@(Get-ProductFiles $Configuration)
+if($IncludeBattleNumbers){
+    if(!$SkipBuild){
+        & dotnet build (Join-Path $repo 'chained-beasts-battle-numbers/src/ChainedBeasts.BattleNumbers/ChainedBeasts.BattleNumbers.csproj') -c $Configuration --nologo "-p:ChainedBeastsGameDir=$(Resolve-GameRoot $GameRoot)"
+        if($LASTEXITCODE -ne 0){throw 'Battle Numbers build failed.'}
+    }
+    $products+=Get-BattleNumbersProduct $Configuration
+}
 if([string]::IsNullOrWhiteSpace($OutputRoot)){$OutputRoot=Join-Path $repo ('artifacts/packages/'+$script:ReleaseVersion)}
 $OutputRoot=[IO.Path]::GetFullPath($OutputRoot)
 New-Item -ItemType Directory -Force -Path $OutputRoot | Out-Null
@@ -13,18 +20,23 @@ $packages=@(
     @{name='TermsAndContusions';members=@('TermsAndContusions')},
     @{name='TermsAndContusions-with-Foundation';members=@('ChainedBeasts.ModFoundation','TermsAndContusions')})
 $result=@()
+if($IncludeBattleNumbers){$packages+=@{name='Chained-Beasts-Multiplayer-Test';members=@('ChainedBeasts.ModFoundation','TermsAndContusions','ChainedBeasts.BattleNumbers')}}
 foreach($package in $packages){
     $stage=Join-Path $OutputRoot ('staging-'+$package.name+'-'+[Guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $stage | Out-Null
     foreach($name in $package.members){$product=$products | Where-Object name -eq $name;Copy-Verified $product.path (Join-Path $stage "BepInEx/plugins/$name.dll")}
     Copy-Verified (Join-Path $repo 'LICENSE') (Join-Path $stage 'LICENSE')
     Copy-Verified (Join-Path $repo 'THIRD_PARTY_NOTICES.md') (Join-Path $stage 'THIRD_PARTY_NOTICES.md')
+    Copy-Verified (Join-Path $repo 'docs/MULTIPLAYER.md') (Join-Path $stage 'MULTIPLAYER.md')
+    Copy-Verified (Join-Path $repo 'docs/ACTIVATION_FEEDBACK.md') (Join-Path $stage 'ACTIVATION_FEEDBACK.md')
+    if($package.members -contains 'ChainedBeasts.BattleNumbers'){Copy-Verified (Join-Path $repo 'chained-beasts-battle-numbers/LICENSE') (Join-Path $stage 'BattleNumbers-LICENSE.txt')}
     $members=$package.members -join ', '
     @"
 # $($package.name) $script:ReleaseVersion — local experimental build, runtime unverified
 
 Included DLLs: $members. This archive does not install or contain BepInEx.
-TermsAndContusions requires ChainedBeasts.ModFoundation >=0.8.0 <0.9.0.
+TermsAndContusions requires ChainedBeasts.ModFoundation >=0.9.1 <0.10.0.
+The optional combined multiplayer test ZIP also includes Battle Numbers 0.2.0.
 Foundation alone is supported. Optional teaching examples are not included.
 
 1. Close the game. Back up all BepInEx/plugins, BepInEx/config and the complete
@@ -39,15 +51,19 @@ Foundation alone is supported. Optional teaching examples are not included.
 4. Keep existing configuration. First startup migrates the eight old content
    settings into the pack only where no explicit destination value exists.
    Fresh forced offers/cheats default off; existing force choices are preserved.
-5. Manually launch for Solo testing. Check BepInEx/LogOutput.log for both $script:ReleaseVersion
+5. Read MULTIPLAYER.md before online testing: every player needs matching gameplay
+   DLLs/settings. Everyone must join before starting or resuming; no mid-run
+   joining/reconnect or host migration. F1 mutations remain Solo-only.
+   Check BepInEx/LogOutput.log for both $script:ReleaseVersion
    plugins, successful shared initialization and no registration errors. The
    package has NOT been gameplay verified. No attempt at balance was made.
 
 Native SaveData and its exact matching sidecars must be copied/restored together.
 Do not remove/disable owned custom content and resume that run. Old v0.7.3 cannot
 read the new checkpoint protocol: downgrade DLL/config/user-data as a matching
-pre-expansion set, not just the DLL. Multiplayer, automatic Steam Cloud sidecar
-sync, original icons and full arena-instance restoration are not supported.
+pre-expansion set, not just the DLL. Multiplayer is experimental and unverified.
+Automatic Steam Cloud sidecar sync, original icons and full arena-instance
+restoration are not supported.
 New text uses English fallback; surgery reroll remains deferred.
 
 Full installation, catalog, manual checks and rollback:
@@ -55,7 +71,7 @@ https://github.com/Krrrrrrk/chained-beasts-mod-foundation/blob/main/docs/INSTALL
 "@ | Set-Content (Join-Path $stage 'README_INSTALL.md') -Encoding utf8
     $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | ForEach-Object { @{path=([IO.Path]::GetRelativePath($stage,$_.FullName).Replace('\','/'));sha256=(Get-Sha $_.FullName)} })
     @{schemaVersion=1;version=$script:ReleaseVersion;package=$package.name;runtimeVerified=$false;published=$false;
-        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=0.8.0 <0.9.0'} |
+        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=0.9.1 <0.10.0';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
         ConvertTo-Json -Depth 8 | Set-Content (Join-Path $stage 'package-manifest.json') -Encoding utf8
     $archive=Join-Path $OutputRoot ($package.name+'-'+$script:ReleaseVersion+'.zip')
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $archive -Force

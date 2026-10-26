@@ -2,17 +2,17 @@
 
 **Just want to play Terms & Contusions?** Use the [player quick install](../../README.md#quick-install). This page is for building source and making mods.
 
-Foundation supplies reusable registration, checkpoint state, modifiers and lifecycle integration. Separate plugins own their definitions and gameplay rules. The current public release is [**0.8.3**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3). Foundation can be installed without Terms & Contusions.
+Foundation supplies reusable registration, checkpoint state, modifiers and lifecycle integration. Separate plugins own their definitions and gameplay rules. The current stable release is [**0.8.3**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3); the [**0.9.1 prerelease**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1) adds experimental multiplayer and confirmed activation feedback. Foundation can be installed without Terms & Contusions.
 
 Start with the setup below, then follow the [separate-mod walkthrough](SEPARATE_MOD.md). The author reported a crash-free 0.8.2 playtest; the 0.8.3 presentation/offer changes and individual mechanics still need manual checks. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3).
 
 ## Products and prerequisites
 
-| Product | Assembly | BepInEx GUID | Built version |
-|---|---|---|---|
-| Foundation | `ChainedBeasts.ModFoundation.dll` | `local.chainedbeasts.modfoundation` | `0.8.3`, published |
-| Terms & Contusions | `TermsAndContusions.dll` | `local.chainedbeasts.termsandcontusions` | `0.8.3`, published |
-| Optional teaching example | `StandaloneContentExample.dll` | `example.chainedbeasts.standalonecontent` | `0.8.0`, not shipped with pack |
+| Product | Assembly | BepInEx GUID | Current source | Stable release |
+|---|---|---|---|---|
+| Foundation | `ChainedBeasts.ModFoundation.dll` | `local.chainedbeasts.modfoundation` | `0.9.1`, experimental | `0.8.3` |
+| Terms & Contusions | `TermsAndContusions.dll` | `local.chainedbeasts.termsandcontusions` | `0.9.1`, experimental | `0.8.3` |
+| Optional teaching example | `StandaloneContentExample.dll` | `example.chainedbeasts.standalonecontent` | `0.8.0` | Not shipped with pack |
 
 Install these development prerequisites:
 
@@ -49,11 +49,11 @@ Create local release ZIPs after a successful build:
 pwsh -NoProfile -File .\scripts\package-plugins.ps1 -SkipBuild
 ```
 
-Packages are written to `artifacts/packages/0.8.3`. For deployment and paired rollback, read the [advanced script section of the installation guide](../INSTALLATION.md#building-and-scripted-installation) before using the release helpers.
+The current source builds experimental **0.9.1**, not the published 0.8.3 release. Packages are written to `artifacts/packages/0.9.1`. For multiplayer requirements, the separate Battle Numbers checkout and pending host/client tests, read [MULTIPLAYER.md](../MULTIPLAYER.md). For deployment and paired rollback, read the [advanced script section of the installation guide](../INSTALLATION.md#building-and-scripted-installation) before using the release helpers.
 
 The build command supports `-FoundationOnly`. Build commands never deploy or launch the game. Deployment requires explicit -Deploy and makes a matching complete checkpoint; default build invocations cannot install.
 
-The current pack and example declare a hard dependency on Foundation `>=0.8.0 <0.9.0`. Use the matching **0.8.3** production DLLs for the current release; the declaration alone does not establish that every older pairing is tested. The installed BepInEx API interprets a bare version as exact, so the range is intentional. Missing/incompatible Foundation blocks the dependent plugin. A failed shared-core install leaves `FoundationServices.IsReady=false`; dependent plugins explicitly refuse to initialize.
+The current source pack requires Foundation `>=0.9.1 <0.10.0`; the minimal examples still use the compatible `>=0.9.0 <0.10.0` range. The published 0.8.3 pack declares `>=0.8.0 <0.9.0`; keep matching production DLLs together. The range alone doesn't establish gameplay compatibility, and multiplayer additionally requires exact gameplay DLL fingerprints and settings. The installed BepInEx API interprets a bare version as exact, so the range is intentional. Missing/incompatible Foundation blocks the dependent plugin. A failed shared-core install leaves `FoundationServices.IsReady=false`; dependent plugins explicitly refuse to initialize.
 
 ## Public extension points
 
