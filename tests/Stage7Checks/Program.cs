@@ -53,7 +53,9 @@ if(args.Contains("--write-docs")) {
         if(key.EndsWith("/waste-not")||key.EndsWith("/last-gasp-locket"))item["stage7Integration"]="One-time RestoreStaminaGrant uses actual owner, normal clamp and explicit exclusion from passive regeneration modifiers.";
     }
     manifest["delivery"]??=new JsonObject();
-    manifest["delivery"]["version"]=productVersion;manifest["delivery"]["runtimeVerified"]=false;manifest["delivery"]["published"]=false;
+    // Delivery describes the actual installed/published artifact, not a future source build.
+    manifest["sourceVersion"]=productVersion;
+    manifest["delivery"]["version"]??=productVersion;manifest["delivery"]["runtimeVerified"]=false;manifest["delivery"]["published"]??=false;
     manifest["delivery"]["report"]??="docs/STAGE7_HANDOFF.md";manifest["delivery"]["installation"]="docs/INSTALLATION.md";
     File.WriteAllText(manifestPath,manifest.ToJsonString(new JsonSerializerOptions{WriteIndented=true})+"\n");
     var catalog=new StringBuilder("# Complete content catalog — "+productVersion+"\n\nAll **46 entries** have implemented code. **Runtime unverified**: successful builds/automated checks do not establish gameplay correctness. This is an unbalanced technical example pack. Existing native icons/models are reused; new text has English fallback.\n\nGenerated from the actual pure definitions/formulas and [manifest](manifest.json) by `scripts/update-content-docs.ps1`. The manifest maps each row to its exact source, registration, state, removal and manual check. See [installation](../INSTALLATION.md), [manual tests](../MANUAL_TESTS.md), [skills/throwing](STAGE3_SKILLS.md), [equipment](STAGE4_EQUIPMENT.md), [afflictions](STAGE5_AFFLICTIONS.md) and [surgeries](STAGE6_SURGERIES.md).\n\n");
@@ -156,6 +158,6 @@ using(var pe=new PEReader(File.OpenRead(Path.Combine(args[1],"BepInEx/interop/As
         Check(!entries.Any(entry=>entry["category"].GetValue<string>()==(vacancy.Item1=="PurchaseType"?"equipment":vacancy.Item1=="InjuryType"?"affliction":"surgery")&&entry["numericId"].GetValue<int>()==vacancy.Item2),"tutorial independent pack identity "+vacancy);
     }
 }
-Check(!manifest["delivery"]["published"].GetValue<bool>()&&!manifest["delivery"]["runtimeVerified"].GetValue<bool>(),"local handoff is neither published nor gameplay verified");
+Check(!manifest["delivery"]["runtimeVerified"].GetValue<bool>(),"release publication does not imply exhaustive gameplay verification");
 Console.WriteLine($"Stage 7: {passed} catalog, tutorial, identity and metadata checks passed. No game initialized.");
 sealed record Row(int Id,string Effect,int? Price,string Configuration);

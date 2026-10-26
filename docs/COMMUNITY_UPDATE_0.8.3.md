@@ -30,3 +30,9 @@ Source publication targets [the repository's main branch](https://github.com/Krr
 In `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`, keep `[DeveloperOffers] EnableForcedOffers = false` for normal play. The four Force flags can remain available for testing, but are ineffective without that switch. Restart to apply settings. No content is removed from existing ownership.
 
 The local update explicitly turns the four old Force settings off and writes the master switch false. Other configuration settings and game user data are preserved. Backups are outside BepInEx scanning paths and excluded from Git.
+
+## GitHub Release
+
+[0.8.3 is published](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3). It includes all three plugin ZIPs, both raw DLLs and SHA256SUMS.txt. Every public asset was downloaded and hashed against the prepared build; all six match. Recommended: the combined pack/Foundation ZIP. The release tag points to source commit `4d7d62ae9815661307dbfe31e11615ae46b4882b`; the README removes the requested legacy-item paragraph and links the exact official tested BepInEx download. No plugin code or deployed DLL changed during this documentation/publication step.
+
+The package manifest inside each ZIP records its original build-time local state; the release record here and current content manifest record publication. Publication does not set runtimeVerified or pass pending manual gameplay cases.

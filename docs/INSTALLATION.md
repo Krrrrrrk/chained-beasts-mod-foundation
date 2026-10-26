@@ -1,6 +1,6 @@
 # Install, migrate and roll back 0.8.3
 
-This is a **local experimental build awaiting manual Solo testing**, not a published or gameplay-verified release. v0.7.3 is the last manually tested monolithic version. The 0.8.3 split has two production plugins; optional teaching examples are excluded from packages and normal deployment.
+[0.8.3 is published](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3) as an **experimental Solo release**. Publication does not establish exhaustive gameplay verification. v0.7.3 is the last manually tested monolithic version. The 0.8.3 split has two production plugins; optional teaching examples are excluded from packages and normal deployment.
 
 > The author reported a crash-free 0.8.2 gameplay test following the earlier native-hook fixes. 0.8.3 adds description tags and normal-offer defaults; those changes still need an in-game check. See [current notes](COMMUNITY_UPDATE_0.8.3.md). Individual mechanics/checkpoint cases are not all verified.
 

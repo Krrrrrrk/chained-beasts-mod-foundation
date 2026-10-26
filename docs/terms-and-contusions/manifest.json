@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pack": "Terms \u0026 Contusions",
+  "pack": "Terms & Contusions",
   "pluginGuid": "local.chainedbeasts.termsandcontusions",
   "stage": 7,
   "requiredCounts": {
@@ -30,7 +30,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; legacy rank-one marker imported without HP grant",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "stage2Hooks": [
         "GameLibrary.Init callback",
         "PlayerData.AddSkill/RemoveSkill canonical ownership event",
@@ -66,7 +66,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk02",
@@ -75,13 +75,13 @@
         "StringManager skill views plus trainer Refresh/SetSkill, character detail and tooltip rank terms",
         "Shared native stat/combat/normal-throw services; exact paths documented in STAGE3_SKILLS.md"
       ],
-      "effect": "Rank 1: TC: \u002B25% melee damage when attacking at 80%\u002B stamina. / Rank 2: TC: \u002B50% melee damage when attacking at 80%\u002B stamina. / Rank 3: TC: \u002B75% melee damage when attacking at 80%\u002B stamina. / Rank 4: TC: \u002B100% melee damage when attacking at 80%\u002B stamina.",
+      "effect": "Rank 1: TC: +25% melee damage when attacking at 80%+ stamina. / Rank 2: TC: +50% melee damage when attacking at 80%+ stamina. / Rank 3: TC: +75% melee damage when attacking at 80%+ stamina. / Rank 4: TC: +100% melee damage when attacking at 80%+ stamina.",
       "configuration": "[Skills] EnableMeasuredViolence",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Canonical AddSkill/RemoveSkill changes rank immediately; restore assigns without acquisition effects.",
       "runtimeVerified": false,
       "manualTestId": "SK02",
-      "mechanicsReference": "Rank 1: \u002B25% melee damage at 80% or more stamina before attack payment. / Rank 2: \u002B50% melee damage at 80% or more stamina before attack payment. / Rank 3: \u002B75% melee damage at 80% or more stamina before attack payment. / Rank 4: \u002B100% melee damage at 80% or more stamina before attack payment."
+      "mechanicsReference": "Rank 1: +25% melee damage at 80% or more stamina before attack payment. / Rank 2: +50% melee damage at 80% or more stamina before attack payment. / Rank 3: +75% melee damage at 80% or more stamina before attack payment. / Rank 4: +100% melee damage at 80% or more stamina before attack payment."
     },
     {
       "key": "terms-and-contusions:skill/running-on-fumes",
@@ -96,7 +96,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk03",
@@ -105,13 +105,13 @@
         "StringManager skill views plus trainer Refresh/SetSkill, character detail and tooltip rank terms",
         "Shared native stat/combat/normal-throw services; exact paths documented in STAGE3_SKILLS.md"
       ],
-      "effect": "Rank 1: TC: \u002B35% melee damage when attacking below 25% stamina. / Rank 2: TC: \u002B70% melee damage when attacking below 25% stamina. / Rank 3: TC: \u002B105% melee damage when attacking below 25% stamina. / Rank 4: TC: \u002B140% melee damage when attacking below 25% stamina.",
+      "effect": "Rank 1: TC: +35% melee damage when attacking below 25% stamina. / Rank 2: TC: +70% melee damage when attacking below 25% stamina. / Rank 3: TC: +105% melee damage when attacking below 25% stamina. / Rank 4: TC: +140% melee damage when attacking below 25% stamina.",
       "configuration": "[Skills] EnableRunningOnFumes",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Canonical AddSkill/RemoveSkill changes rank immediately; restore assigns without acquisition effects.",
       "runtimeVerified": false,
       "manualTestId": "SK03",
-      "mechanicsReference": "Rank 1: \u002B35% melee damage below 25% stamina before attack payment. / Rank 2: \u002B70% melee damage below 25% stamina before attack payment. / Rank 3: \u002B105% melee damage below 25% stamina before attack payment. / Rank 4: \u002B140% melee damage below 25% stamina before attack payment."
+      "mechanicsReference": "Rank 1: +35% melee damage below 25% stamina before attack payment. / Rank 2: +70% melee damage below 25% stamina before attack payment. / Rank 3: +105% melee damage below 25% stamina before attack payment. / Rank 4: +140% melee damage below 25% stamina before attack payment."
     },
     {
       "key": "terms-and-contusions:skill/catch-your-breath",
@@ -126,7 +126,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk04",
@@ -156,7 +156,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk05",
@@ -165,13 +165,13 @@
         "StringManager skill views plus trainer Refresh/SetSkill, character detail and tooltip rank terms",
         "Shared native stat/combat/normal-throw services; exact paths documented in STAGE3_SKILLS.md"
       ],
-      "effect": "Rank 1: TC: \u002B1% damage per 10 gold. Maximum \u002B25%. / Rank 2: TC: \u002B2% damage per 10 gold. Maximum \u002B50%. / Rank 3: TC: \u002B3% damage per 10 gold. Maximum \u002B75%. / Rank 4: TC: \u002B4% damage per 10 gold. Maximum \u002B100%.",
+      "effect": "Rank 1: TC: +1% damage per 10 gold. Maximum +25%. / Rank 2: TC: +2% damage per 10 gold. Maximum +50%. / Rank 3: TC: +3% damage per 10 gold. Maximum +75%. / Rank 4: TC: +4% damage per 10 gold. Maximum +100%.",
       "configuration": "[Skills] EnableExpensiveTaste",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Canonical AddSkill/RemoveSkill changes rank immediately; restore assigns without acquisition effects.",
       "runtimeVerified": false,
       "manualTestId": "SK05",
-      "mechanicsReference": "Rank 1: \u002B1% direct attack damage per 10 gold, capped at \u002B25%. / Rank 2: \u002B2% direct attack damage per 10 gold, capped at \u002B50%. / Rank 3: \u002B3% direct attack damage per 10 gold, capped at \u002B75%. / Rank 4: \u002B4% direct attack damage per 10 gold, capped at \u002B100%."
+      "mechanicsReference": "Rank 1: +1% direct attack damage per 10 gold, capped at +25%. / Rank 2: +2% direct attack damage per 10 gold, capped at +50%. / Rank 3: +3% direct attack damage per 10 gold, capped at +75%. / Rank 4: +4% direct attack damage per 10 gold, capped at +100%."
     },
     {
       "key": "terms-and-contusions:skill/fresh-meat",
@@ -186,7 +186,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk06",
@@ -195,13 +195,13 @@
         "StringManager skill views plus trainer Refresh/SetSkill, character detail and tooltip rank terms",
         "Shared native stat/combat/normal-throw services; exact paths documented in STAGE3_SKILLS.md"
       ],
-      "effect": "Rank 1: TC: \u002B30% damage to full-health enemies. / Rank 2: TC: \u002B60% damage to full-health enemies. / Rank 3: TC: \u002B90% damage to full-health enemies. / Rank 4: TC: \u002B120% damage to full-health enemies.",
+      "effect": "Rank 1: TC: +30% damage to full-health enemies. / Rank 2: TC: +60% damage to full-health enemies. / Rank 3: TC: +90% damage to full-health enemies. / Rank 4: TC: +120% damage to full-health enemies.",
       "configuration": "[Skills] EnableFreshMeat",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Canonical AddSkill/RemoveSkill changes rank immediately; restore assigns without acquisition effects.",
       "runtimeVerified": false,
       "manualTestId": "SK06",
-      "mechanicsReference": "Rank 1: \u002B30% direct attack damage against enemies at full effective HP before the hit. / Rank 2: \u002B60% direct attack damage against enemies at full effective HP before the hit. / Rank 3: \u002B90% direct attack damage against enemies at full effective HP before the hit. / Rank 4: \u002B120% direct attack damage against enemies at full effective HP before the hit."
+      "mechanicsReference": "Rank 1: +30% direct attack damage against enemies at full effective HP before the hit. / Rank 2: +60% direct attack damage against enemies at full effective HP before the hit. / Rank 3: +90% direct attack damage against enemies at full effective HP before the hit. / Rank 4: +120% direct attack damage against enemies at full effective HP before the hit."
     },
     {
       "key": "terms-and-contusions:skill/pick-your-moment",
@@ -216,7 +216,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk07",
@@ -225,14 +225,14 @@
         "StringManager skill views plus trainer Refresh/SetSkill, character detail and tooltip rank terms",
         "Shared native stat/combat/normal-throw services; exact paths documented in STAGE3_SKILLS.md"
       ],
-      "effect": "Rank 1: TC: After 2s without attacking, your next attack deals \u002B50% damage. / Rank 2: TC: After 2s without attacking, your next attack deals \u002B100% damage. / Rank 3: TC: After 2s without attacking, your next attack deals \u002B150% damage. / Rank 4: TC: After 2s without attacking, your next attack deals \u002B200% damage.",
+      "effect": "Rank 1: TC: After 2s without attacking, your next attack deals +50% damage. / Rank 2: TC: After 2s without attacking, your next attack deals +100% damage. / Rank 3: TC: After 2s without attacking, your next attack deals +150% damage. / Rank 4: TC: After 2s without attacking, your next attack deals +200% damage.",
       "configuration": "[Skills] EnablePickYourMoment",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Canonical AddSkill/RemoveSkill changes rank immediately; restore assigns without acquisition effects.",
       "runtimeVerified": false,
       "manualTestId": "SK07",
       "stage7Integration": "Attempt-wide StatChannel.AttackDamage contribution includes attributed area attacks; direct-hit path does not apply it twice; removal epoch still invalidates cached prime.",
-      "mechanicsReference": "Rank 1: After 2s without attacking, the next committed attack deals \u002B50% damage. A miss consumes it. / Rank 2: After 2s without attacking, the next committed attack deals \u002B100% damage. A miss consumes it. / Rank 3: After 2s without attacking, the next committed attack deals \u002B150% damage. A miss consumes it. / Rank 4: After 2s without attacking, the next committed attack deals \u002B200% damage. A miss consumes it."
+      "mechanicsReference": "Rank 1: After 2s without attacking, the next committed attack deals +50% damage. A miss consumes it. / Rank 2: After 2s without attacking, the next committed attack deals +100% damage. A miss consumes it. / Rank 3: After 2s without attacking, the next committed attack deals +150% damage. A miss consumes it. / Rank 4: After 2s without attacking, the next committed attack deals +200% damage. A miss consumes it."
     },
     {
       "key": "terms-and-contusions:skill/mixed-martial-arts",
@@ -247,7 +247,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk08",
@@ -256,13 +256,13 @@
         "StringManager skill views plus trainer Refresh/SetSkill, character detail and tooltip rank terms",
         "Shared native stat/combat/normal-throw services; exact paths documented in STAGE3_SKILLS.md"
       ],
-      "effect": "Rank 1: TC: Alternate melee and thrown hits for \u002B30% damage. Bonus lasts 6s. / Rank 2: TC: Alternate melee and thrown hits for \u002B60% damage. Bonus lasts 6s. / Rank 3: TC: Alternate melee and thrown hits for \u002B90% damage. Bonus lasts 6s. / Rank 4: TC: Alternate melee and thrown hits for \u002B120% damage. Bonus lasts 6s.",
+      "effect": "Rank 1: TC: Alternate melee and thrown hits for +30% damage. Bonus lasts 6s. / Rank 2: TC: Alternate melee and thrown hits for +60% damage. Bonus lasts 6s. / Rank 3: TC: Alternate melee and thrown hits for +90% damage. Bonus lasts 6s. / Rank 4: TC: Alternate melee and thrown hits for +120% damage. Bonus lasts 6s.",
       "configuration": "[Skills] EnableMixedMartialArts",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Canonical AddSkill/RemoveSkill changes rank immediately; restore assigns without acquisition effects.",
       "runtimeVerified": false,
       "manualTestId": "SK08",
-      "mechanicsReference": "Rank 1: Direct melee hits prime thrown-weapon hits and vice versa for \u002B30% damage for 6s. One charge; no self-stacking. / Rank 2: Direct melee hits prime thrown-weapon hits and vice versa for \u002B60% damage for 6s. One charge; no self-stacking. / Rank 3: Direct melee hits prime thrown-weapon hits and vice versa for \u002B90% damage for 6s. One charge; no self-stacking. / Rank 4: Direct melee hits prime thrown-weapon hits and vice versa for \u002B120% damage for 6s. One charge; no self-stacking."
+      "mechanicsReference": "Rank 1: Direct melee hits prime thrown-weapon hits and vice versa for +30% damage for 6s. One charge; no self-stacking. / Rank 2: Direct melee hits prime thrown-weapon hits and vice versa for +60% damage for 6s. One charge; no self-stacking. / Rank 3: Direct melee hits prime thrown-weapon hits and vice versa for +90% damage for 6s. One charge; no self-stacking. / Rank 4: Direct melee hits prime thrown-weapon hits and vice versa for +120% damage for 6s. One charge; no self-stacking."
     },
     {
       "key": "terms-and-contusions:skill/payback-plan",
@@ -277,7 +277,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk09",
@@ -307,7 +307,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk10",
@@ -338,7 +338,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk11",
@@ -368,7 +368,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Schema-1 custom rank/order; timed charges/reservoir use namespaced skills/combat-v1 feature snapshot where required",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Skills/SkillMath.cs",
       "stateSource": "src/TermsAndContusions/Skills/SkillCombatState.cs",
       "manualTest": "docs/MANUAL_TESTS.md#sk12",
@@ -398,7 +398,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; sidecar mapping/availability audit only",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "stage2Hooks": [
         "GameLibrary.Init callback",
         "Player.ReceiveEquipmentRPC before/after equipment event",
@@ -427,15 +427,15 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 55,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
       "stage4Hooks": [
-        "CombatServices.PreparingDirectHit: hostile melee and pre-hit effective health \u003C30%"
+        "CombatServices.PreparingDirectHit: hostile melee and pre-hit effective health <30%"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq02",
-      "effect": "TC: \u002B35% melee damage to enemies below 30% health.",
+      "effect": "TC: +35% melee damage to enemies below 30% health.",
       "configuration": "[Equipment] EnableExecutionersHood",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Native single equipment slot; replacing/unequipping removes active factors, preserves spent per-battle allowances.",
@@ -456,7 +456,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 50,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
@@ -485,7 +485,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 60,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
@@ -495,13 +495,13 @@
         "Queued extra durability through native LoseDurability or projectile/pickup durability; flush before checkpoint"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq04",
-      "effect": "TC: A full-durability weapon\u0027s first hit each battle: \u002B50% damage, \u002B1 durability cost.",
+      "effect": "TC: A full-durability weapon's first hit each battle: +50% damage, +1 durability cost.",
       "configuration": "[Equipment] EnableBorrowersScabbard",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Native single equipment slot; replacing/unequipping removes active factors, preserves spent per-battle allowances.",
       "runtimeVerified": false,
       "manualTestId": "EQ04",
-      "mechanicsReference": "A full-durability weapon\u0027s first successful hit each battle deals 50% more damage and costs one additional durability. Repairing or re-equipping does not reset it."
+      "mechanicsReference": "A full-durability weapon's first successful hit each battle deals 50% more damage and costs one additional durability. Repairing or re-equipping does not reset it."
     },
     {
       "key": "terms-and-contusions:equipment/butchers-apron",
@@ -516,12 +516,12 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 55,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
       "stage4Hooks": [
-        "Player.CompleteExecution scope -\u003E native TakeDamageRpc Execute positive HP loss and confirmed death",
+        "Player.CompleteExecution scope -> native TakeDamageRpc Execute positive HP loss and confirmed death",
         "Native HealRpc and attainable clamp"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq05",
@@ -546,12 +546,12 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 60,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
       "stage4Hooks": [
-        "CombatServices.EnemyHpLost: survived below25% -\u003E once-per-battle RestoreStamina"
+        "CombatServices.EnemyHpLost: survived below25% -> once-per-battle RestoreStamina"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq06",
       "effect": "TC: Once per battle: survive an enemy hit below 25% health to restore 50% stamina.",
@@ -576,7 +576,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 50,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
@@ -586,7 +586,7 @@
         "shared AttackDamage modifier while equipped and paid"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq07",
-      "effect": "TC: Pay 5 gold at battle start for \u002B20% damage that battle.",
+      "effect": "TC: Pay 5 gold at battle start for +20% damage that battle.",
       "configuration": "[Equipment] EnableMercenarysLedger",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Native single equipment slot; replacing/unequipping removes active factors, preserves spent per-battle allowances.",
@@ -607,14 +607,14 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 45,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
       "stage4Hooks": [
         "Player.ModifyAttackDamage actual isBackstab captured in direct attack",
-        "Confirmed hostile direct HP receipt \u002B unique enemy token",
-        "RunDataManager.ModifyMoney(\u002B1), ten per battle cap"
+        "Confirmed hostile direct HP receipt + unique enemy token",
+        "RunDataManager.ModifyMoney(+1), ten per battle cap"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq08",
       "effect": "TC: Your first backstab against each enemy grants 1 gold. Maximum 10 per battle.",
@@ -638,7 +638,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 45,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
@@ -648,7 +648,7 @@
         "PreparingDirectHit uses release-bound multiplier"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq09",
-      "effect": "TC: Aim a throw while still for 1.5s to deal \u002B40% damage.",
+      "effect": "TC: Aim a throw while still for 1.5s to deal +40% damage.",
       "configuration": "[Equipment] EnableChalkBag",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Native single equipment slot; replacing/unequipping removes active factors, preserves spent per-battle allowances.",
@@ -669,14 +669,14 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 65,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
       "stage4Hooks": [
-        "Pickup.RequestPickupRpc -\u003E Player.ReceivePickup -\u003E successful EquipWeapon",
+        "Pickup.RequestPickupRpc -> Player.ReceivePickup -> successful EquipWeapon",
         "PhysicalWeapon own-throw recovery and once-per-weapon ledger",
-        "PickupData.durability repair \u002B native durability UI refresh"
+        "PickupData.durability repair + native durability UI refresh"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq10",
       "effect": "TC: Recover your thrown weapon to repair 1 durability. Once per weapon each battle.",
@@ -700,7 +700,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative; independent equipment/battle-v1 schema preserves paid/spent/per-enemy/per-weapon state without replay; runtime physical GUIDs transfer across native representations",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 50,
       "calculationSource": "src/TermsAndContusions/Equipment/EquipmentMath.cs",
       "stateSource": "src/TermsAndContusions/Equipment/EquipmentBattleState.cs",
@@ -709,7 +709,7 @@
         "EnemyManager.currentEnemies live roster"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#eq11",
-      "effect": "TC: \u002B20% melee damage when only one enemy is within 4m.",
+      "effect": "TC: +20% melee damage when only one enemy is within 4m.",
       "configuration": "[Equipment] EnableDuelistsSpurs",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Native single equipment slot; replacing/unequipping removes active factors, preserves spent per-battle allowances.",
@@ -730,7 +730,7 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native equipment/history authoritative, shared sidecar mapping/availability record",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 45,
       "manualTest": "docs/MANUAL_TESTS.md#eq12",
       "stage3Hooks": [
@@ -744,7 +744,7 @@
       "acquisitionAndRemoval": "Native single equipment slot; replacing/unequipping removes active factors, preserves spent per-battle allowances.",
       "runtimeVerified": false,
       "manualTestId": "EQ12",
-      "mechanicsReference": "Normal throw range and charge speed x2 while equipped; charge time /2. Multiplies Longshot\u0027s 1\u002Br contribution."
+      "mechanicsReference": "Normal throw range and charge speed x2 while equipped; charge time /2. Multiplies Longshot's 1+r contribution."
     },
     {
       "key": "terms-and-contusions:affliction/leadfoot",
@@ -759,7 +759,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Foundation schema-1 external severity/order; import legacy InjuryType.EmptySlot1 once",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "stage2Hooks": [
         "GameLibrary.Init callback",
         "PlayerData.AddInjury/RemoveInjury canonical event",
@@ -791,7 +791,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -820,7 +820,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -849,7 +849,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -878,7 +878,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -907,11 +907,11 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
-        "RegenerationAmount channel scoped to native Player.UpdateStamina -\u003E RestoreStamina",
+        "RegenerationAmount channel scoped to native Player.UpdateStamina -> RestoreStamina",
         "Normal and haste regeneration while moving; one-time/nested grants excluded"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#af06",
@@ -936,7 +936,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -965,7 +965,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -994,7 +994,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -1023,7 +1023,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -1052,7 +1052,7 @@
       "targetMaxSeverity": 3,
       "implementedMaxSeverity": 3,
       "persistence": "Independent Foundation schema-1 severity/order plus validated afflictions/battle-v1 timers/counters/focus; native potion healing and cure paths preserved; no resource replay",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "calculationSource": "src/TermsAndContusions/Afflictions/AfflictionMath.cs",
       "stateSource": "src/TermsAndContusions/Afflictions/AfflictionBattleState.cs",
       "stage5Hooks": [
@@ -1060,7 +1060,7 @@
         "ConsumeMeleeStamina scoped ConsumeStamina multiplier; fixed two-second gap, three-stack cap, cure epoch"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#af11",
-      "effect": "1 skull(s): TC: Repeated melee attacks cost \u002B5% stamina (3 stacks). Rest 2s to reset. / 2 skull(s): TC: Repeated melee attacks cost \u002B10% stamina (3 stacks). Rest 2s to reset. / 3 skull(s): TC: Repeated melee attacks cost \u002B15% stamina (3 stacks). Rest 2s to reset.",
+      "effect": "1 skull(s): TC: Repeated melee attacks cost +5% stamina (3 stacks). Rest 2s to reset. / 2 skull(s): TC: Repeated melee attacks cost +10% stamina (3 stacks). Rest 2s to reset. / 3 skull(s): TC: Repeated melee attacks cost +15% stamina (3 stacks). Rest 2s to reset.",
       "configuration": "[Afflictions] EnableOverheating",
       "registration": "RegisterLibraryCallbacks before GameLibrary.Init; native dictionary/normal generator; canonical ownership",
       "acquisitionAndRemoval": "Native potion AddInjury, effective HasInjury, reduction/suppression/cure; normal potion healing preserved.",
@@ -1081,13 +1081,13 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 0,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su01",
       "effect": "TC: Stamina regenerates 25% faster.",
@@ -1111,13 +1111,13 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 35,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su02",
       "effect": "TC: Receive 75% less knockback. Dodges travel 20% less distance.",
@@ -1141,13 +1141,13 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 40,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su03",
       "effect": "TC: Dodges travel 30% farther but cost 20% more stamina.",
@@ -1171,13 +1171,13 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 55,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su04",
       "effect": "TC: Take 15% less damage. Maximum stamina is reduced by 20%.",
@@ -1201,13 +1201,13 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 40,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su05",
       "effect": "TC: Regular melee attacks cost 20% less stamina. -10% maximum health.",
@@ -1231,16 +1231,16 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 40,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su06",
-      "effect": "TC: \u002B30% healing. -15% maximum health.",
+      "effect": "TC: +30% healing. -15% maximum health.",
       "configuration": "[Surgeries] EnableMarrowEnrichment",
       "registration": "SurgeryServices.Register: shared eligible pool and confirmed native completion, native payment/history",
       "acquisitionAndRemoval": "Once per player/run in native previousSurgeries; no mid-run remove/rebuy API. Fresh run clears history.",
@@ -1261,13 +1261,13 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 50,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su07",
       "effect": "TC: Enemy damage restores 1.5x its health percentage as stamina (max 25%). -10% maximum stamina.",
@@ -1291,16 +1291,16 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 45,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su08",
-      "effect": "TC: Once per battle: survive a 20%\u002B health hit to heal 25% of that loss over 4s.",
+      "effect": "TC: Once per battle: survive a 20%+ health hit to heal 25% of that loss over 4s.",
       "configuration": "[Surgeries] EnableEmergencyClotting",
       "registration": "SurgeryServices.Register: shared eligible pool and confirmed native completion, native payment/history",
       "acquisitionAndRemoval": "Once per player/run in native previousSurgeries; no mid-run remove/rebuy API. Fresh run clears history.",
@@ -1321,16 +1321,16 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 45,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su09",
-      "effect": "TC: After stun or trip: next melee hit gains \u002B25% damage and \u002B75% knockback (5s).",
+      "effect": "TC: After stun or trip: next melee hit gains +25% damage and +75% knockback (5s).",
       "configuration": "[Surgeries] EnableCounterweightImplant",
       "registration": "SurgeryServices.Register: shared eligible pool and confirmed native completion, native payment/history",
       "acquisitionAndRemoval": "Once per player/run in native previousSurgeries; no mid-run remove/rebuy API. Fresh run clears history.",
@@ -1351,13 +1351,13 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 50,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su10",
       "effect": "TC: Fury gains instead restore 30% stamina (8s cooldown).",
@@ -1381,13 +1381,13 @@
       "targetMaxSeverity": null,
       "implementedMaxSeverity": null,
       "persistence": "Native previousSurgeries is authoritative; schema-1 per-player timed state; matching checkpoints; no acquisition/resource replay on restore",
-      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user\u0027s manual Solo test.",
+      "verification": "Built and nongame checked; split chainloader, native callbacks, presentation, mechanics and save/restore await the user's manual Solo test.",
       "price": 45,
       "stage6Hooks": [
         "SurgeryGenerator.GetSurgeries shared combined eligible pool",
-        "PerformSurgeryRpc \u002B PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
-        "native previousSurgeries \u002B proportional HP/stamina transition",
-        "SurgeriesFeature \u002B SurgeryBattleState mechanics/timers"
+        "PerformSurgeryRpc + PlayerData.ModifyAwardStat(MostSurgeries,1) completion receipt",
+        "native previousSurgeries + proportional HP/stamina transition",
+        "SurgeriesFeature + SurgeryBattleState mechanics/timers"
       ],
       "manualTest": "docs/MANUAL_TESTS.md#su11",
       "effect": "TC: Unarmed hits bleed: 5 damage over 3s (refreshes). -10% weapon damage.",
@@ -1426,7 +1426,7 @@
   "delivery": {
     "version": "0.8.3",
     "runtimeVerified": false,
-    "published": false,
+    "published": true,
     "report": "docs/COMMUNITY_UPDATE_0.8.3.md",
     "installation": "docs/INSTALLATION.md",
     "localDeployed": true,
@@ -1444,7 +1444,43 @@
     ],
     "runtimeStatus": "0.8.2 manual gameplay test reported no crashes; 0.8.3 tags/normal-offer changes await manual checks",
     "sourcePublicationAuthorized": true,
-    "sourceBranch": "main"
+    "sourceBranch": "main",
+    "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3",
+    "releaseTag": "v0.8.3",
+    "releaseCommit": "4d7d62ae9815661307dbfe31e11615ae46b4882b",
+    "publicDownloadsVerified": true,
+    "releaseAssets": [
+      {
+        "name": "ChainedBeasts.ModFoundation-0.8.3.zip",
+        "sha256": "8831f5bd65e5714b31a6a2d69bbc1f5d783834647479f645dab76117c20fcabc",
+        "url": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/ChainedBeasts.ModFoundation-0.8.3.zip"
+      },
+      {
+        "name": "TermsAndContusions-0.8.3.zip",
+        "sha256": "ec4bf532d056a877b3c17d1d10fb75558970c5b13c785b089b2b42da7cae1b42",
+        "url": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-0.8.3.zip"
+      },
+      {
+        "name": "TermsAndContusions-with-Foundation-0.8.3.zip",
+        "sha256": "0f61021f73ec46ad8b318cfd5813e2e149aba7f371eccb19e604145df1eb3712",
+        "url": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip"
+      },
+      {
+        "name": "ChainedBeasts.ModFoundation.dll",
+        "sha256": "ef6d3c4a04508f65dab732c66fa865c584151446536d2e83044e2d7f2370ecce",
+        "url": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/ChainedBeasts.ModFoundation.dll"
+      },
+      {
+        "name": "TermsAndContusions.dll",
+        "sha256": "bb958bc7660cf3128c376eba59b0c498ca6edf6815344f4b2db1d3946cac263a",
+        "url": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions.dll"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "sha256": "da3dc62713930cc2a868e8f732a7e2bddd88de2a741b33cf60dd9e30538b25bb",
+        "url": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/SHA256SUMS.txt"
+      }
+    ]
   },
   "runtimeEvidence": {
     "version": "0.8.2",
@@ -1453,12 +1489,13 @@
   },
   "presentation": {
     "descriptionPrefix": "TC: ",
-    "scope": "Terms \u0026 Contusions descriptions only; all ranks/severities and legacy translated descriptions",
+    "scope": "Terms & Contusions descriptions only; all ranks/severities and legacy translated descriptions",
     "namesAndVanillaUnchanged": true
   },
   "offers": {
     "developerMaster": "[DeveloperOffers] EnableForcedOffers",
     "default": false,
     "policy": "Original four and new entries use normal eligible pools; explicit master plus individual Force flags required for testing overrides; stored offers untouched"
-  }
+  },
+  "sourceVersion": "0.8.3"
 }

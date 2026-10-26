@@ -17,7 +17,7 @@ See the [complete catalog](docs/terms-and-contusions/CATALOG.md) for the effects
 
 ## Install
 
-Download a **matching version** from [GitHub Releases](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases), then follow the [installation, migration and rollback guide](docs/INSTALLATION.md). Source on `main` is **0.8.3**. If that version isn't listed in Releases yet, build it from source below. The older 0.7.3 download uses a single plugin and its [archived instructions](docs/history/README-v0.7.3.md).
+Download [**Terms & Contusions 0.8.3 with Foundation**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip), or choose an individual package on the [release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3). Follow the [installation, migration and rollback guide](docs/INSTALLATION.md). The older 0.7.3 download uses a single plugin and its [archived instructions](docs/history/README-v0.7.3.md).
 
 The current pack uses **two DLLs**: `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. Install both under `BepInEx/plugins` with the game closed. Remove older copies of our plugin, including renamed copies or copies in subfolders. Foundation can also be used on its own without my content pack.
 

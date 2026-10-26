@@ -205,3 +205,9 @@ Existing twelve-language pack aliases and all five earlier screenshots are prese
 **Next: the user's manual Solo test, using [MANUAL_TESTS.md](MANUAL_TESTS.md), then targeted fixes for evidenced failures.** All seven planned implementation stages are complete; no Stage 8 is automatically started. Nothing is published or gameplay verified.
 
 Stage 7 stops here.
+
+## 0.8.3 publication follow-up
+
+- [x] Remove the requested legacy-item paragraph from the README and link the exact official BepInEx Unity IL2CPP Windows x64 build.
+- [x] Publish v0.8.3 with three ZIP packages, both matching raw DLLs and checksums, following explicit release authorization. Download all six public assets and verify their SHA-256 values.
+- [x] Record publication separately from gameplay verification; leave the pending 0.8.3 manual checks pending. No game launch or redeployment in this documentation/release step.
