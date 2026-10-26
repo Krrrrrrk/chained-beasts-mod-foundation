@@ -13,8 +13,6 @@ Every custom description starts with **`TC:`**, so it's easy to tell my addition
 | **Mod Foundation** | Shared registration, localization, stats/combat events, checkpoint state and optional solo F1 tools for other mods to build on. |
 | **Terms & Contusions** | **46 additions:** 12 four-rank skills, 12 equipment items, 11 potion afflictions with three severities, and 11 once-per-run surgeries. |
 
-Bulk Up, Runner's Wraps, Leadfoot and Adrenal Graft are still here. They now sit in the normal offer pools alongside the other additions; they're not forced into your choices by default. Normal eligibility, ownership and costs still apply. Adrenal Graft is still free.
-
 See the [complete catalog](docs/terms-and-contusions/CATALOG.md) for the effects and the [content manifest](docs/terms-and-contusions/manifest.json) for IDs, configuration and source files.
 
 ## Install
@@ -23,7 +21,7 @@ Download a **matching version** from [GitHub Releases](https://github.com/Krrrrr
 
 The current pack uses **two DLLs**: `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. Install both under `BepInEx/plugins` with the game closed. Remove older copies of our plugin, including renamed copies or copies in subfolders. Foundation can also be used on its own without my content pack.
 
-The inspected setup is Windows x64, Chained Beasts **1.0.1**, Unity **6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Packages don't include BepInEx, game files or generated runtime bindings.
+The inspected setup is Windows x64, Chained Beasts **1.0.1**, Unity **6000.3.21f1**, and [**BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64 — download**](https://builds.bepinex.dev/projects/bepinex_be/791/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.791%2Bb782da4.zip). Packages don't include BepInEx, game files or generated runtime bindings.
 
 **Back up your complete saves and matching mod configuration before upgrading.** Custom checkpoint data must stay paired with its native save. Downgrading or removing content from an active run needs the matching backup, not just a DLL swap. Details are in the [persistence guide](docs/foundation/PERSISTENCE.md).
 
