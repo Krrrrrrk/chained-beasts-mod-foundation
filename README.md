@@ -2,7 +2,7 @@
 
 I built this as a small starter kit for making custom content in **Chained Beasts**. It includes a reusable mod foundation and my example content pack, **Terms & Contusions**. Feel free to look through the code, copy an example, and make something of your own.
 
-**I made zero attempt to balance these additions.** They might be wildly overpowered or just bad. They're examples of what we can do, not a carefully balanced expansion.
+**I made zero attempt to balance these additions.** They might be wildly overpowered or just bad **or may not even work at all**. They're examples of what we can do, not a carefully balanced expansion.
 
 Every custom description starts with **`TC:`**, so it's easy to tell my additions apart from vanilla content. Names and internal IDs stay unchanged.
 
