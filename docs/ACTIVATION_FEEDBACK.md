@@ -75,4 +75,4 @@ Two multiplayer limits remain explicit:
   player's opener. Global party-wide physical-weapon accounting is not claimed.
 
 The [multiplayer guide](MULTIPLAYER.md) retains the matching-install, lobby,
-checkpoint and rollback requirements. This is an [experimental prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1); the stable GitHub release and offline friend installer still contain older versions.
+checkpoint and rollback requirements. This is an [experimental prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1); the stable GitHub release still contains an older version.

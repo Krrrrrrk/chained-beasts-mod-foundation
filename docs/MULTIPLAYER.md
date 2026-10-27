@@ -113,7 +113,7 @@ swap DLLs and continue a run owning incompatible custom content. Don't mix
 0.9.1 gameplay DLLs with the 0.8.3 release. The local deploy script records its
 backup in `artifacts/packages/0.9.1/deployment.json`; use
 `scripts/restore-plugin-backup.ps1` with that checkpoint to restore the matching
-set. The friend installer's uninstaller preserves saves; it isn't a save rollback.
+set.
 
 ## Build and local handoff
 
@@ -143,5 +143,4 @@ pwsh -NoProfile -File scripts/build-and-deploy-plugin.ps1 -Deploy -SkipBuild -In
 
 The combined handoff is
 `artifacts/packages/0.9.1/Chained-Beasts-Multiplayer-Test-0.9.1.zip`. No build,
-check or package command launches the game or publishes a GitHub release. The
-previous offline friend installer still contains the published Solo versions.
+check or package command launches the game or publishes a GitHub release.

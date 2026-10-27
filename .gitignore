@@ -64,3 +64,7 @@ steam_autocloud.vdf
 
 # Separate companion repository; never add its checkout as a nested gitlink.
 /chained-beasts-battle-numbers/
+
+# Personal offline installer; keep local only.
+/installer/
+/scripts/package-friend-installer.py

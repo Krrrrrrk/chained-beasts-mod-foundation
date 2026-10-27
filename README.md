@@ -61,7 +61,7 @@ For the new mechanics fixes and activation cues, use the [**0.9.1 prerelease**](
 - [Foundation + Terms & Contusions 0.9.1](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.1/TermsAndContusions-with-Foundation-0.9.1.zip)
 - [All three multiplayer test mods, including Battle Numbers 0.2.0](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.1/Chained-Beasts-Multiplayer-Test-0.9.1.zip)
 
-Use the [multiplayer setup guide](docs/MULTIPLAYER.md): everyone needs matching gameplay DLLs/settings and must join before starting or resuming. Back up your complete save/config/plugin set before switching versions. The [offline friend installer](installer/README.md) remains pinned to the older Solo releases.
+Use the [multiplayer setup guide](docs/MULTIPLAYER.md): everyone needs matching gameplay DLLs/settings and must join before starting or resuming. Back up your complete save/config/plugin set before switching versions.
 
 ## What's included
 
