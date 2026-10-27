@@ -1,8 +1,12 @@
 # Multiplayer setup
 
 Use **Foundation + Terms & Contusions 0.9.6** and optional **Battle Numbers 0.2.2**
-for **Chained Beasts 1.0.2 / Steam build 26231777**. Multiplayer support still
-needs broader manual testing. I have made no attempt to balance the additions.
+for **Chained Beasts 1.0.2 / Steam build 26231777**.
+
+- Multiplayer testing has gone well so far, but I still expect weird edge cases.
+
+The detailed checks below still need broader coverage. I have made no attempt
+to balance the additions.
 
 Download the [0.9.6 three-mod ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/Chained-Beasts-Multiplayer-Test-0.9.6.zip), or the [Foundation + TC ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/TermsAndContusions-with-Foundation-0.9.6.zip) and [Battle Numbers 0.2.2](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) separately. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
 
@@ -20,9 +24,10 @@ use state assignment; they do not grant acquisitions, heal players or edit saves
 All 46 content IDs and the saved-file schema are unchanged.
 
 The latest changes pass builds and nongame regressions, including native-style
-trainer lookups after empty, mixed and repeated ownership sync. That does not
-confirm a live two-PC transition. Start with a fresh disposable run, finish two
-fights, and check normal offers and character control on both PCs after each.
+trainer lookups after empty, mixed and repeated ownership sync. Multiplayer play
+has also been working in my manual tests. For further coverage, start with a
+fresh disposable run, finish two fights, and check normal offers and character
+control on both PCs after each.
 Test save/resume and Solo restore separately. If a pending-health warning remains,
 keep both logs; confirmations are not discarded to force a checkpoint through.
 

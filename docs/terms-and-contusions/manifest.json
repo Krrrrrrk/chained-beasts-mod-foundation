@@ -7,7 +7,7 @@
   "releaseChannel": "release",
   "stableReleaseVersion": "0.9.6",
   "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6",
-  "status": "Regular 0.9.6 release: client trainer zero-slot fix, checkpoint and scene-transition guards, and unowned custom skill description fix. Nongame checks pass; broader runtime testing remains pending.",
+  "status": "Regular 0.9.6 release. Manual Solo and multiplayer testing has gone well so far; weird edge cases and untested interactions are still expected.",
   "entries": [
     {
       "key": "terms-and-contusions:skill/bulk-up",
@@ -499,8 +499,8 @@
     "battleNumbersVersion": "0.2.2",
     "runtimeVerified": false,
     "report": "docs/GAME_UPDATE_1.0.2.md",
-    "manualSmokeTestReported": false,
-    "manualSmokeTestScope": "Broader manual Solo and host/client checks for 0.9.6 remain pending; normal release status is not exhaustive runtime verification."
+    "manualSmokeTestReported": true,
+    "manualSmokeTestScope": "Solo and multiplayer reported working for both mods. Detailed rank, interaction, latency and save/resume coverage is not exhaustive."
   },
   "directHitReview": {
     "version": "0.9.3",
@@ -562,5 +562,11 @@
       "Unowned or missing player previews advertise first-rank skill effect instead of No effect.",
       "Owned ranks and next-rank offers retain correct descriptions; rank-zero gameplay remains neutral."
     ]
+  },
+  "multiplayerTesting": {
+    "status": "manual-play-reported-successful",
+    "scope": "Basic multiplayer play for Foundation/Terms & Contusions and Battle Numbers.",
+    "remaining": "Weird edge cases and untested interactions are still expected.",
+    "exhaustiveRuntimeVerification": false
   }
 }

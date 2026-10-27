@@ -6,15 +6,16 @@ The [**0.9.6 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundatio
 
 **Latest fixes:** client trainer generation keeps the zero-rank skill entries it needs,
 checkpoint transfers survive scene changes, and custom skill previews show their
-advertised effect before acquisition. The latest changes still need broader
-manual testing; see [multiplayer setup and checks](docs/MULTIPLAYER.md).
+advertised effect before acquisition. See [multiplayer setup and checks](docs/MULTIPLAYER.md).
+
+- Multiplayer testing has gone well so far, but I still expect weird edge cases.
 
 | What do you want to do? | Start here |
 |---|---|
 | **Play with the content I made** | [Quick install](#quick-install) — download the ready-made mod |
 | **Build the project or make your own mod** | [Developer starting point](#make-your-own-mod) — source, examples and tutorials |
 
-**I made zero attempt to balance these experimental additions.** They might be wildly overpowered, bad, or simply not work yet. Solo has been working in my recent tests. These examples still need more testing, especially multiplayer.
+**I made zero attempt to balance these experimental additions.** They might be wildly overpowered, bad, or simply not work yet.
 
 <a id="install"></a>
 
@@ -139,7 +140,7 @@ For deeper work, see [architecture](docs/foundation/ARCHITECTURE.md), [mechanics
 
 The current build targets **Chained Beasts 1.0.2**, Steam build **26231777**, **Unity 6000.3.21f1**, Windows x64, and the BepInEx build linked above.
 
-Solo has been working, but I haven't verified every rank, interaction or save/resume case. The latest description and client-transition fixes still need broader manual testing. See the [0.9.6 release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6).
+Solo and multiplayer have been working in my tests. I haven't verified every rank, interaction or save/resume case, and I still expect weird edge cases. See the [0.9.6 release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6).
 
 - [Experimental multiplayer](docs/MULTIPLAYER.md) requires matching gameplay mods and settings on every PC, with everyone joining before starting/resuming. Late joining, reconnecting and host migration are not supported.
 - Icons and models reuse the game's existing visuals.
