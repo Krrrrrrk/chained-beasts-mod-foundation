@@ -1,10 +1,13 @@
 # Play Terms & Contusions
 
-**Terms & Contusions 0.8.3** is the experimental gameplay pack built on Chained Beasts Mod Foundation.
+**Terms & Contusions 0.9.3** is the experimental gameplay pack built on Chained Beasts Mod Foundation.
 
-The current source builds **0.9.1**, available as an [experimental prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1) with [multiplayer support](../MULTIPLAYER.md). The stable-install links below still install the Solo 0.8.3 release.
+This prerelease targets **game 1.0.2 / Steam build 26231777**. My quick Solo check
+of the latest fixes looks good; broader manual testing is still needed.
+Older releases through 0.9.1 target game 1.0.1.
+See [compatibility notes](../GAME_UPDATE_1.0.2.md) and [multiplayer setup](../MULTIPLAYER.md).
 
-**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip) includes both required mod DLLs. BepInEx is installed separately.
+**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/TermsAndContusions-with-Foundation-0.9.3.zip) includes both required mod DLLs. BepInEx is installed separately.
 
 This page explains the content, settings and limitations. For source builds, use the [developer guide](../foundation/README.md).
 
@@ -22,7 +25,7 @@ This page explains the content, settings and limitations. For source builds, use
 
 Custom descriptions start with **`TC:`**. Content uses the game's normal offer and acquisition paths, so a custom item or skill is not guaranteed to appear on the first offer screen. Names and content IDs are unchanged by the description marker.
 
-I have made no attempt to balance these additions. They may be overpowered, underpowered, or not work as intended. Treat this as an experimental solo pack.
+I have made no attempt to balance these additions. They may be overpowered, underpowered, or not work as intended. Start with Solo; multiplayer support is experimental and requires the [matching-party setup](../MULTIPLAYER.md).
 
 <a id="complete-target-catalog"></a>
 
@@ -67,7 +70,7 @@ Foundation's settings and optional F1 tools remain in:
 
 `BepInEx/config/local.chainedbeasts.modfoundation.cfg`
 
-The F1 menu is for testing and can change real run data. Use a disposable run when experimenting. Skill and potion rerolls have worked in the author's solo tests; surgery rerolls are still unreliable.
+The F1 menu is for Solo testing and can change real run data. Use a disposable run when experimenting. Skill and potion rerolls have worked in my Solo tests; surgery rerolls are still unreliable.
 
 ## Saves, updates and removal
 
@@ -79,17 +82,16 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 ## Verification and known limitations
 
-- The author reported a **crash-free 0.8.2 playtest** following the native hook fixes. Individual content entries and checkpoint cases were not exhaustively verified.
-- **0.8.3** adds `TC:` descriptions and normal-offer defaults. Builds and nongame checks pass in the recorded release work; these changes still need a fresh gameplay check. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3).
-- **Multiplayer is unsupported.** Developer actions and forced offers require the actual Solo session/authority checks.
+- My quick Solo check of the **0.9.3** fixes looks good. Builds and nongame checks pass, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
+- **Multiplayer is experimental and host/client tests remain pending.** Every PC needs matching gameplay DLLs, content settings and the [required lobby/checkpoint setup](../MULTIPLAYER.md). Developer actions and forced offers still require the actual Solo session/authority checks.
 - Original icons and models are not included; the pack reuses visuals already present in the installed game.
 - New descriptions use English fallback. Previously supplied translations are retained but have not had native-speaker review.
 - Automatic Steam Cloud synchronization of custom save files is not implemented. Full arena-instance and current-stamina restoration are also outside the supported save behavior.
 
 ## Build and installation
 
-Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
+Players can install the [ready-made prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
 
-The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The current code declares Foundation `>=0.8.0 <0.9.1`; use the matching 0.8.3 release DLLs for installation.
+The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. Current 0.9.3 source declares Foundation `>=0.9.3 <0.10.0`; keep the matching production DLLs together. Older 0.8.3 downloads target the previous game build.
 
 Optional teaching examples are separate projects and are excluded from the normal packages and deployment. Game, loader, Unity, generated interop, extracted assets and saves are not redistributed. Original source and documentation remain MIT.

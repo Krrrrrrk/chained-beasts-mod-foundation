@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "pack": "Terms & Contusions",
-  "version": "0.9.1",
+  "version": "0.9.3",
   "pluginGuid": "local.chainedbeasts.termsandcontusions",
-  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1",
-  "releaseChannel": "prerelease",
-  "stableReleaseVersion": "0.8.3",
-  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3",
-  "status": "Experimental mechanics-audit and activation-feedback prerelease. All 46 entries source/logic reviewed; solo/host/client gameplay and checkpoint verification pending.",
+  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3",
+  "releaseChannel": "experimental-prerelease",
+  "stableReleaseVersion": "0.9.1",
+  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1",
+  "status": "Game 1.0.2 compatibility and direct-hit fixes. Quick Solo check looks okay; broader gameplay, presentation, checkpoint and host/client testing still pending.",
   "entries": [
     {
       "key": "terms-and-contusions:skill/bulk-up",
@@ -481,5 +481,35 @@
       "Attacker-view target HP thresholds under latency",
       "Physical weapon allowances are per player; global cross-player transfer ledger is not implemented"
     ]
+  },
+  "previousPrerelease": {
+    "version": "0.9.1",
+    "url": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1",
+    "gameVersion": "1.0.1"
+  },
+  "gameCompatibility": {
+    "gameVersion": "1.0.2",
+    "steamBuild": "26231777",
+    "unityVersion": "6000.3.21f1",
+    "gameAssemblySha256": "ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29",
+    "metadataSha256": "b689ca1c435476874b1a2e6e0aab140f07af02a6a9700d8f457c79e89b170075",
+    "bepInExVersion": "6.0.0-be.791+b782da4",
+    "foundationVersion": "0.9.3",
+    "contentPackVersion": "0.9.3",
+    "battleNumbersVersion": "0.2.2",
+    "runtimeVerified": false,
+    "report": "docs/GAME_UPDATE_1.0.2.md",
+    "manualSmokeTestReported": true,
+    "manualSmokeTestScope": "Quick Solo check; not exhaustive gameplay or multiplayer verification."
+  },
+  "directHitReview": {
+    "version": "0.9.3",
+    "runtimeVerified": false,
+    "changes": [
+      "Scabbard uses pre-cost attack durability",
+      "Chalk uses genuine normal-throw coroutine provenance, including flails",
+      "Fresh Meat retains its formula; confirmed-hit cue and bounded condition logs added"
+    ],
+    "guide": "docs/ACTIVATION_FEEDBACK.md"
   }
 }

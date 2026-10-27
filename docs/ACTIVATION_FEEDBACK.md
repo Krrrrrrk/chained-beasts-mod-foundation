@@ -1,9 +1,47 @@
 # TC activation feedback and mechanics review
 
-The **0.9.1 source test build** adds a small dust puff and swish around my local
+The **0.9.3 experimental prerelease** includes a small dust puff and swish around my local
 character when a custom proc produces a confirmed benefit. It reuses an existing
 game effect; there are no new assets. The cue never grants health, stamina,
 damage or gold itself.
+
+## Fresh Meat, Chalk Bag and Borrower's Scabbard — 0.9.3
+
+This update adds a few targeted fixes and clearer feedback. My quick Solo check
+looks good, but these mechanics and their interactions still need more testing.
+Build and nongame checks alone don't prove a proc fired.
+
+- **Borrower's Scabbard:** full durability is checked at attack commitment,
+  before the normal throw spends durability at launch. A fresh thrown weapon can
+  now qualify. Its first successful contact still has one allowance per physical
+  weapon per battle; repair, re-equipping and recovery don't rearm it. Native
+  default weapons don't qualify. Extra durability loss uses the normal break cap.
+- **Chalk Bag:** preparation follows a genuine normal held-weapon throw windup,
+  including a flail throw. Primary ranged/flail attacks and offhand throws don't
+  prepare it. Stand still and aim for at least **1.5 seconds**, then release.
+  Moving cancels preparation; releasing consumes it even on a miss.
+- **Fresh Meat:** its existing **+30% per rank** calculation is unchanged. The
+  target must be a hostile enemy at full effective HP immediately before contact.
+  A qualifying hit now gives the same confirmed dust/swish cue as other procs.
+
+Battle Numbers shows actual HP lost, so overkill can hide extra damage. A target
+with 5 HP left can display only 5 even if the attack was much stronger. Some
+native effects also deliberately wound enemies before the first player hit.
+
+The log now records the first three Chalk releases and confirmed Chalk/Scabbard
+procs per launch. Fresh Meat logs up to three qualifying and three nonqualifying
+positive-HP hits while owned. Look for `Fresh Meat hit confirmed`, `Chalk Bag
+release`, `Chalk Bag prepared throw hit confirmed`, or `Borrower's Scabbard
+opening hit confirmed`. Entries include eligibility, multiplier, prepared damage
+and actual HP loss where applicable. Prepared damage includes other active
+bonuses; native blocking, rounding and remaining HP can change the final loss.
+
+For a manual comparison, use comparable healthy enemies and the same picked-up
+weapon/charge duration. Check Fresh Meat on the first hit, Chalk after a stationary
+hold a little longer than 1.5s, and Scabbard on a newly collected full-durability
+weapon's first contact. Also try an explicit flail throw. Keep both `Player.log`
+and `BepInEx/LogOutput.log` if the results still look wrong. There is only one
+equipment slot, so test Chalk and Scabbard separately.
 
 ## Butcher's Apron
 
@@ -20,7 +58,7 @@ the execution callback ran. Native execution sound/UI behavior is preserved.
 
 ## Other cues
 
-Successful bonus hits can cue Pick Your Moment, Mixed Martial Arts, Payback Plan,
+Successful bonus hits can cue Fresh Meat, Pick Your Moment, Mixed Martial Arts, Payback Plan,
 Borrower's Scabbard, Chalk Bag, Executioner's Hood, Duelist's Spurs,
 Counterweight Implant and Retractable Talons. Waste Not, Last-Gasp Locket,
 Pain Converter and Fury Pacemaker cue only actual stamina gains. Salvager's Hook
@@ -56,8 +94,9 @@ break coverage, stale-client healing/survival checks, Loose Change's host
 cooldown and saved guard state, and delayed Focus confirmations after cure.
 The intended balance values and content IDs were preserved.
 
-These are source/native-evidence and nongame-check results. **The new build still
-needs manual Solo and host/client gameplay tests.** Start with a damaged player
+The review is based on source/native evidence and nongame checks, with a quick
+Solo check of the latest fixes. **Broader Solo and host/client gameplay tests
+are still needed.** Start with a damaged player
 wearing Butcher's Apron, execute an NPC, and compare the real HP/HUD change and
 cue. Also test full HP, Marrow Enrichment, a client's execution and the final
 enemy before a transition. Then test the other procs with a missing resource;
@@ -75,4 +114,4 @@ Two multiplayer limits remain explicit:
   player's opener. Global party-wide physical-weapon accounting is not claimed.
 
 The [multiplayer guide](MULTIPLAYER.md) retains the matching-install, lobby,
-checkpoint and rollback requirements. This is an [experimental prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1); the stable GitHub release still contains an older version.
+checkpoint and rollback requirements. These changes are in the [0.9.3 experimental prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3).

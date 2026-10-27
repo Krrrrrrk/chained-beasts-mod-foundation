@@ -6,11 +6,12 @@
 
 [Quick install on the main page](../README.md#quick-install) · [Updating an existing install](#updating-an-existing-install) · [Troubleshooting](#troubleshooting) · [Make your own mod](foundation/README.md)
 
-These instructions are for the **Windows 64-bit Steam version** of Chained Beasts. The current release is **0.8.3**, for **Solo play**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
+These instructions cover the **0.9.3 experimental prerelease** for the **Windows 64-bit Steam version of Chained Beasts 1.0.2 / build 26231777**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
 
-The current source branch builds **0.9.1**, available as an [experimental multiplayer prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1).
-For its matching DLLs, party requirements and pending tests, use
-[the multiplayer guide](MULTIPLAYER.md). The release links below remain 0.8.3.
+My quick Solo check looks good, but broader gameplay and host/client testing are
+still pending. Older 0.8.3/0.9.1 downloads target game 1.0.1 and are incompatible
+with the updated game. See [compatibility notes](GAME_UPDATE_1.0.2.md) and
+[the multiplayer guide](MULTIPLAYER.md) before testing with friends.
 
 Already using an older version of this mod? Follow [Updating an existing install](#updating-an-existing-install) first.
 
@@ -43,7 +44,7 @@ The download above is the loader used with this project. BepInEx 5 and Unity Mon
 
 ### 3. Install the combined mod package
 
-1. Download [**TermsAndContusions-with-Foundation-0.8.3.zip**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip).
+1. Download [**TermsAndContusions-with-Foundation-0.9.3.zip**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/TermsAndContusions-with-Foundation-0.9.3.zip).
 2. Extract the ZIP somewhere convenient, then open the extracted folder.
 3. Copy its **`BepInEx` folder into the game folder** and allow the folders to merge.
 
@@ -66,7 +67,7 @@ Start the game normally and play **Solo**. Custom skills, equipment, potion affl
 
 Look for **`TC:` at the beginning of custom descriptions** to identify Terms & Contusions content.
 
-The optional **F1** panel is for testing; you do not need to use it to play. See [configuration](#configuration) if you want to change settings or disable that panel.
+The optional **F1** panel is for Solo testing; you do not need to use it to play. See [configuration](#configuration) if you want to change settings or disable that panel. For experimental multiplayer, follow the [matching-install and lobby requirements](MULTIPLAYER.md).
 
 ## Back up your install and saves
 
@@ -91,7 +92,7 @@ Custom checkpoint files and the game's `SaveData` belong together. Automatic Ste
 3. Install the new **combined package** as described in [step 3](#3-install-the-combined-mod-package). Use the two DLLs from the same release.
 4. Keep your existing configuration files. Start the game and check for load errors if anything looks wrong.
 
-**Coming from 0.7.3?** That version put the custom content inside a single Foundation DLL. Version 0.8.3 uses two DLLs. Replace the old Foundation and install the content-pack DLL alongside the new one; do not leave the old copy in another plugin subfolder.
+**Coming from 0.7.3?** That version put the custom content inside a single Foundation DLL. Versions 0.8.0 and later use two DLLs. Replace the old Foundation and install the content-pack DLL alongside the new one; do not leave the old copy in another plugin subfolder.
 
 The mod imports supported legacy ownership and settings when loading. Old developer offer-forcing settings only take effect when the separate `EnableForcedOffers` master setting is enabled. Leave that master setting false for normal play.
 
@@ -114,7 +115,7 @@ For normal play:
 - To disable the F1 panel, set `[DeveloperMenu] EnableDeveloperMenu = false` in the Foundation configuration.
 - Leave content enabled while your saved run owns it. Disabling an owned entry can prevent that run from loading.
 
-The F1 panel starts with its cheats off. Its actions can change actual run data, so use a disposable run when experimenting. Skill and potion rerolls have worked in the author's solo tests; surgery rerolls can animate without changing the options.
+The F1 panel starts with its cheats off. Its actions can change actual run data, so use a disposable run when experimenting. Skill and potion rerolls have worked in my Solo tests; surgery rerolls can animate without changing the options. Developer actions and forced offers require the actual Solo authority checks.
 
 See the [catalog](terms-and-contusions/CATALOG.md) for individual content settings.
 
@@ -133,8 +134,8 @@ See the [catalog](terms-and-contusions/CATALOG.md) for individual content settin
 The project's setup writes its log to **`BepInEx\LogOutput.log`**, inside the game folder. After a fresh launch, look for both plugin names and any errors following them:
 
 ```text
-ChainedBeasts.ModFoundation 0.8.3
-Terms & Contusions 0.8.3
+ChainedBeasts.ModFoundation 0.9.3
+Terms & Contusions 0.9.3
 ```
 
 Loading lines are useful diagnostics; they do not establish that every feature works. Foundation must initialize successfully for the pack to run.
@@ -161,19 +162,20 @@ For source-built installations with a script-created backup, an advanced rollbac
 
 ## Requirements and package choices
 
-The inspected setup is **Windows x64**, the **Steam game version 1.0.1**, **Unity 6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Support for other game builds, platforms, and multiplayer is not established.
+The inspected setup is **Windows x64**, **Chained Beasts 1.0.2 / Steam build 26231777**, **Unity 6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Other game builds and platforms are unverified. Multiplayer is experimental and requires the [matching-party setup](MULTIPLAYER.md); host/client tests remain pending.
 
-All packages are available on the [0.8.3 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3).
+All packages are available on the [0.9.3 prerelease page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3).
 
 | Download | Includes | Choose it when… |
 |---|---|---|
-| **`TermsAndContusions-with-Foundation-0.8.3.zip`** | Both mod DLLs | **You want to play Terms & Contusions.** |
-| `ChainedBeasts.ModFoundation-0.8.3.zip` | Foundation only | You need the shared infrastructure for a different Foundation-based mod. |
-| `TermsAndContusions-0.8.3.zip` | Content pack only | You already have matching Foundation installed. The combined ZIP is simpler for most players. |
+| **`TermsAndContusions-with-Foundation-0.9.3.zip`** | Both mod DLLs | **You want to play Terms & Contusions.** |
+| `ChainedBeasts.ModFoundation-0.9.3.zip` | Foundation only | You need the shared infrastructure for a different Foundation-based mod. |
+| `TermsAndContusions-0.9.3.zip` | Content pack only | You already have matching Foundation installed. The combined ZIP is simpler for most players. |
+| `Chained-Beasts-Multiplayer-Test-0.9.3.zip` | Both gameplay DLLs and Battle Numbers 0.2.2 | You want all three mods, with the same package on every PC for multiplayer testing. |
 
-Use matching **0.8.3** DLLs for this release. Packages also contain installation/license notices and a checksum manifest. They exclude the loader, game files, extracted assets, saves, configuration files, and optional teaching examples.
+Use matching **0.9.3** gameplay DLLs for this release. Packages also contain installation/license notices and a checksum manifest. They exclude the loader, game files, extracted assets, saves, configuration files, and optional teaching examples. [Battle Numbers 0.2.2](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) is also available separately.
 
-**Testing status:** the author reported a crash-free **0.8.2** playtest. The **0.8.3** description tags and normal-offer changes are build checked and still need a fresh in-game check. Individual mechanics, interactions, and save/restore cases are not exhaustively verified. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3).
+**Testing status:** my quick Solo check of the latest fixes looks good. Builds and nongame checks pass, but individual mechanics, interactions, save/restore cases and multiplayer are not exhaustively verified. Reliable surgery rerolls and complete Battle Numbers boss coverage remain limitations. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3).
 
 <a id="fresh-checkout-and-local-workflow"></a>
 
@@ -194,7 +196,7 @@ pwsh -NoProfile -File .\scripts\build-and-deploy-plugin.ps1 -Deploy -SkipBuild `
 
 Omit `-SkipBuild` to build first. The script requires `-Deploy`, refuses while the game is running, checks the inspected game build, and creates a backup before replacing either of this project's DLLs. It detects old copies by assembly identity, including renamed/nested copies, while preserving unrelated plugins during installation. A partial-copy failure restores the previous owned DLLs.
 
-The backup and `artifacts/packages/0.8.3/deployment.json` record the installation and hashes. The inspected `GameAssembly.dll` SHA-256 is `72f2892607b0772470caae5db766dc07aaf636c3edfe26cefe019a5b9ddae56b`. A changed build requires reinspection.
+The backup and `artifacts/packages/0.9.3/deployment.json` record the current source installation and hashes. Its inspected `GameAssembly.dll` SHA-256 is `ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29` (Steam 26231777). A changed build requires reinspection. Restoring older plugins does not undo a Steam game update; releases for game 1.0.1 remain incompatible with game 1.0.2.
 
 For a backup created by that workflow:
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BepInEx.Logging;
 using ChainedBeasts.ModFoundation;
 using ChainedBeasts.ModFoundation.Runtime;
 using ChainedBeasts.ModFoundation.Networking;
@@ -19,6 +20,8 @@ internal static class EquipmentFeature
     private const string ChalkFeedbackTag = "terms-and-contusions:chalk-confirmed";
     private const string HoodTag = "terms-and-contusions:hood-hit";
     private const string SpursTag = "terms-and-contusions:spurs-hit";
+    private static int _scabbardHitsLogged, _chalkHitsLogged, _chalkReleasesLogged;
+    private static ManualLogSource _logger;
     private static readonly Dictionary<int, EquipmentBattleState> States = new();
     private static readonly Dictionary<CustomEquipment, string> Names = new(), Descriptions = new();
     private static readonly HashSet<string> Added = new();
@@ -30,8 +33,9 @@ internal static class EquipmentFeature
     private static bool Has(PlayerData data, CustomEquipment kind) => Enabled(EquipmentDefinitions.Get(kind)) && data?.currentEquipment == (PurchaseType)EquipmentDefinitions.Get(kind).Id;
     private static bool Has(Player player, CustomEquipment kind) => player is not null && Has(player.PlayerData, kind);
     private static int Gold => NetworkSession.Instance.runDataManager.Money;
-    internal static void Install(Harmony harmony)
+    internal static void Install(Harmony harmony, ManualLogSource logger)
     {
+        _logger = logger;
         foreach (var entry in EquipmentDefinitions.All.Where(Enabled))
         {
             Names[entry.Kind] = FoundationText.Register(entry.Key, "Name", entry.Name);
@@ -109,7 +113,7 @@ internal static class EquipmentFeature
         if (weapon is not null)
         {
             var plan = State(player.PlayerData).PlanOpening(hit.Id, weapon.Id, Has(player, CustomEquipment.BorrowersScabbard),
-                EquipmentMath.Full(weapon.Durability, weapon.MaximumDurability, weapon.IsDefault));
+                EquipmentMath.Full(hit.Attack.WeaponDurabilityAtCommit, hit.Attack.WeaponMaximumDurabilityAtCommit, hit.Attack.WeaponIsDefaultAtCommit));
             hit.Tags[OpeningTag] = plan;
             if (plan.Bonus) hit.MultiplyDamage(1.5d);
         }
@@ -122,13 +126,21 @@ internal static class EquipmentFeature
         {
             CombatServices.ConsumeOpeningDurability(hit.Attack.Weapon);
             CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.BorrowersScabbard).Key, hit.ActualHpLoss);
+            if (_scabbardHitsLogged++ < 3)
+                _logger?.LogInfo(FormattableString.Invariant(
+                    $"[Terms & Contusions] Borrower's Scabbard opening hit confirmed: kind={hit.Kind}, durabilityAtCommit={hit.Attack.WeaponDurabilityAtCommit}/{hit.Attack.WeaponMaximumDurabilityAtCommit}, multiplier=1.5, preparedDamage={hit.Damage:0.###}, actualHpLoss={hit.ActualHpLoss}; additional durability requested (clamped if already broken)"));
         }
         if (hit.ActualHpLoss > 0)
         {
             if (hit.Tags.ContainsKey(HoodTag)) CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.ExecutionersHood).Key, hit.ActualHpLoss);
             if (hit.Tags.ContainsKey(SpursTag)) CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.DuelistsSpurs).Key, hit.ActualHpLoss);
             if (hit.Kind == DirectAttackKind.ThrownWeapon && hit.Attack.Tags.TryGetValue(ChalkTag, out var chalk) && chalk is true && hit.Attack.Tags.TryAdd(ChalkFeedbackTag, true))
+            {
                 CombatServices.NotifyActivation(player, EquipmentDefinitions.Get(CustomEquipment.ChalkBag).Key, hit.ActualHpLoss);
+                if (_chalkHitsLogged++ < 3)
+                    _logger?.LogInfo(FormattableString.Invariant(
+                        $"[Terms & Contusions] Chalk Bag prepared throw hit confirmed: multiplier=1.4, preparedDamage={hit.Damage:0.###}, actualHpLoss={hit.ActualHpLoss}"));
+            }
         }
         if (hit.TargetIsHostileEnemy && state.ClaimBackstab(Has(player, CustomEquipment.PickpocketsMitts), hit.ActualHpLoss > 0 && hit.IsBackstab, hit.TargetId))
             AddGold(player);
@@ -156,7 +168,7 @@ internal static class EquipmentFeature
     }
     private static bool Stationary(Player player)
     { var velocity = player.CurrentVelocity; return velocity.x * velocity.x + velocity.z * velocity.z <= .0001f; }
-    private static bool AimEligible(Player player) => !player.IsDead && player.IsAimingThrow && !player.ThrowOffhandActive && player.CurrentWeapon is not null && Stationary(player);
+    private static bool AimEligible(Player player) => CombatServices.IsPreparingNormalThrow(player) && Stationary(player);
     private static void Tick()
     {
         if (!Active || !PlayerManager.InstanceExists || PlayerManager.Instance.PlayerCount == 0)
@@ -173,7 +185,17 @@ internal static class EquipmentFeature
         // The accumulated preparation still comes solely from eligible aiming ticks.
         var eligible = EquipmentMath.ChalkReleaseEligible(!player.IsDead, player.IsOwner, player.ThrowOffhandActive,
             player.CurrentWeapon is not null, Stationary(player));
-        attack.Tags[ChalkTag] = State(player.PlayerData).ReleaseThrow(Now, Has(player, CustomEquipment.ChalkBag), eligible);
+        var state = State(player.PlayerData);
+        var equipped = Has(player, CustomEquipment.ChalkBag);
+        var heldSeconds = state.ChalkPreparationSeconds(Now);
+        var ready = state.ReleaseThrow(Now, equipped, eligible);
+        attack.Tags[ChalkTag] = ready;
+        if (equipped && _chalkReleasesLogged < 3)
+        {
+            _chalkReleasesLogged++;
+            _logger?.LogInfo(FormattableString.Invariant(
+                $"[Terms & Contusions] Chalk Bag release: preparedSeconds={heldSeconds:0.###}, releaseEligible={eligible}, empowered={ready}"));
+        }
     }
     private static void Recovered(Player player, Weapon weapon, PhysicalWeapon physical, bool ownThrow)
     {

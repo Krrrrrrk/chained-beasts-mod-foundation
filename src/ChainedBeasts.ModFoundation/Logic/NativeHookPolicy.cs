@@ -5,7 +5,7 @@ namespace ChainedBeasts.ModFoundation.Logic;
 /// <summary>Known unsafe native targets on the inspected build. A managed wrapper does not prove a unique native body.</summary>
 public static class NativeHookPolicy
 {
-    // Both wrappers share RVA 0x7c44d0 and only conditionally call Weapon.Attack,
+    // Both wrappers share RVA 0x7d4370 and only conditionally call Weapon.Attack,
     // which has its own unique observed body. Observe that base call instead.
     public static bool ObserveWeaponMethod(string declaringType, string method) =>
         method != "Attack" || declaringType is not ("WeaponCharge" or "WeaponAxeCharge");

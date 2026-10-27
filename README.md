@@ -2,18 +2,20 @@
 
 **Terms & Contusions** is my experimental content pack for Chained Beasts: 46 skills, equipment items, potion afflictions and surgeries. **Mod Foundation** is the shared code behind it, which other modders can use to make their own additions.
 
+The [**0.9.3 experimental prerelease**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3) targets **Chained Beasts 1.0.2**, Steam build **26231777**. [**Battle Numbers 0.2.2**](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) is the optional companion. See [compatibility notes](docs/GAME_UPDATE_1.0.2.md).
+
 | What do you want to do? | Start here |
 |---|---|
 | **Play with the content I made** | [Quick install](#quick-install) — download the ready-made mod |
 | **Build the project or make your own mod** | [Developer starting point](#make-your-own-mod) — source, examples and tutorials |
 
-**I made zero attempt to balance these experimental additions.** They might be wildly overpowered, bad, or simply not work yet. The stable **0.8.3 release is Solo-only**. The [**0.9.1 experimental prerelease**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1) adds multiplayer support and activation feedback; host/client gameplay verification is still pending.
+**I made zero attempt to balance these experimental additions.** They might be wildly overpowered, bad, or simply not work yet. My quick Solo check looks okay so far. Everything is still experimental and needs more testing, especially multiplayer.
 
 <a id="install"></a>
 
 ## Quick install
 
-These steps are for the **Steam version of Chained Beasts on 64-bit Windows**. The current release is **0.8.3**, built for game version **1.0.1**. You do not need Git, PowerShell or a .NET SDK to install the downloads.
+These steps are for the **Steam version of Chained Beasts on 64-bit Windows**. The current experimental release is **0.9.3**, built for game version **1.0.2**, Steam build **26231777**. You do not need Git, PowerShell or a .NET SDK to install the downloads.
 
 **Already using an older version of this mod?** Follow [updating an existing install](docs/INSTALLATION.md#updating-an-existing-install) first.
 
@@ -35,7 +37,7 @@ Use the linked IL2CPP x64 build; the Mono and x86 downloads are for other game s
 
 ### 3. Install Terms & Contusions
 
-[**Download Terms & Contusions 0.8.3 + Foundation — the recommended mod ZIP**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.8.3/TermsAndContusions-with-Foundation-0.8.3.zip)
+[**Download Terms & Contusions 0.9.3 + Foundation — the recommended mod ZIP**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/TermsAndContusions-with-Foundation-0.9.3.zip)
 
 Open that ZIP and copy its **`BepInEx` folder into the same game folder** from step 1, merging it with the existing `BepInEx` folder.
 
@@ -52,14 +54,14 @@ Start the game normally and play **Solo**. The additions appear through the norm
 
 Custom descriptions begin with **`TC:`**, making them easy to spot. You do not need to open the F1 testing menu or enable forced offers to play.
 
-**Need help?** See [troubleshooting](docs/INSTALLATION.md#troubleshooting), [settings](docs/INSTALLATION.md#configuration), or [removing the mod and rolling back](docs/INSTALLATION.md#uninstalling-and-rolling-back). [All release downloads](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3) are available for people who need individual packages.
+**Need help?** See [troubleshooting](docs/INSTALLATION.md#troubleshooting), [settings](docs/INSTALLATION.md#configuration), or [removing the mod and rolling back](docs/INSTALLATION.md#uninstalling-and-rolling-back). [All release downloads](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3) are available for people who need individual packages.
 
 ## Experimental multiplayer downloads
 
-For the new mechanics fixes and activation cues, use the [**0.9.1 prerelease**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1). These builds pass nongame checks but still need manual gameplay testing.
+The [**0.9.3 prerelease**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3) includes multiplayer support, mechanics fixes and activation cues for game **1.0.2**. Broader gameplay and host/client testing are still needed.
 
-- [Foundation + Terms & Contusions 0.9.1](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.1/TermsAndContusions-with-Foundation-0.9.1.zip)
-- [All three multiplayer test mods, including Battle Numbers 0.2.0](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.1/Chained-Beasts-Multiplayer-Test-0.9.1.zip)
+- [Foundation + Terms & Contusions 0.9.3](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/TermsAndContusions-with-Foundation-0.9.3.zip)
+- [All three multiplayer test mods, including Battle Numbers 0.2.2](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/Chained-Beasts-Multiplayer-Test-0.9.3.zip)
 
 Use the [multiplayer setup guide](docs/MULTIPLAYER.md): everyone needs matching gameplay DLLs/settings and must join before starting or resuming. Back up your complete save/config/plugin set before switching versions.
 
@@ -104,10 +106,10 @@ Close the game before editing these files, then restart. Normal offers are enabl
 
 **F1 opens an optional testing menu** with healing, gold, skill/injury controls, offer rerolls and temporary cheats. Use a disposable run when experimenting with those controls. Surgery rerolls are still unreliable.
 
-In the **0.9.1 source test build**, custom procs also have an optional local dust
+In **0.9.3**, custom procs also have an optional local dust
 puff and swish when their benefit is confirmed. Butcher's Apron cues actual HP
 restored, including the normal healing cap. See [activation feedback, settings
-and the mechanics review](docs/ACTIVATION_FEEDBACK.md); runtime testing is pending.
+and the mechanics review](docs/ACTIVATION_FEEDBACK.md). I still need to test more effects and interactions.
 
 <a id="build-and-make-your-own-mod"></a>
 
@@ -130,11 +132,11 @@ For deeper work, see [architecture](docs/foundation/ARCHITECTURE.md), [mechanics
 
 ## Testing and limitations
 
-The inspected setup is **Chained Beasts 1.0.1**, **Unity 6000.3.21f1**, Windows x64, and the BepInEx build linked above.
+The current build targets **Chained Beasts 1.0.2**, Steam build **26231777**, **Unity 6000.3.21f1**, Windows x64, and the BepInEx build linked above.
 
-I played **0.8.2 without encountering crashes** after the earlier hook fixes. The **0.8.3** description tags and normal-offer update are build checked and still need a fresh in-game check. I haven't verified every rank, interaction or save/resume case. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.8.3).
+My quick Solo check looks okay so far. I haven't verified every rank, interaction or save/resume case, and multiplayer still needs a manual host/client test. See the [0.9.3 release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3).
 
-- **Published 0.8.3 is Solo-only.** The [0.9.1 multiplayer test build](docs/MULTIPLAYER.md) requires matching mods on every PC and everyone joining before starting/resuming. It still needs a manual host/client test.
+- [Experimental multiplayer](docs/MULTIPLAYER.md) requires matching gameplay mods and settings on every PC, with everyone joining before starting/resuming. Late joining, reconnecting and host migration are not supported.
 - Icons and models reuse the game's existing visuals.
 - New text uses English fallback; supplied translations have not had native-speaker review.
 - Custom save data is not automatically synchronized through Steam Cloud. Back up the complete save folder and matching mods/configs together.

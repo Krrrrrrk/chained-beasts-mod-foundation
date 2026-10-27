@@ -1,24 +1,25 @@
 # Experimental multiplayer build
 
-I'm adding multiplayer support in **Foundation + Terms & Contusions 0.9.1** and
-**Battle Numbers 0.2.0**. These are [experimental prerelease downloads](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1), separate from the stable 0.8.3 / 0.1.1
-releases. Builds and nongame checks pass; **actual host/client gameplay is still
-awaiting a manual test**. The additions are still deliberately unbalanced.
+The experimental prereleases target **Chained Beasts 1.0.2 / Steam build 26231777**
+with **Foundation + Terms & Contusions 0.9.3** and **Battle Numbers 0.2.2**.
+My quick Solo check looks good and builds/nongame checks pass; **actual
+host/client gameplay is still awaiting a manual test**. I have made no attempt
+to balance the additions. See [game-update notes](GAME_UPDATE_1.0.2.md).
 
-[Download the complete three-mod test ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.1/Chained-Beasts-Multiplayer-Test-0.9.1.zip), or get [Foundation + TC only](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.1/TermsAndContusions-with-Foundation-0.9.1.zip) and [Battle Numbers separately](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.0). BepInEx remains a separate installation.
+Download the [0.9.3 three-mod ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/Chained-Beasts-Multiplayer-Test-0.9.3.zip), or the [Foundation + TC ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/TermsAndContusions-with-Foundation-0.9.3.zip) and [Battle Numbers 0.2.2](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) separately. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once). Earlier Foundation/TC releases through 0.9.1 and Battle Numbers through 0.2.0 target game 1.0.1; those releases haven't been replaced and don't support the updated game.
 
 ## Install on every PC
 
 1. Close Chained Beasts on each PC. Back up the whole `BepInEx/plugins`,
    `BepInEx/config` and `%USERPROFILE%/AppData/LocalLow/Featherweight Games/ChainedBeasts`
    folders together, including `ModFoundation/checkpoints`.
-2. Keep BepInEx **6.0.0-be.791+b782da4 Unity IL2CPP x64**, game 1.0.1 / Steam
-   build 26041777 / Unity 6000.3.21f1. Generate interop locally through the loader;
+2. Keep BepInEx **6.0.0-be.791+b782da4 Unity IL2CPP x64**, game 1.0.2 / Steam
+   build 26231777 / Unity 6000.3.21f1. Generate interop locally through the loader;
    don't copy someone else's generated game bindings.
 3. Remove old copies of these three plugin assemblies from every plugin
    subfolder, including `BattleNumbers`. Extract the multiplayer ZIP's `BepInEx`
-   folder into the game root. It contains Foundation 0.9.1, TermsAndContusions
-   0.9.1 and BattleNumbers 0.2.0. The plugin ZIP doesn't contain the loader.
+   folder into the game root. The 0.9.3 ZIP contains Foundation 0.9.3,
+   TermsAndContusions 0.9.3 and BattleNumbers 0.2.2. It doesn't contain the loader.
 4. Send the **same ZIP** to everyone. Match the content enable switches and
    surgery prices in `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`.
    Cosmetic Battle Numbers colors/scale/lifetime can differ. Forced offers and
@@ -62,12 +63,16 @@ checkpoint agreement blocks that transition/restore and logs an error rather
 than silently writing incomplete custom state. The host remains the source of
 the resumed checkpoint; keep the same host and roster.
 
-Battle Numbers remains cosmetic and standalone. Version 0.2.0 on the host
+Battle Numbers remains cosmetic and standalone. Version 0.2.2 on the host
 measures actual HP loss and sends it to subscribed player owners. Each client
 shows its own outgoing/incoming numbers, rather than another player's hits.
-Clients need a 0.2.0 host to receive these receipts. It changes no damage or HP.
+Clients need a matching updated host to receive these receipts. It changes no damage or HP.
 
-For the 0.9.1 mechanics review, confirmed healing and optional local dust/swish cues,
+Battle Numbers **0.2.2** retains the Skranji HUD font update and 0.2.x cosmetic
+protocol. Font choice is local and does not need to match other players. Its
+appearance still needs broader manual checks.
+
+For the mechanics review, latest direct-hit fixes, confirmed healing and optional local dust/swish cues,
 see [activation feedback](ACTIVATION_FEEDBACK.md). Its known latency/weapon-transfer
 limits are still awaiting manual tests.
 
@@ -110,16 +115,16 @@ on one PC need extra UI verification.
 Close the game before rolling back. Restore the **paired pre-test plugins,
 configuration and complete user-data backup together** on each PC. Don't just
 swap DLLs and continue a run owning incompatible custom content. Don't mix
-0.9.1 gameplay DLLs with the 0.8.3 release. The local deploy script records its
-backup in `artifacts/packages/0.9.1/deployment.json`; use
+0.9.3 gameplay DLLs with older releases. The local deploy script records its
+backup in `artifacts/packages/0.9.3/deployment.json`; use
 `scripts/restore-plugin-backup.ps1` with that checkpoint to restore the matching
 set.
 
 ## Build and local handoff
 
 The companion checkout belongs at `chained-beasts-battle-numbers` and has its own
-Git history; it is ignored by this repository. Use its matching multiplayer
-source rather than its published 0.1.1 DLL.
+Git history; it is ignored by this repository. Use its matching 0.2.2 source
+when building the all-three package.
 
 Independent content providers must register compatibility during plugin load:
 
@@ -142,5 +147,5 @@ pwsh -NoProfile -File scripts/build-and-deploy-plugin.ps1 -Deploy -SkipBuild -In
 ```
 
 The combined handoff is
-`artifacts/packages/0.9.1/Chained-Beasts-Multiplayer-Test-0.9.1.zip`. No build,
+`artifacts/packages/0.9.3/Chained-Beasts-Multiplayer-Test-0.9.3.zip`. No build,
 check or package command launches the game or publishes a GitHub release.

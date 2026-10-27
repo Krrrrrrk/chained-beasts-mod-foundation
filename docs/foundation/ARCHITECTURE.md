@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart LR
-    Pack[TermsAndContusions.dll] -->|hard dependency >=0.9.1 and <0.10.0| Foundation[ChainedBeasts.ModFoundation.dll]
+    Pack[TermsAndContusions.dll] -->|hard dependency >=0.9.3 and <0.10.0| Foundation[ChainedBeasts.ModFoundation.dll]
     Example[Optional StandaloneContentExample.dll] -->|same version range| Foundation
     Pack --> Game[Installed generated IL2CPP bindings]
     Foundation --> Game
@@ -52,7 +52,7 @@ The confirmed v0.7.3 banner fix remains intact: forced Bulk Up updates both the 
 
 See [the exact protocol](PERSISTENCE.md) and [native hook safety](MECHANICS.md#native-hook-safety). New per-content ownership is external, associated with one shared native discriminator and canonical full-checkpoint fingerprint. A sidecar is published only after successful native SaveData task completion, with exact-file proof for crash-window recovery. Native equipment/surgery histories are never overwritten by duplicate sidecar ownership.
 
-Run reset/clear/new identity clears live state. Immutable archives remain for paired older-save backups. Unknown data is preserved; actual restoration refuses missing/incompatible/disabled owned content rather than resuming an incomplete build. The published 0.8.3 adapter is Solo-only. The 0.9.0 source adds experimental matched-party Local/Online state exchange and checkpoint agreement; see [multiplayer requirements and pending tests](../MULTIPLAYER.md).
+Run reset/clear/new identity clears live state. Immutable archives remain for paired older-save backups. Unknown data is preserved; actual restoration refuses missing/incompatible/disabled owned content rather than resuming an incomplete build. The older 0.8.3 adapter is Solo-only. The 0.9.3 experimental release includes matched-party Local/Online state exchange and checkpoint agreement; see [multiplayer requirements and pending tests](../MULTIPLAYER.md).
 
 Developer actions and forced offers require real Solo mode, one local client, one player, and host authority. God mode/stamina overrides clear on reset or leaving that state. The minimal battle key covers the current level scope, not all future enemy/weapon lifecycle semantics.
 

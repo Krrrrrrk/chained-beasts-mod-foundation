@@ -12,6 +12,11 @@ public sealed class AttackRecord
     public DirectAttackKind Kind { get; internal set; }
     public double BeforeCostStamina01 { get; internal set; }
     public PhysicalWeapon Weapon { get; internal set; }
+    // Snapshot before the attack pays native durability costs (throws pay at launch).
+    // The mutable PhysicalWeapon remains authoritative for later spending/identity.
+    public int WeaponDurabilityAtCommit { get; internal set; }
+    public int WeaponMaximumDurabilityAtCommit { get; internal set; }
+    public bool WeaponIsDefaultAtCommit { get; internal set; } = true;
     public bool IsUnarmed { get; internal set; }
     internal Dictionary<IntPtr, bool> Backstabs { get; } = new();
     internal bool CostCaptured;
@@ -82,6 +87,8 @@ public static class CombatServices
     public static event Func<AttackRecord, NetworkAgent, double> OutgoingKnockbackMultiplier;
     public static bool IsSpecialMeleePayment => NativeCombat.SpecialPayment;
     public static AttackRecord CurrentDirectAttack => NativeCombat.CurrentAttack;
+    /// <summary>Genuine held-weapon throw windup, including flails; excludes primary attacks and offhands.</summary>
+    public static bool IsPreparingNormalThrow(Player player) => NativeThrowing.IsPreparingNormalThrow(player);
     internal static double KnockbackMultiplier(AttackRecord attack, NetworkAgent target) => Product(OutgoingKnockbackMultiplier, callback => callback(attack, target));
     /// <summary>Explicit generated damage never inherits a direct-contact scope.</summary>
     public static void DealGeneratedDamage(Player source, NetworkHealthObject target, int amount) => NativeCombat.GeneratedDamage(source, target, amount);

@@ -25,8 +25,8 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.termsandcontusions";
     public const string PluginName = "Terms & Contusions";
-    public const string PluginVersion = "0.9.1";
-    public const string FoundationVersionRange = ">=0.9.1 <0.10.0";
+    public const string PluginVersion = "0.9.3";
+    public const string FoundationVersionRange = ">=0.9.3 <0.10.0";
 
     public override void Load()
     {
@@ -141,7 +141,7 @@ public sealed class Plugin : BasePlugin
         });
         InstallFeature("four-rank skills", "skills", skillEnabled.Values.Any(value => value), harmony => SkillsFeature.Install(harmony, Log));
         InstallFeature("Counterweight Sling", "sling", slingEnabled, CounterweightSlingFeature.Install);
-        InstallFeature("equipment catalog", "equipment", equipmentEnabled.Values.Any(value => value), EquipmentFeature.Install);
+        InstallFeature("equipment catalog", "equipment", equipmentEnabled.Values.Any(value => value), harmony => EquipmentFeature.Install(harmony, Log));
         InstallFeature("Runner's Wraps", "runnerswraps", enableRunnersWraps.Value,
             harmony => RunnersWrapsFeature.Install(harmony, Log, allowForcedOffers && forceRunnersWraps.Value));
         InstallFeature("Leadfoot", "leadfoot", enableLeadfoot.Value,

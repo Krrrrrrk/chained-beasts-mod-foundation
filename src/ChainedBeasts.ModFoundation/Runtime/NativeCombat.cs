@@ -117,7 +117,7 @@ internal static class NativeCombat
         Patch(typeof(Projectile), nameof(Projectile.DealDamage), nameof(ProjectileBefore), finallyName: nameof(ProjectileFinally), args: new[]
             { typeof(NetworkHealthObject), typeof(bool), typeof(BattleEventData), typeof(bool) });
         Patch(typeof(NetworkHealthObject), nameof(NetworkHealthObject.TakeDamage), nameof(DamageBefore), nameof(DamageAfter), nameof(DamageFinally),
-            typeof(float), typeof(int), typeof(DamageType), typeof(DamageEventSource), typeof(bool), typeof(bool), typeof(bool), typeof(bool));
+            typeof(float), typeof(int), typeof(DamageType), typeof(DamageEventSource), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool));
         Patch(typeof(NetworkHealthObject), "TakeDamageRpc", nameof(ReceiptBefore), nameof(ReceiptAfter), null,
             typeof(int), typeof(ulong), typeof(bool), typeof(DamageType), typeof(bool), typeof(bool), typeof(bool), typeof(RpcParams));
         Patch(typeof(Weapon), nameof(Weapon.LoseDurability), nameof(BreakBefore), nameof(BreakAfter), nameof(BreakFinally), typeof(int));
@@ -143,9 +143,16 @@ internal static class NativeCombat
         var signature = player.AttackStartTimestamp.ToString("R", CultureInfo.InvariantCulture) + ":" +
             (weapon?.Pointer.ToString() ?? "none") + ":" + (weapon?.AttackIndex ?? 0) + ":" + kind;
         var id = player.PlayerData.playerID;
-        var attack = Actions.GetOrCreate(id, signature, () => new AttackRecord { Id = "action:" + ++_sequence, Player = player, Kind = kind, Weapon = NativeWeaponIdentity.For(weapon),
-            IsUnarmed = weapon?.WeaponClass == WeaponClass.Unarmed,
-            BeforeCostStamina01 = player.Stamina / Math.Max(.001d, player.StaminaMax) }, out var created);
+        var attack = Actions.GetOrCreate(id, signature, () =>
+        {
+            var physical = NativeWeaponIdentity.For(weapon);
+            return new AttackRecord { Id = "action:" + ++_sequence, Player = player, Kind = kind, Weapon = physical,
+                WeaponDurabilityAtCommit = physical?.Durability ?? 0,
+                WeaponMaximumDurabilityAtCommit = physical?.MaximumDurability ?? 0,
+                WeaponIsDefaultAtCommit = physical is null || physical.IsDefault,
+                IsUnarmed = weapon?.WeaponClass == WeaponClass.Unarmed,
+                BeforeCostStamina01 = player.Stamina / Math.Max(.001d, player.StaminaMax) };
+        }, out var created);
         if (created) CombatServices.Commit(attack);
         return attack;
     }

@@ -96,6 +96,7 @@ public sealed class EquipmentBattleState
         var ready = equipped && stationaryAndAiming && _aimSince.HasValue && now - _aimSince.Value >= 1.5d;
         _aimSince = null; _restoredChalk = 0; return ready;
     }
+    public double ChalkPreparationSeconds(double now) => _aimSince.HasValue ? Math.Clamp(now - _aimSince.Value, 0d, 1.5d) : _restoredChalk;
     public void EquipmentChanged() { _aimSince = null; _restoredChalk = 0; }
     public EquipmentSnapshot Capture(double now)
     {
@@ -103,7 +104,7 @@ public sealed class EquipmentBattleState
         return new EquipmentSnapshot { LedgerEvaluated = _state.LedgerEvaluated, LedgerPaid = _state.LedgerPaid,
             LocketSpent = _state.LocketSpent, PocketGold = _state.PocketGold, Backstabbed = _state.Backstabbed.ToArray(),
             OpenedWeapons = _state.OpenedWeapons.ToArray(), RepairedWeapons = _state.RepairedWeapons.ToArray(), Executed = _state.Executed.ToArray(),
-            ChalkElapsed = _aimSince.HasValue ? Math.Clamp(now - _aimSince.Value, 0d, 1.5d) : _restoredChalk };
+            ChalkElapsed = ChalkPreparationSeconds(now) };
     }
     public static EquipmentBattleState Restore(EquipmentSnapshot value)
     {

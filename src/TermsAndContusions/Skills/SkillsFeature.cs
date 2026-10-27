@@ -19,6 +19,7 @@ internal static class SkillsFeature
     private const string FeatureStateKey = "terms-and-contusions:skills/combat-v1";
     private const string PickTag = "terms-and-contusions:pick-ready";
     private const string PlanTag = "terms-and-contusions:hit-plan";
+    private const string FreshTag = "terms-and-contusions:fresh-hit";
     private static readonly Dictionary<int, SkillCombatState> States = new();
     private static readonly Dictionary<CustomSkill, string> Names = new();
     private static readonly Dictionary<CustomSkill, string> Descriptions = new();
@@ -28,6 +29,8 @@ internal static class SkillsFeature
     private static readonly Dictionary<int, int> PickEpochs = new();
     private static double Now => Time.timeAsDouble;
     private static double _battleStartedAt;
+    private static ManualLogSource _logger;
+    private static int _freshHitsLogged, _freshRejectedLogged;
 
     internal static bool Enabled(SkillEntry entry) => entry is not null && FoundationServices.Content.TryGet(entry.Key, out var content) && content.Enabled;
     internal static int Rank(PlayerData data, CustomSkill kind)
@@ -48,6 +51,7 @@ internal static class SkillsFeature
     }
     internal static void Install(Harmony harmony, ManualLogSource logger)
     {
+        _logger = logger;
         foreach (var entry in SkillDefinitions.All.Where(Enabled))
         {
             Names[entry.Kind] = FoundationText.Register(entry.Key, "Name", entry.Name);
@@ -179,9 +183,12 @@ internal static class SkillsFeature
         var plan = State(player).Plan(hit.Id, kind, Now, Rank(data, CustomSkill.MixedMartialArts), Rank(data, CustomSkill.PaybackPlan), data.MaxHealth);
         hit.Tags[PlanTag] = plan;
         hit.FlatDamageBonus += plan.Payback;
+        var freshRank = hit.TargetIsHostileEnemy ? Rank(data, CustomSkill.FreshMeat) : 0;
+        var freshFactor = SkillMath.Fresh(freshRank, hit.HealthBefore, hit.EffectiveMaximumBefore);
+        if (freshRank > 0) hit.Tags[FreshTag] = freshFactor;
         hit.Damage = SkillMath.DirectDamage(hit.Damage, kind == HitKind.Melee, hit.Attack.BeforeCostStamina01,
             hit.HealthBefore, hit.EffectiveMaximumBefore, Rank(data, CustomSkill.MeasuredViolence), Rank(data, CustomSkill.RunningOnFumes),
-            hit.TargetIsHostileEnemy ? Rank(data, CustomSkill.FreshMeat) : 0, 0, false, plan.Multiplier, plan.Payback);
+            freshRank, 0, false, plan.Multiplier, plan.Payback);
     }
     private static double PickContribution(NativeStatContext context)
     {
@@ -205,6 +212,18 @@ internal static class SkillsFeature
                     CombatServices.NotifyActivation(hit.Attack.Player, SkillDefinitions.Get(CustomSkill.MixedMartialArts).Key, plan.Multiplier - 1);
                 if (plan.Payback > 0)
                     CombatServices.NotifyActivation(hit.Attack.Player, SkillDefinitions.Get(CustomSkill.PaybackPlan).Key, plan.Payback);
+            }
+        }
+        if (hit.ActualHpLoss > 0 && hit.Tags.TryGetValue(FreshTag, out var fresh))
+        {
+            hit.Tags.Remove(FreshTag); // The captured pre-hit condition cannot emit twice.
+            var factor = (double)fresh;
+            if (factor > 1) CombatServices.NotifyActivation(hit.Attack.Player, SkillDefinitions.Get(CustomSkill.FreshMeat).Key, factor - 1);
+            if (factor > 1 ? _freshHitsLogged < 3 : _freshRejectedLogged < 3)
+            {
+                if (factor > 1) _freshHitsLogged++; else _freshRejectedLogged++;
+                _logger?.LogInfo(FormattableString.Invariant(
+                    $"[Terms & Contusions] Fresh Meat hit confirmed: eligible={factor > 1}, targetBefore={hit.HealthBefore}/{hit.EffectiveMaximumBefore}, multiplier={factor:0.###}, preparedDamage={hit.Damage:0.###}, actualHpLoss={hit.ActualHpLoss}"));
             }
         }
     }

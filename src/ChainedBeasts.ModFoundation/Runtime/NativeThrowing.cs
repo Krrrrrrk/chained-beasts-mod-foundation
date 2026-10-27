@@ -37,18 +37,26 @@ internal static class NativeThrowing
     private static readonly Dictionary<string, LaunchInfo> Requests = new(StringComparer.Ordinal);
     private static readonly Dictionary<IntPtr, LaunchInfo> Coroutines = new();
     private static readonly Dictionary<IntPtr, (int Generation, AttackRecord Attack)> Projectiles = new();
+    private static readonly Dictionary<int, ThrowAim> NormalThrowAims = new();
+    internal static bool IsPreparingNormalThrow(Player player)
+    {
+        if (!NativeCombat.Active || player is null || !player.IsOwner || player.IsDead || player.PlayerData is null ||
+            !NormalThrowAims.TryGetValue(player.PlayerData.playerID, out var aim)) return false;
+        return aim.Matches(player.CurrentWeapon?.Pointer.ToInt64() ?? 0, player.AttackStartTimestamp,
+            player.AttackState == NetworkAgent.eAttackState.Windup, player.AttackType == NetworkAgent.eAttackType.Ranged, player.ThrowOffhandActive);
+    }
 
     internal static void Install(Harmony harmony)
     {
         void Patch(Type type, string name, string before = null, string after = null, string final = null, params Type[] args) =>
             FeaturePatcher.Patch(harmony, typeof(NativeThrowing), FeaturePatcher.RequireMethod(type, name, args), before, after, final);
-        Patch(typeof(NetworkAgent._RunWindupLoop_d__443), "MoveNext", nameof(ClockBefore), nameof(ClockAfter));
+        Patch(typeof(NetworkAgent._RunWindupLoop_d__461), "MoveNext", nameof(ClockBefore), nameof(ClockAfter));
         Patch(typeof(NetworkAgent), nameof(NetworkAgent.ExecuteThrow), nameof(ReleaseBefore), final: nameof(ReleaseFinally), args: new[] { typeof(Weapon), typeof(NetworkAgent.eAttackMode) });
         Patch(typeof(NetworkAgent), nameof(NetworkAgent.LaunchThrowProjectileRPC), nameof(RequestBefore), final: nameof(RequestFinally), args: new[]
         { typeof(double), typeof(float), typeof(PickupType), typeof(int), typeof(int), typeof(Vector3), typeof(Vector3), typeof(Quaternion), typeof(float), typeof(float), typeof(float), typeof(float), typeof(ulong), typeof(int), typeof(bool), typeof(bool), typeof(Vector3) });
         Patch(typeof(NetworkAgent), "LaunchThrowPostDelay", after: nameof(Created), args: new[]
         { typeof(float), typeof(PickupType), typeof(int), typeof(int), typeof(Vector3), typeof(Vector3), typeof(Quaternion), typeof(float), typeof(float), typeof(float), typeof(float), typeof(ulong), typeof(int), typeof(bool), typeof(bool), typeof(Vector3) });
-        Patch(typeof(NetworkAgent._LaunchThrowPostDelay_d__476), "MoveNext", nameof(LaunchBefore), nameof(LaunchAfter), nameof(LaunchFinally));
+        Patch(typeof(NetworkAgent._LaunchThrowPostDelay_d__496), "MoveNext", nameof(LaunchBefore), nameof(LaunchAfter), nameof(LaunchFinally));
         Patch(typeof(Projectile), nameof(Projectile.Launch), nameof(ProjectileBefore), nameof(ProjectileAfter), args: new[]
         { typeof(Vector3), typeof(float), typeof(float), typeof(float), typeof(bool), typeof(Unity.Netcode.NetworkObject), typeof(PickupType), typeof(int), typeof(int), typeof(ulong), typeof(int), typeof(float), typeof(bool), typeof(bool), typeof(bool) });
         // OnDespawn is a folded native ret shared with unrelated no-ops; never detour it.
@@ -64,23 +72,26 @@ internal static class NativeThrowing
 
     // One canonical clock augmentation for both native throw windup and charging.
     // Do not also divide durations or modify charge-scale getters.
-    private static void ClockBefore(NetworkAgent._RunWindupLoop_d__443 __instance, out ClockScope __state)
+    private static void ClockBefore(NetworkAgent._RunWindupLoop_d__461 __instance, out ClockScope __state)
     {
         __state = null;
-        if (!NativeCombat.Active || __instance.attackMode != NetworkAgent.eAttackMode.ThrowWeapon || __instance.__1__state is not (0 or 1)) return;
+        if (!NativeCombat.Active || __instance.__1__state is not (0 or 1)) return;
         var player = __instance.__4__this?.TryCast<Player>();
         if (player is null || !player.IsOwner || player.IsDead || __instance.weaponInstance is null ||
             player.CurrentWeapon?.Pointer != __instance.weaponInstance.Pointer) return;
+        var id = player.PlayerData.playerID;
+        if (__instance.attackMode != NetworkAgent.eAttackMode.ThrowWeapon) { NormalThrowAims.Remove(id); return; }
+        NormalThrowAims[id] = new ThrowAim(__instance.weaponInstance.Pointer.ToInt64(), player.AttackStartTimestamp);
         __state = new ClockScope { First = __instance.__1__state == 0,
             Extra = ThrowPhysics.ExtraClockStep(Time.deltaTime, Factor(player, StatChannel.ThrowChargeSpeed)) };
         if (!__state.First) AdvanceClock(__instance, __state.Extra);
     }
-    private static void ClockAfter(NetworkAgent._RunWindupLoop_d__443 __instance, bool __result, ClockScope __state)
+    private static void ClockAfter(NetworkAgent._RunWindupLoop_d__461 __instance, bool __result, ClockScope __state)
     {
         // The first native step initializes waitTimer; augment it only after initialization.
         if (__result && __state?.First == true) AdvanceClock(__instance, __state.Extra);
     }
-    private static void AdvanceClock(NetworkAgent._RunWindupLoop_d__443 clock, double extra)
+    private static void AdvanceClock(NetworkAgent._RunWindupLoop_d__461 clock, double extra)
     {
         if (extra <= 0) return;
         if (clock.__4__this.IsChargingUp) clock.weaponInstance.chargeUpTimer += (float)extra;
@@ -125,7 +136,7 @@ internal static class NativeThrowing
     private static Exception RequestFinally(Exception __exception, LaunchInfo __state) { _launch = __state; return __exception; }
     private static void Created(IEnumerator __result)
     { if (_launch is not null && __result is not null) Coroutines[__result.Pointer] = _launch; }
-    private static void LaunchBefore(NetworkAgent._LaunchThrowPostDelay_d__476 __instance, out LaunchInfo __state)
+    private static void LaunchBefore(NetworkAgent._LaunchThrowPostDelay_d__496 __instance, out LaunchInfo __state)
     {
         __state = _launch;
         if (Coroutines.TryGetValue(__instance.Pointer, out var info)) { _launch = info; return; }
@@ -137,7 +148,7 @@ internal static class NativeThrowing
         { Coroutines[__instance.Pointer] = _launch; return; }
         _launch = null;
     }
-    private static void LaunchAfter(NetworkAgent._LaunchThrowPostDelay_d__476 __instance, bool __result)
+    private static void LaunchAfter(NetworkAgent._LaunchThrowPostDelay_d__496 __instance, bool __result)
     { if (!__result) Coroutines.Remove(__instance.Pointer); }
     private static Exception LaunchFinally(Exception __exception, LaunchInfo __state) { _launch = __state; return __exception; }
     private static void ProjectileBefore(out LaunchInfo __state) => __state = _launch;
@@ -187,5 +198,5 @@ internal static class NativeThrowing
     {
         foreach (var key in Requests.Where(value => Time.unscaledTimeAsDouble - value.Value.Created > 10d).Select(value => value.Key).ToArray()) Requests.Remove(key);
     }
-    private static void Reset() { Requests.Clear(); Coroutines.Clear(); Projectiles.Clear(); _release = null; _launch = null; _preview = null; }
+    private static void Reset() { Requests.Clear(); Coroutines.Clear(); Projectiles.Clear(); NormalThrowAims.Clear(); _release = null; _launch = null; _preview = null; }
 }
