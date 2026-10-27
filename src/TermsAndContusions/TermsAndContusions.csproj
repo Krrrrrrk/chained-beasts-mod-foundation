@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>TermsAndContusions</AssemblyName>
     <RootNamespace>TermsAndContusions</RootNamespace>
-    <Version>0.9.3</Version>
+    <Version>0.9.6</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChainedBeasts.ModFoundation\ChainedBeasts.ModFoundation.csproj">

@@ -103,6 +103,42 @@ public static class FoundationServices
 public static class SessionAccess
 {
     public static bool GameplayReady => CanUseDeveloperTools || MultiplayerServices.Ready;
+
+    /// <summary>A live run with spawned player slots; compatibility alone does not establish this during scene changes.</summary>
+    public static RunDataManager RuntimePlayerManager
+    {
+        get
+        {
+            if (!NetworkSession.InstanceExists || !PlayerManager.InstanceExists) return null;
+            var session = NetworkSession.Instance;
+            var players = PlayerManager.Instance;
+            if (session == null || players == null) return null;
+            var manager = session.runDataManager;
+            return manager != null && manager.playerDatas is { Count: > 0 } && players.players is { Count: > 0 }
+                ? manager : null;
+        }
+    }
+
+    /// <summary>Returns only a spawned object bound to this exact live roster entry, without invoking native convenience getters.</summary>
+    public static Player RuntimePlayer(PlayerData data)
+    {
+        if (data is null || data.Pointer == IntPtr.Zero || RuntimePlayerManager is not { } manager) return null;
+        var index = data.playerID;
+        var players = PlayerManager.Instance.players;
+        if (index < 0 || index >= players.Count) return null;
+        var current = false;
+        for (var i = 0; i < manager.playerDatas.Count; i++)
+        {
+            var entry = manager.playerDatas[i];
+            if (entry?.Pointer == data.Pointer && entry.playerID == index) { current = true; break; }
+        }
+        if (!current) return null;
+        var player = players[index];
+        if (player == null || player.Pointer == IntPtr.Zero || player.playerData?.Pointer != data.Pointer) return null;
+        var client = player.clientID?.Value;
+        return client is not null && client.PlayerIndex == (ulong)index ? player : null;
+    }
+
     public static bool IsSoloMode
     {
         get

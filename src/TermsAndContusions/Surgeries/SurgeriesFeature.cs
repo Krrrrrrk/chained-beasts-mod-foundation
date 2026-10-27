@@ -142,12 +142,12 @@ internal static class SurgeriesFeature
     private static bool Fury(NetworkAgentEffect<NetworkAttackEffects.eType> effects, NetworkAttackEffects.eType effect, bool positive)
     {
         if (!Active || effect != NetworkAttackEffects.eType.Rage || !positive) return true;
-        if (!PlayerManager.InstanceExists || PlayerManager.Instance.PlayerCount == 0) return true;
+        if (SessionAccess.RuntimePlayerManager is not { } manager) return true;
         Player player = null;
-        var dataList = NetworkSession.Instance.runDataManager.playerDatas;
+        var dataList = manager.playerDatas;
         for (var i = 0; i < dataList.Count; i++)
         {
-            var candidate = dataList[i].PlayerObject;
+            var candidate = SessionAccess.RuntimePlayer(dataList[i]);
             if (candidate?.AttackEffects?.Pointer == effects.Pointer) { player = candidate; break; }
         }
         if (player is null || !Has(player.PlayerData, CustomSurgery.FuryPacemaker)) return true;
@@ -158,11 +158,11 @@ internal static class SurgeriesFeature
     private static bool Incapacitated(Player player) => player.IsEffectActive(NetworkAttackEffects.eType.Stun) || player.IsEffectActive(NetworkAttackEffects.eType.StunSilent) || player.IsEffectActive(NetworkAttackEffects.eType.Trip);
     private static void Tick()
     {
-        if (!Active || !PlayerManager.InstanceExists || PlayerManager.Instance.PlayerCount == 0) return;
-        var dataList = NetworkSession.Instance.runDataManager.playerDatas;
+        if (!Active || SessionAccess.RuntimePlayerManager is not { } manager) return;
+        var dataList = manager.playerDatas;
         for (var i = 0; i < dataList.Count; i++)
         {
-            var data = dataList[i]; var player = data.PlayerObject; if (player is null || !player.IsOwner) continue;
+            var data = dataList[i]; var player = SessionAccess.RuntimePlayer(data); if (player is null || !player.IsOwner) continue;
             var state = State(data);
             if (player.IsDead || !player.InBattle) { state.DiscardLiveEffects(); continue; }
             state.Recovery(Incapacitated(player), Has(data, CustomSurgery.CounterweightImplant), Now, !player.IsIncapacitated);
@@ -189,7 +189,7 @@ internal static class SurgeriesFeature
         for (var i = 0; i < manager.playerDatas.Count; i++)
         {
             var data = manager.playerDatas[i]; var saved = FoundationServices.PlayerState(data).GetFeature<SurgerySnapshot>(StateKey); if (saved is null) continue;
-            var state = SurgeryBattleState.Restore(saved, Now); var player = PlayerManager.InstanceExists && PlayerManager.Instance.PlayerCount > 0 ? data.PlayerObject : null;
+            var state = SurgeryBattleState.Restore(saved, Now); var player = SessionAccess.RuntimePlayer(data);
             state.RebaseIncapacitation(player is not null && Incapacitated(player));
             foreach (var bleed in saved.Bleeds) if (!CombatServices.HasLiveTarget(bleed.Target))
             { state.RemoveBleed(bleed.Target); _logger?.LogInfo("[Terms & Contusions] discarded restored Talons bleed whose native arena target no longer exists"); }

@@ -22,6 +22,9 @@ internal static class NativePersistence
     private static CheckpointStore _store;
     private static string _savePath;
     private static int _noneIndex;
+    private static int _awardCount;
+    private static readonly CheckpointWireBinding WireBinding = new();
+    private static string _previewWarning;
     private static readonly RunStateSession State = new();
     private static readonly Dictionary<string, CheckpointEnvelope> Captured = new(StringComparer.Ordinal);
     private static readonly List<WriteTicket> Writes = new();
@@ -50,6 +53,7 @@ internal static class NativePersistence
     internal static void Install(Harmony harmony, ManualLogSource logger)
     {
         _noneIndex = NativeIndex(ContentCategory.Skill, (int)SkillType.None);
+        _awardCount = Enum.GetValues(typeof(AwardType)).Length;
         _store = new CheckpointStore(Path.Combine(Application.persistentDataPath, "ModFoundation", "checkpoints"));
         _savePath = Path.Combine(Application.persistentDataPath, "SaveData");
         void Patch(Type type, string name, string prefix = null, string postfix = null, string finalizer = null, params Type[] parameters) =>
@@ -96,6 +100,7 @@ internal static class NativePersistence
         var run = CurrentRun(manager);
         if (!State.Start(run.RunKey)) return;
         Captured.Clear();
+        WireBinding.RetainRun(run.RunKey);
         NativeOwnership.Reset();
         FoundationServices.PublishReset();
     }
@@ -154,7 +159,7 @@ internal static class NativePersistence
             envelope.Players.Add(checkpointPlayer.playerID, state);
         }
         Captured.Add(SnapshotKey(identity), envelope.Clone());
-        if (NativeMultiplayer.Online) NetworkCheckpoints.Publish(envelope);
+        if (NativeMultiplayer.Online) NetworkCheckpoints.Publish(envelope, CheckpointWireProjection.Fingerprint(Serialize(__result), _awardCount));
         CaptureFailures.Remove(identity.RunKey);
     }
 
@@ -282,10 +287,11 @@ internal static class NativePersistence
             var checkpoint = __instance.LastCheckpoint?.runData;
             if (checkpoint is not null)
             {
-                var envelope = Load(checkpoint);
+                var envelope = LoadForLiveRestore(checkpoint, allowPersisted: true);
                 foreach (var state in envelope.Players.Values) StateProjection.RequireAvailableOwnership(state, FoundationServices.Content);
                 FoundationServices.ValidateFeatures(envelope);
-                if (NativeMultiplayer.Online && !NetworkCheckpoints.AllowRestore(__instance, envelope)) return false;
+                if (NativeMultiplayer.Online && !NetworkCheckpoints.AllowRestore(__instance, envelope,
+                    CheckpointWireProjection.Fingerprint(Serialize(checkpoint), _awardCount))) return false;
             }
             return true;
         }
@@ -299,7 +305,7 @@ internal static class NativePersistence
     private static void RestoreBefore(RunDataManager.Checkpoint checkpoint)
     {
         if (!SessionAccess.IsSoloMode && !NativeMultiplayer.Ready) return;
-        _restoring = Load(checkpoint);
+        _restoring = LoadForLiveRestore(checkpoint);
         FoundationServices.ValidateFeatures(_restoring);
         foreach (var state in _restoring.Players.Values) StateProjection.RequireAvailableOwnership(state, FoundationServices.Content);
         State.Restore(_restoring);
@@ -317,7 +323,28 @@ internal static class NativePersistence
             NetworkCheckpoints.RestoreApplied();
         }
     }
-    private static Exception RestoreFinally(Exception __exception) { _restoring = null; return __exception; }
+    private static Exception RestoreFinally(Exception __exception)
+    {
+        _restoring = null;
+        if (__exception is not null && NativeMultiplayer.Online) NetworkCheckpoints.RestoreFailed(__exception);
+        return __exception;
+    }
+
+    private static CheckpointEnvelope LoadForLiveRestore(RunDataManager.Checkpoint checkpoint, bool allowPersisted = false)
+    {
+        // The disk identity stays exact. Only the latest trusted host transfer may
+        // account for the native RPC omitting playerName/normalizing its arrays.
+        if (NativeMultiplayer.Online && WireBinding.TryResolve(Serialize(checkpoint), Mode, _noneIndex,
+            _awardCount, NetworkCheckpoints.Epoch, out var transferred)) return transferred;
+        if (NativeMultiplayer.Online && !allowPersisted && Identity(checkpoint).Token > 0)
+            throw new InvalidDataException("Native checkpoint has no matching current host transfer authorization.");
+        return Load(checkpoint);
+    }
+
+    internal static void AuthorizeWireTransfer(CheckpointEnvelope envelope, string wireFingerprint, string epoch, string generation) =>
+        WireBinding.Authorize(envelope, wireFingerprint, epoch, generation);
+    internal static void ClearWireTransfer() => WireBinding.Clear();
+    internal static void RetainWireRun(string runKey) => WireBinding.RetainRun(runKey);
 
     private static void PlayerRestoreBefore(PlayerData.Checkpoint checkpoint, out PlayerRestoreScope __state)
     {
@@ -332,10 +359,24 @@ internal static class NativePersistence
                 var root = (Mode == "Online" ? PersistentData.Current?.CheckpointOnline : Mode == "Local" ? PersistentData.Current?.CheckpointLocal : PersistentData.Current?.CheckpointSolo)?.runData;
                 if (root?.playerDatas is not null)
                 {
-                    var wanted = CheckpointJson.Fingerprint(NativeJson.SerializeObject(checkpoint));
+                    string PlayerFingerprint(PlayerData.Checkpoint value) => NativeMultiplayer.Online
+                        ? CheckpointWireProjection.PlayerFingerprint(NativeJson.SerializeObject(value), _awardCount)
+                        : CheckpointJson.Fingerprint(NativeJson.SerializeObject(value));
+                    var wanted = PlayerFingerprint(checkpoint);
                     for (var index = 0; index < root.playerCount; index++)
-                        if (CheckpointJson.Fingerprint(NativeJson.SerializeObject(root.playerDatas[index])) == wanted)
-                        { snapshot = Load(root); break; }
+                        if (PlayerFingerprint(root.playerDatas[index]) == wanted)
+                        {
+                            try { snapshot = LoadForLiveRestore(root, allowPersisted: true); }
+                            catch (Exception exception) when (NativeMultiplayer.Online && (exception is InvalidDataException || exception is FileNotFoundException))
+                            {
+                                // Normal checkpoint sync and the trusted custom transfer can
+                                // arrive in either order. This is only a character preview;
+                                // never abort its native callback while awaiting the sidecar.
+                                if (_previewWarning != wanted)
+                                { _previewWarning = wanted; FoundationServices.Logger?.LogWarning("[Foundation] character preview awaits its matching host checkpoint transfer; native preview continues: " + exception.Message); }
+                            }
+                            break;
+                        }
                 }
             }
             if (snapshot is not null) snapshot.Players.TryGetValue(checkpoint.playerID, out __state.State);
@@ -344,26 +385,23 @@ internal static class NativePersistence
     }
     private static void PlayerRestoreAfter(PlayerData __instance, PlayerRestoreScope __state)
     {
-        if (__state?.State is null) return;
-        foreach (var entry in StateProjection.Active(__state.State, FoundationServices.Content))
-        {
-            if (entry.Value.Category == ContentCategory.Skill)
-            {
-                Set(__instance.skills, (SkillType)entry.Value.NumericId, entry.Value.Level);
-                Set(__instance.skillOrder, (SkillType)entry.Value.NumericId, entry.Value.Order);
-            }
-            else if (entry.Value.Category == ContentCategory.Affliction)
-            {
-                Set(__instance.injuries, (InjuryType)entry.Value.NumericId, entry.Value.Level);
-                Set(__instance.injuryOrder, (InjuryType)entry.Value.NumericId, entry.Value.Order);
-            }
-            // Native equipment and surgery histories remain authoritative.
-        }
+        if (__state?.State is not null) ApplyExternalOwnership(__instance, __state.State);
+        else
+            // Native RestoreCheckpoint clears these dictionaries and reconstructs
+            // only enum members. An early preview can have no custom snapshot yet;
+            // repair absent zero slots without overwriting known ownership.
+            ExternalOwnershipProjection.EnsureDefaults(FoundationServices.Content,
+                (category, id, field) => HasExternalSlot(__instance, category, id, field),
+                (category, id, field, value) => SetExternalSlot(__instance, category, id, field, value));
     }
     private static void Set<T>(Il2CppSystem.Collections.Generic.Dictionary<T, int> values, T key, int value)
     { if (values.ContainsKey(key)) values[key] = value; else values.Add(key, value); }
     private static Exception PlayerRestoreFinally(Exception __exception, PlayerRestoreScope __state)
-    { RestoreMarkers(__state?.Markers); return __exception; }
+    {
+        RestoreMarkers(__state?.Markers);
+        if (__exception is not null && NativeMultiplayer.Online && IsRestoring) NetworkCheckpoints.RestoreFailed(__exception);
+        return __exception;
+    }
     private static void ValidateBefore(PlayerData.Checkpoint __instance, out MarkerScope __state) => __state = Hide(__instance);
     private static void SyncBefore(PlayerData.Checkpoint checkpoint, out MarkerScope __state) => __state = Hide(checkpoint);
     private static Exception ValidateFinally(Exception __exception, MarkerScope __state)
@@ -410,6 +448,7 @@ internal static class NativePersistence
 
     private static void Reset()
     {
+        if (!IsRestoring) NetworkCheckpoints.ResetRun(null);
         State.Clear();
         Captured.Clear();
         CaptureFailures.Clear();
@@ -424,7 +463,8 @@ internal static class NativePersistence
     }
     private static void NewRun(RunDataManager __instance)
     {
-        if ((SessionAccess.IsSoloMode || NativeMultiplayer.Ready) && __instance.runStartTime != 0) EnsureRun(__instance);
+        if ((SessionAccess.IsSoloMode || NativeMultiplayer.Ready) && __instance.runStartTime != 0)
+        { NetworkCheckpoints.ResetRun(CurrentRun(__instance).RunKey); EnsureRun(__instance); }
     }
     private static void LevelStateChanged(GameLevel __instance, int stateIdx)
     {
@@ -437,6 +477,13 @@ internal static class NativePersistence
     {
         var manager = NetworkSession.Instance.runDataManager; EnsureRun(manager); NativeCombat.RequireSettledCheckpoint();
         FoundationServices.CaptureFeatures(manager);
+        // Even a Foundation-only party must acknowledge each owned native player.
+        // An empty feature set is valid; an absent owner snapshot is not an ack.
+        for (var index = 0; index < manager.playerDatas.Count; index++)
+        {
+            var data = manager.playerDatas[index];
+            if (MultiplayerServices.IsPlayerOwner(data) && !State.Players.ContainsKey(data.playerID)) State.Players.Add(data.playerID, new());
+        }
         var exported = State.Players.Where(pair => MultiplayerServices.IsPlayerOwner(FindPlayer(manager, pair.Key)))
             .ToDictionary(pair => pair.Key, pair => Clone(pair.Value));
         foreach (var value in exported.Values) foreach (var key in value.Features.Keys.Where(key => key.StartsWith("foundation:", StringComparison.Ordinal)).ToArray()) value.Features.Remove(key);
@@ -464,16 +511,19 @@ internal static class NativePersistence
     }
     private static void ApplyExternalOwnership(PlayerData data, PlayerContentState state)
     {
-        foreach (var content in FoundationServices.Content.Entries)
-        {
-            if (content.Category == ContentCategory.Skill) { data.skills.Remove((SkillType)content.NumericId); data.skillOrder.Remove((SkillType)content.NumericId); }
-            if (content.Category == ContentCategory.Affliction) { data.injuries.Remove((InjuryType)content.NumericId); data.injuryOrder.Remove((InjuryType)content.NumericId); }
-        }
-        foreach (var entry in StateProjection.Active(state, FoundationServices.Content))
-        {
-            if (entry.Value.Category == ContentCategory.Skill) { Set(data.skills, (SkillType)entry.Value.NumericId, entry.Value.Level); Set(data.skillOrder, (SkillType)entry.Value.NumericId, entry.Value.Order); }
-            if (entry.Value.Category == ContentCategory.Affliction) { Set(data.injuries, (InjuryType)entry.Value.NumericId, entry.Value.Level); Set(data.injuryOrder, (InjuryType)entry.Value.NumericId, entry.Value.Order); }
-        }
+        ExternalOwnershipProjection.Apply(state, FoundationServices.Content,
+            (category, id, field, value) => SetExternalSlot(data, category, id, field, value));
+    }
+    private static bool HasExternalSlot(PlayerData data, ContentCategory category, int id, ExternalOwnershipField field) =>
+        category == ContentCategory.Skill
+            ? (field == ExternalOwnershipField.Level ? data.skills : data.skillOrder).ContainsKey((SkillType)id)
+            : (field == ExternalOwnershipField.Level ? data.injuries : data.injuryOrder).ContainsKey((InjuryType)id);
+    private static void SetExternalSlot(PlayerData data, ContentCategory category, int id, ExternalOwnershipField field, int value)
+    {
+        if (category == ContentCategory.Skill)
+            Set(field == ExternalOwnershipField.Level ? data.skills : data.skillOrder, (SkillType)id, value);
+        else Set(field == ExternalOwnershipField.Level ? data.injuries : data.injuryOrder, (InjuryType)id, value);
+        // Native equipment and surgery histories remain authoritative.
     }
 }
 

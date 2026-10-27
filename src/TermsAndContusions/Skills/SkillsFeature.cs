@@ -41,7 +41,7 @@ internal static class SkillsFeature
     internal static string DescriptionTerm(CustomSkill kind)
     {
         var data = SoloData();
-        return data is null ? Descriptions[kind] : RankTerms[(kind, Rank(data, kind))];
+        return RankTerms[(kind, SkillMath.DescriptionRank(data is null ? null : Rank(data, kind)))];
     }
     private static SkillCombatState State(Player player)
     {
@@ -156,7 +156,7 @@ internal static class SkillsFeature
         var entry = SkillDefinitions.Find((int)skill);
         if (!Enabled(entry)) return;
         var data = SoloData();
-        SetDescription(__instance.description, data is null ? Descriptions[entry.Kind] : RankTerms[(entry.Kind, Rank(data, entry.Kind))]);
+        SetDescription(__instance.description, RankTerms[(entry.Kind, SkillMath.DescriptionRank(data is null ? null : Rank(data, entry.Kind)))]);
     }
     private static void SetDescription(Localize label, string term) { if (label is not null) label.SetTerm(term); }
     private static PlayerData SoloData()

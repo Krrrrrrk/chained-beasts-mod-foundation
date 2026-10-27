@@ -157,6 +157,6 @@ internal static class NativeSurgeries
         if (surgery is null || (ulong)(int)surgery.surgeryType != packet.Target || !FoundationServices.Content.TryGet(ContentCategory.Surgery, (int)surgery.surgeryType, out var entry) || !Eligible(manager, data, surgery, entry)) return;
         manager.PerformSurgeryRpc(packet.Player, packet.Amount, packet.Before);
     }
-    internal static Player LivePlayer(PlayerData data) => PlayerManager.InstanceExists && PlayerManager.Instance.PlayerCount > 0 ? data?.PlayerObject : null;
+    internal static Player LivePlayer(PlayerData data) => SessionAccess.RuntimePlayer(data);
     private static Exception Finally(Exception __exception, Operation __state) { _operation = __state?.Parent; return __exception; }
 }

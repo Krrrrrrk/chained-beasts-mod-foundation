@@ -25,8 +25,8 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.termsandcontusions";
     public const string PluginName = "Terms & Contusions";
-    public const string PluginVersion = "0.9.3";
-    public const string FoundationVersionRange = ">=0.9.3 <0.10.0";
+    public const string PluginVersion = "0.9.6";
+    public const string FoundationVersionRange = ">=0.9.6 <0.10.0";
 
     public override void Load()
     {

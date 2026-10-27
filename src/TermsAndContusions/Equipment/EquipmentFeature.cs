@@ -171,11 +171,15 @@ internal static class EquipmentFeature
     private static bool AimEligible(Player player) => CombatServices.IsPreparingNormalThrow(player) && Stationary(player);
     private static void Tick()
     {
-        if (!Active || !PlayerManager.InstanceExists || PlayerManager.Instance.PlayerCount == 0)
+        if (!Active || SessionAccess.RuntimePlayerManager is not { } manager)
         { foreach (var state in States.Values) state.EquipmentChanged(); return; }
-        var datas = NetworkSession.Instance.runDataManager.playerDatas;
+        var datas = manager.playerDatas;
         for (var i = 0; i < datas.Count; i++)
-        { var player = datas[i].PlayerObject; State(datas[i]).Aim(Now, player is not null && Has(player, CustomEquipment.ChalkBag) && AimEligible(player)); }
+        {
+            var data = datas[i]; if (data is null) continue;
+            var player = SessionAccess.RuntimePlayer(data);
+            State(data).Aim(Now, player is not null && Has(player, CustomEquipment.ChalkBag) && AimEligible(player));
+        }
     }
     private static void Committed(AttackRecord attack)
     {

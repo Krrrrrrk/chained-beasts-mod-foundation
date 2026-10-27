@@ -1,13 +1,13 @@
 # Play Terms & Contusions
 
-**Terms & Contusions 0.9.3** is the experimental gameplay pack built on Chained Beasts Mod Foundation.
+**Terms & Contusions 0.9.6** is the experimental gameplay pack built on Chained Beasts Mod Foundation.
 
-This prerelease targets **game 1.0.2 / Steam build 26231777**. My quick Solo check
-of the latest fixes looks good; broader manual testing is still needed.
+This release targets **game 1.0.2 / Steam build 26231777**. Solo has been working in my
+recent tests; the latest fixes still need broader manual testing.
 Older releases through 0.9.1 target game 1.0.1.
 See [compatibility notes](../GAME_UPDATE_1.0.2.md) and [multiplayer setup](../MULTIPLAYER.md).
 
-**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/TermsAndContusions-with-Foundation-0.9.3.zip) includes both required mod DLLs. BepInEx is installed separately.
+**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/TermsAndContusions-with-Foundation-0.9.6.zip) includes both required mod DLLs. BepInEx is installed separately.
 
 This page explains the content, settings and limitations. For source builds, use the [developer guide](../foundation/README.md).
 
@@ -82,7 +82,7 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 ## Verification and known limitations
 
-- My quick Solo check of the **0.9.3** fixes looks good. Builds and nongame checks pass, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
+- Solo has been working in my recent tests. The latest description/client-transition fixes pass builds and nongame checks, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
 - **Multiplayer is experimental and host/client tests remain pending.** Every PC needs matching gameplay DLLs, content settings and the [required lobby/checkpoint setup](../MULTIPLAYER.md). Developer actions and forced offers still require the actual Solo session/authority checks.
 - Original icons and models are not included; the pack reuses visuals already present in the installed game.
 - New descriptions use English fallback. Previously supplied translations are retained but have not had native-speaker review.
@@ -90,8 +90,8 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 ## Build and installation
 
-Players can install the [ready-made prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
+Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
 
-The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. Current 0.9.3 source declares Foundation `>=0.9.3 <0.10.0`; keep the matching production DLLs together. Older 0.8.3 downloads target the previous game build.
+The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. Current 0.9.6 source declares Foundation `>=0.9.6 <0.10.0`; keep the matching production DLLs together. Older 0.8.3 downloads target the previous game build.
 
 Optional teaching examples are separate projects and are excluded from the normal packages and deployment. Game, loader, Unity, generated interop, extracted assets and saves are not redistributed. Original source and documentation remain MIT.

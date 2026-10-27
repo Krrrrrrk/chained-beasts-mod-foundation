@@ -18,7 +18,7 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.modfoundation";
     public const string PluginName = "ChainedBeasts.ModFoundation";
-    public const string PluginVersion = "0.9.3";
+    public const string PluginVersion = "0.9.6";
 
     private static ManualLogSource _logger;
     private static int _diagnosticSnapshotWritten;

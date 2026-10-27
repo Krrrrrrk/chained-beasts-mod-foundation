@@ -6,10 +6,10 @@
 
 [Quick install on the main page](../README.md#quick-install) · [Updating an existing install](#updating-an-existing-install) · [Troubleshooting](#troubleshooting) · [Make your own mod](foundation/README.md)
 
-These instructions cover the **0.9.3 experimental prerelease** for the **Windows 64-bit Steam version of Chained Beasts 1.0.2 / build 26231777**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
+These instructions cover the **0.9.6 release** for the **Windows 64-bit Steam version of Chained Beasts 1.0.2 / build 26231777**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
 
-My quick Solo check looks good, but broader gameplay and host/client testing are
-still pending. Older 0.8.3/0.9.1 downloads target game 1.0.1 and are incompatible
+Solo has been working in my recent tests. Broader gameplay and host/client
+testing of the latest fixes are still pending. Older 0.8.3/0.9.1 downloads target game 1.0.1 and are incompatible
 with the updated game. See [compatibility notes](GAME_UPDATE_1.0.2.md) and
 [the multiplayer guide](MULTIPLAYER.md) before testing with friends.
 
@@ -44,7 +44,7 @@ The download above is the loader used with this project. BepInEx 5 and Unity Mon
 
 ### 3. Install the combined mod package
 
-1. Download [**TermsAndContusions-with-Foundation-0.9.3.zip**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.3/TermsAndContusions-with-Foundation-0.9.3.zip).
+1. Download [**TermsAndContusions-with-Foundation-0.9.6.zip**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/TermsAndContusions-with-Foundation-0.9.6.zip).
 2. Extract the ZIP somewhere convenient, then open the extracted folder.
 3. Copy its **`BepInEx` folder into the game folder** and allow the folders to merge.
 
@@ -134,8 +134,8 @@ See the [catalog](terms-and-contusions/CATALOG.md) for individual content settin
 The project's setup writes its log to **`BepInEx\LogOutput.log`**, inside the game folder. After a fresh launch, look for both plugin names and any errors following them:
 
 ```text
-ChainedBeasts.ModFoundation 0.9.3
-Terms & Contusions 0.9.3
+ChainedBeasts.ModFoundation 0.9.6
+Terms & Contusions 0.9.6
 ```
 
 Loading lines are useful diagnostics; they do not establish that every feature works. Foundation must initialize successfully for the pack to run.
@@ -164,18 +164,18 @@ For source-built installations with a script-created backup, an advanced rollbac
 
 The inspected setup is **Windows x64**, **Chained Beasts 1.0.2 / Steam build 26231777**, **Unity 6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Other game builds and platforms are unverified. Multiplayer is experimental and requires the [matching-party setup](MULTIPLAYER.md); host/client tests remain pending.
 
-All packages are available on the [0.9.3 prerelease page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3).
+All packages are available on the [0.9.6 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6).
 
 | Download | Includes | Choose it when… |
 |---|---|---|
-| **`TermsAndContusions-with-Foundation-0.9.3.zip`** | Both mod DLLs | **You want to play Terms & Contusions.** |
-| `ChainedBeasts.ModFoundation-0.9.3.zip` | Foundation only | You need the shared infrastructure for a different Foundation-based mod. |
-| `TermsAndContusions-0.9.3.zip` | Content pack only | You already have matching Foundation installed. The combined ZIP is simpler for most players. |
-| `Chained-Beasts-Multiplayer-Test-0.9.3.zip` | Both gameplay DLLs and Battle Numbers 0.2.2 | You want all three mods, with the same package on every PC for multiplayer testing. |
+| **`TermsAndContusions-with-Foundation-0.9.6.zip`** | Both mod DLLs | **You want to play Terms & Contusions.** |
+| `ChainedBeasts.ModFoundation-0.9.6.zip` | Foundation only | You need the shared infrastructure for a different Foundation-based mod. |
+| `TermsAndContusions-0.9.6.zip` | Content pack only | You already have matching Foundation installed. The combined ZIP is simpler for most players. |
+| `Chained-Beasts-Multiplayer-Test-0.9.6.zip` | Both gameplay DLLs and Battle Numbers 0.2.2 | You want all three mods, with the same package on every PC for multiplayer testing. |
 
-Use matching **0.9.3** gameplay DLLs for this release. Packages also contain installation/license notices and a checksum manifest. They exclude the loader, game files, extracted assets, saves, configuration files, and optional teaching examples. [Battle Numbers 0.2.2](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) is also available separately.
+Use matching **0.9.6** gameplay DLLs for this release. Packages also contain installation/license notices and a checksum manifest. They exclude the loader, game files, extracted assets, saves, configuration files, and optional teaching examples. [Battle Numbers 0.2.2](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) is also available separately.
 
-**Testing status:** my quick Solo check of the latest fixes looks good. Builds and nongame checks pass, but individual mechanics, interactions, save/restore cases and multiplayer are not exhaustively verified. Reliable surgery rerolls and complete Battle Numbers boss coverage remain limitations. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3).
+**Testing status:** Solo has been working in my recent tests. The latest description and client-transition fixes pass builds and nongame checks; individual mechanics, interactions, save/restore cases and multiplayer are not exhaustively verified. Reliable surgery rerolls and complete Battle Numbers boss coverage remain limitations. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6).
 
 <a id="fresh-checkout-and-local-workflow"></a>
 
@@ -196,7 +196,7 @@ pwsh -NoProfile -File .\scripts\build-and-deploy-plugin.ps1 -Deploy -SkipBuild `
 
 Omit `-SkipBuild` to build first. The script requires `-Deploy`, refuses while the game is running, checks the inspected game build, and creates a backup before replacing either of this project's DLLs. It detects old copies by assembly identity, including renamed/nested copies, while preserving unrelated plugins during installation. A partial-copy failure restores the previous owned DLLs.
 
-The backup and `artifacts/packages/0.9.3/deployment.json` record the current source installation and hashes. Its inspected `GameAssembly.dll` SHA-256 is `ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29` (Steam 26231777). A changed build requires reinspection. Restoring older plugins does not undo a Steam game update; releases for game 1.0.1 remain incompatible with game 1.0.2.
+The backup and `artifacts/packages/0.9.6/deployment.json` record the current source installation and hashes. Its inspected `GameAssembly.dll` SHA-256 is `ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29` (Steam 26231777). A changed build requires reinspection. Restoring older plugins does not undo a Steam game update; releases for game 1.0.1 remain incompatible with game 1.0.2.
 
 For a backup created by that workflow:
 

@@ -33,10 +33,10 @@ foreach($package in $packages){
     if($package.members -contains 'ChainedBeasts.BattleNumbers'){Copy-Verified (Join-Path $repo 'chained-beasts-battle-numbers/LICENSE') (Join-Path $stage 'BattleNumbers-LICENSE.txt')}
     $members=$package.members -join ', '
     @"
-# $($package.name) $script:ReleaseVersion — experimental release
+# $($package.name) $script:ReleaseVersion — release
 
 Included DLLs: $members. This archive does not install or contain BepInEx.
-TermsAndContusions requires ChainedBeasts.ModFoundation >=0.9.3 <0.10.0.
+TermsAndContusions requires ChainedBeasts.ModFoundation >=0.9.6 <0.10.0.
 The optional combined multiplayer test ZIP also includes Battle Numbers 0.2.x;
 see package-manifest.json for its exact version and hash.
 Foundation alone is supported. Optional teaching examples are not included.
@@ -58,8 +58,8 @@ Foundation alone is supported. Optional teaching examples are not included.
    joining/reconnect or host migration. F1 mutations remain Solo-only.
    Check BepInEx/LogOutput.log for both $script:ReleaseVersion
    plugins, successful shared initialization and no registration errors. The
-   quick Solo check looks okay so far; broader gameplay and multiplayer tests
-   are still pending. No attempt at balance was made.
+   release has passed nongame checks; broader Solo and host/client gameplay
+   testing is still needed. No attempt at balance was made.
 
 Native SaveData and its exact matching sidecars must be copied/restored together.
 Do not remove/disable owned custom content and resume that run. Old v0.7.3 cannot
@@ -74,7 +74,7 @@ https://github.com/Krrrrrrk/chained-beasts-mod-foundation/blob/main/docs/INSTALL
 "@ | Set-Content (Join-Path $stage 'README_INSTALL.md') -Encoding utf8
     $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | ForEach-Object { @{path=([IO.Path]::GetRelativePath($stage,$_.FullName).Replace('\','/'));sha256=(Get-Sha $_.FullName)} })
     @{schemaVersion=1;version=$script:ReleaseVersion;package=$package.name;runtimeVerified=$false;published=$false;
-        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=0.9.3 <0.10.0';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
+        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=0.9.6 <0.10.0';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
         ConvertTo-Json -Depth 8 | Set-Content (Join-Path $stage 'package-manifest.json') -Encoding utf8
     $archive=Join-Path $OutputRoot ($package.name+'-'+$script:ReleaseVersion+'.zip')
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $archive -Force

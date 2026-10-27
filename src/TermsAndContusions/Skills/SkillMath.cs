@@ -56,12 +56,11 @@ public static class SkillMath
             _ => throw new ArgumentOutOfRangeException(nameof(skill))
         });
     }
-    public static string Description(CustomSkill skill, int ownedRank)
-    {
-        var r = Rank(ownedRank);
-        return Effect(skill, r);
-    }
+    // A description advertises what an unowned/unavailable skill does. This
+    // presentation rank never participates in gameplay ownership or modifiers.
+    public static int DescriptionRank(int? ownedRank) => Math.Max(1, Rank(ownedRank ?? 0));
+    public static string Description(CustomSkill skill, int ownedRank) => Effect(skill, DescriptionRank(ownedRank));
     // Offers describe the rank being purchased; owned/detail/reveal views show
-    // the actual rank. Keep implementation details in the catalog, not cards.
+    // the owned rank, or the first-rank effect when there is no owned rank yet.
     public static string OfferDescription(CustomSkill skill, int ownedRank) => Effect(skill, Math.Min(4, Rank(ownedRank) + 1));
 }

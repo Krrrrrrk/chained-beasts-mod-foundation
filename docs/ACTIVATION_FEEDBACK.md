@@ -1,14 +1,14 @@
 # TC activation feedback and mechanics review
 
-The **0.9.3 experimental prerelease** includes a small dust puff and swish around my local
+The **0.9.6 release** includes a small dust puff and swish around my local
 character when a custom proc produces a confirmed benefit. It reuses an existing
 game effect; there are no new assets. The cue never grants health, stamina,
 damage or gold itself.
 
-## Fresh Meat, Chalk Bag and Borrower's Scabbard — 0.9.3
+## Fresh Meat, Chalk Bag and Borrower's Scabbard
 
-This update adds a few targeted fixes and clearer feedback. My quick Solo check
-looks good, but these mechanics and their interactions still need more testing.
+The release retains the targeted fixes and clearer feedback from earlier builds.
+These mechanics have had a quick Solo check, but their interactions still need more testing.
 Build and nongame checks alone don't prove a proc fired.
 
 - **Borrower's Scabbard:** full durability is checked at attack commitment,
@@ -95,7 +95,7 @@ cooldown and saved guard state, and delayed Focus confirmations after cure.
 The intended balance values and content IDs were preserved.
 
 The review is based on source/native evidence and nongame checks, with a quick
-Solo check of the latest fixes. **Broader Solo and host/client gameplay tests
+Solo check of the earlier mechanics fixes. **Broader Solo and host/client gameplay tests
 are still needed.** Start with a damaged player
 wearing Butcher's Apron, execute an NPC, and compare the real HP/HUD change and
 cue. Also test full HP, Marrow Enrichment, a client's execution and the final
@@ -114,4 +114,4 @@ Two multiplayer limits remain explicit:
   player's opener. Global party-wide physical-weapon accounting is not claimed.
 
 The [multiplayer guide](MULTIPLAYER.md) retains the matching-install, lobby,
-checkpoint and rollback requirements. These changes are in the [0.9.3 experimental prerelease](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3).
+checkpoint and rollback requirements. These changes are in the [0.9.6 release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6).

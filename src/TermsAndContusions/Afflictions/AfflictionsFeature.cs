@@ -185,9 +185,9 @@ internal static class AfflictionsFeature
     { if (Active) Sync(player).DodgeCompleted(Now, Effective(player, CustomAffliction.HeavyLanding)); }
     private static void RefreshRuntime()
     {
-        if (!Active || !PlayerManager.InstanceExists || PlayerManager.Instance.PlayerCount == 0) return;
-        var data = NetworkSession.Instance.runDataManager.playerDatas;
-        for (var i = 0; i < data.Count; i++) { var player = data[i].PlayerObject; if (player?.IsOwner == true) DelayUpdating(player); }
+        if (!Active || SessionAccess.RuntimePlayerManager is not { } manager) return;
+        var data = manager.playerDatas;
+        for (var i = 0; i < data.Count; i++) { var player = SessionAccess.RuntimePlayer(data[i]); if (player?.IsOwner == true) DelayUpdating(player); }
     }
     private static void Tick() => RefreshRuntime();
     private static void Clear()

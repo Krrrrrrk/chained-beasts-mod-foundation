@@ -1,6 +1,6 @@
 # Shared local-only packaging/deployment helpers. Dot-source; importing never builds, deploys or launches.
 Set-StrictMode -Version Latest
-$script:ReleaseVersion = '0.9.3'
+$script:ReleaseVersion = '0.9.6'
 $script:ExpectedGameHash = 'ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29'
 $script:ProductNames = @('ChainedBeasts.ModFoundation','TermsAndContusions')
 function Get-RepositoryRoot { [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')) }

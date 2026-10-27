@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "pack": "Terms & Contusions",
-  "version": "0.9.3",
+  "version": "0.9.6",
   "pluginGuid": "local.chainedbeasts.termsandcontusions",
-  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.3",
-  "releaseChannel": "experimental-prerelease",
-  "stableReleaseVersion": "0.9.1",
-  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.1",
-  "status": "Game 1.0.2 compatibility and direct-hit fixes. Quick Solo check looks okay; broader gameplay, presentation, checkpoint and host/client testing still pending.",
+  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6",
+  "releaseChannel": "release",
+  "stableReleaseVersion": "0.9.6",
+  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6",
+  "status": "Regular 0.9.6 release: client trainer zero-slot fix, checkpoint and scene-transition guards, and unowned custom skill description fix. Nongame checks pass; broader runtime testing remains pending.",
   "entries": [
     {
       "key": "terms-and-contusions:skill/bulk-up",
@@ -494,13 +494,13 @@
     "gameAssemblySha256": "ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29",
     "metadataSha256": "b689ca1c435476874b1a2e6e0aab140f07af02a6a9700d8f457c79e89b170075",
     "bepInExVersion": "6.0.0-be.791+b782da4",
-    "foundationVersion": "0.9.3",
-    "contentPackVersion": "0.9.3",
+    "foundationVersion": "0.9.6",
+    "contentPackVersion": "0.9.6",
     "battleNumbersVersion": "0.2.2",
     "runtimeVerified": false,
     "report": "docs/GAME_UPDATE_1.0.2.md",
-    "manualSmokeTestReported": true,
-    "manualSmokeTestScope": "Quick Solo check; not exhaustive gameplay or multiplayer verification."
+    "manualSmokeTestReported": false,
+    "manualSmokeTestScope": "Broader manual Solo and host/client checks for 0.9.6 remain pending; normal release status is not exhaustive runtime verification."
   },
   "directHitReview": {
     "version": "0.9.3",
@@ -511,5 +511,56 @@
       "Fresh Meat retains its formula; confirmed-hit cue and bounded condition logs added"
     ],
     "guide": "docs/ACTIVATION_FEEDBACK.md"
+  },
+  "multiplayerTransitionReview": {
+    "version": "0.9.4",
+    "runtimeVerified": false,
+    "saveSchemaChanged": false,
+    "knownEvidence": [
+      "Checkpoint network serialization omits playerName and normalizes previousArena.",
+      "Generic feature resets can erase an in-progress checkpoint agreement.",
+      "PlayerCount is not a safe spawned-player readiness check."
+    ],
+    "guide": "docs/MULTIPLAYER.md",
+    "nongameChecks": {
+      "wireAndStore": 60,
+      "actualProtocol": 39,
+      "runtimePlayer": 32,
+      "persistedStateAndInterop": 111,
+      "multiplayerCodec": 61,
+      "mechanicsAudit": 67,
+      "catalogMetadata": 275,
+      "reversibleWorkflow": 44,
+      "archives": 43
+    }
+  },
+  "clientTrainerReview": {
+    "version": "0.9.5",
+    "runtimeVerified": false,
+    "confirmedFailure": "Client SkillGenerator.GenerateTrainingSkills indexes missing Breathing Room key 11010 after unowned zero slots were removed by custom ownership projection.",
+    "changes": [
+      "Preserve zero-rank and zero-order custom skill/injury slots during authoritative projection.",
+      "Repair missing zero slots after native restore, including previews without a custom snapshot."
+    ],
+    "saveSchemaChanged": false,
+    "contentIdsChanged": false,
+    "guide": "docs/MULTIPLAYER.md",
+    "checks": {
+      "externalOwnershipProjection": 52,
+      "persistedStateAndInterop": 111,
+      "wireAssociation": 60,
+      "checkpointProtocol": 39,
+      "runtimePlayer": 32,
+      "catalogAndMetadata": 275,
+      "archives": 43
+    }
+  },
+  "skillDescriptionReview": {
+    "version": "0.9.6",
+    "runtimeVerified": false,
+    "changes": [
+      "Unowned or missing player previews advertise first-rank skill effect instead of No effect.",
+      "Owned ranks and next-rank offers retain correct descriptions; rank-zero gameplay remains neutral."
+    ]
   }
 }
