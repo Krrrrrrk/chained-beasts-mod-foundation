@@ -1,6 +1,6 @@
 # Terms & Contusions content catalog
 
-The pack contains 46 additions. Custom card descriptions start with `TC:`. Skills have four ranks; potion afflictions have three severities. The tables below show the first-rank/severity description; category guides give the full scaling and limits.
+The 0.9.7 release contains 47 additions. Iron Grip worked in my manual test; broader interaction and multiplayer cases still need checking. Custom card descriptions start with `TC:`. Twelve skills have four ranks and Iron Grip has one; potion afflictions have three severities. The tables below show the first-rank/severity description; category guides give the full scaling and limits.
 
 These are unbalanced experimental Solo examples. Use the [installation guide](../INSTALLATION.md) and keep matching saves, sidecars and mods together. The [content index](manifest.json) lists stable IDs, settings and source files.
 
@@ -22,6 +22,7 @@ These are unbalanced experimental Solo examples. Use the [installation guide](..
 | Waste Not / 11009 | TC: Breaking a weapon restores 25% stamina. | Native rules |
 | Breathing Room / 11010 | TC: Take 5% less damage per nearby enemy (3m). Maximum 20%. | Native rules |
 | Longshot / 11011 | TC: 2x throw range and charge speed. | Native rules |
+| Iron Grip / 11012 | TC: Taking hits no longer makes you drop carried enemies. | Native rules; one rank |
 
 ## Equipment
 

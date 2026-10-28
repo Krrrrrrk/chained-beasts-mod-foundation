@@ -1,17 +1,21 @@
 # Chained Beasts 1.0.2 compatibility update
 
-The [**Foundation + Terms & Contusions 0.9.6 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6)
+The [**Foundation + Terms & Contusions 0.9.7 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7)
 and optional [**Battle Numbers 0.2.2 release**](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2)
 target Steam **26231777**, game **1.0.2**, Unity **6000.3.21f1**, and the existing
-BepInEx **6.0.0-be.791+b782da4** loader. Solo has been working in my recent tests. Broader mechanics,
-presentation, checkpoint and host/client testing of the latest fixes remain
-pending.
+BepInEx **6.0.0-be.791+b782da4** loader. Solo and multiplayer have been working in my tests. Iron Grip worked in my
+manual test; broader mechanics, checkpoint and new-skill host/client coverage
+remain incomplete.
 
 The installed game changed its native binary and regenerated interop. The old
 mods correctly refused the uninspected build. This update keeps those guards
 and targets the newly inspected binary; it does not bypass them.
 
 ## What changed
+
+- 0.9.7 adds Iron Grip: taking hits no longer makes you drop carried enemies.
+  It uses normal trainer eligibility, costs and persisted ownership; normal
+  throws, damage and cleanup remain active.
 
 - Foundation's exact `TakeDamage` hook now matches nine arguments. The added
   `ignoreDodgeIFrames` flag stays under normal game control; its default is false.
@@ -22,7 +26,8 @@ and targets the newly inspected binary; it does not bypass them.
 - The existing HUD font is still `Skranji-Regular SDF`. Selection uses its name,
   so moved asset IDs don't break it. The font is not bundled or modified.
 - Native checkpoint/ownership, surgery and resource paths were compared against
-  the prior build. The custom state schema and all 46 content IDs are unchanged.
+  the prior build. The custom state schema and original 46 content IDs are unchanged;
+  0.9.7 adds one-rank Iron Grip as skill `11012`.
 - Both projects were rebuilt against the loader's fresh runtime interop, retaining
   net6.0, plugin GUIDs, configuration identities and the previous mechanics fixes.
 - Client ownership sync and native restoration preserve zero-rank custom skill
@@ -41,13 +46,13 @@ Inspected `GameAssembly.dll` SHA256:
 
 Close the game and back up plugins, configuration and the complete user-data
 folder, including Foundation checkpoint sidecars. Keep exactly one copy of each
-plugin. Download the [combined gameplay ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/TermsAndContusions-with-Foundation-0.9.6.zip)
-or the [all-three ZIP with Battle Numbers](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/Chained-Beasts-Multiplayer-Test-0.9.6.zip).
+plugin. Download the [combined gameplay ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/TermsAndContusions-with-Foundation-0.9.7.zip)
+or the [all-three ZIP with Battle Numbers](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/Chained-Beasts-Multiplayer-Test-0.9.7.zip).
 For source builds, the package workflow produces the same choices locally:
 
 ```text
-artifacts/packages/0.9.6/TermsAndContusions-with-Foundation-0.9.6.zip
-artifacts/packages/0.9.6/Chained-Beasts-Multiplayer-Test-0.9.6.zip
+artifacts/packages/0.9.7/TermsAndContusions-with-Foundation-0.9.7.zip
+artifacts/packages/0.9.7/Chained-Beasts-Multiplayer-Test-0.9.7.zip
 ```
 
 The second ZIP includes Battle Numbers 0.2.2. It contains only mod DLLs, notices

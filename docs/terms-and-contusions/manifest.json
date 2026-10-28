@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "pack": "Terms & Contusions",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "pluginGuid": "local.chainedbeasts.termsandcontusions",
-  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6",
+  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7",
   "releaseChannel": "release",
-  "stableReleaseVersion": "0.9.6",
-  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6",
-  "status": "Regular 0.9.6 release. Manual Solo and multiplayer testing has gone well so far; weird edge cases and untested interactions are still expected.",
+  "stableReleaseVersion": "0.9.7",
+  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7",
+  "status": "0.9.7 adds one-rank Iron Grip, reported working in a manual test. Prior basic Solo/multiplayer play has gone well; new-skill multiplayer and wider edge cases remain incompletely tested.",
   "entries": [
     {
       "key": "terms-and-contusions:skill/bulk-up",
@@ -130,9 +130,25 @@
       "maxRank": 4
     },
     {
+      "key": "terms-and-contusions:skill/iron-grip",
+      "category": "skill",
+      "name": "Iron Grip",
+      "numericId": 11012,
+      "effect": "TC: Taking hits no longer makes you drop carried enemies.",
+      "configuration": "[Skills] EnableIronGrip",
+      "defaultEnabled": true,
+      "sourceFile": "src/TermsAndContusions/Skills/IronGripFeature.cs",
+      "maxRank": 1,
+      "introducedVersion": "0.9.7",
+      "runtimeVerified": false,
+      "limits": "Prevents damage-induced carried-enemy drops only; normal throws, voluntary releases and death cleanup stay unchanged. No damage or stun immunity. Wider interactions and multiplayer coverage still need testing.",
+      "manualSmokeTestReported": true,
+      "manualSmokeTestScope": "Author reports Iron Grip worked. Specific pickup/block/cleanup and multiplayer coverage was not provided; exhaustive verification remains false."
+    },
+    {
       "key": "terms-and-contusions:equipment/runners-wraps",
       "category": "equipment",
-      "name": "Runner’s Wraps",
+      "name": "Runner\u2019s Wraps",
       "numericId": 2499,
       "effect": "TC: Dodges use 25% less stamina while equipped.",
       "configuration": "[RunnersWraps] EnableRunnersWraps",
@@ -142,7 +158,7 @@
     {
       "key": "terms-and-contusions:equipment/executioners-hood",
       "category": "equipment",
-      "name": "Executioner’s Hood",
+      "name": "Executioner\u2019s Hood",
       "numericId": 2488,
       "effect": "TC: +35% melee damage to enemies below 30% health.",
       "configuration": "[Equipment] EnableExecutionersHood",
@@ -162,7 +178,7 @@
     {
       "key": "terms-and-contusions:equipment/borrowers-scabbard",
       "category": "equipment",
-      "name": "Borrower’s Scabbard",
+      "name": "Borrower\u2019s Scabbard",
       "numericId": 2490,
       "effect": "TC: A full-durability weapon's first hit each battle: +50% damage, +1 durability cost.",
       "configuration": "[Equipment] EnableBorrowersScabbard",
@@ -172,7 +188,7 @@
     {
       "key": "terms-and-contusions:equipment/butchers-apron",
       "category": "equipment",
-      "name": "Butcher’s Apron",
+      "name": "Butcher\u2019s Apron",
       "numericId": 2491,
       "effect": "TC: Executions restore 3% health.",
       "configuration": "[Equipment] EnableButchersApron",
@@ -192,7 +208,7 @@
     {
       "key": "terms-and-contusions:equipment/mercenarys-ledger",
       "category": "equipment",
-      "name": "Mercenary’s Ledger",
+      "name": "Mercenary\u2019s Ledger",
       "numericId": 2493,
       "effect": "TC: Pay 5 gold at battle start for +20% damage that battle.",
       "configuration": "[Equipment] EnableMercenarysLedger",
@@ -202,7 +218,7 @@
     {
       "key": "terms-and-contusions:equipment/pickpockets-mitts",
       "category": "equipment",
-      "name": "Pickpocket’s Mitts",
+      "name": "Pickpocket\u2019s Mitts",
       "numericId": 2494,
       "effect": "TC: Your first backstab against each enemy grants 1 gold. Maximum 10 per battle.",
       "configuration": "[Equipment] EnablePickpocketsMitts",
@@ -222,7 +238,7 @@
     {
       "key": "terms-and-contusions:equipment/salvagers-hook",
       "category": "equipment",
-      "name": "Salvager’s Hook",
+      "name": "Salvager\u2019s Hook",
       "numericId": 2496,
       "effect": "TC: Recover your thrown weapon to repair 1 durability. Once per weapon each battle.",
       "configuration": "[Equipment] EnableSalvagersHook",
@@ -232,7 +248,7 @@
     {
       "key": "terms-and-contusions:equipment/duelists-spurs",
       "category": "equipment",
-      "name": "Duelist’s Spurs",
+      "name": "Duelist\u2019s Spurs",
       "numericId": 2497,
       "effect": "TC: +20% melee damage when only one enemy is within 4m.",
       "configuration": "[Equipment] EnableDuelistsSpurs",
@@ -494,13 +510,14 @@
     "gameAssemblySha256": "ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29",
     "metadataSha256": "b689ca1c435476874b1a2e6e0aab140f07af02a6a9700d8f457c79e89b170075",
     "bepInExVersion": "6.0.0-be.791+b782da4",
-    "foundationVersion": "0.9.6",
-    "contentPackVersion": "0.9.6",
+    "foundationVersion": "0.9.7",
+    "contentPackVersion": "0.9.7",
     "battleNumbersVersion": "0.2.2",
     "runtimeVerified": false,
     "report": "docs/GAME_UPDATE_1.0.2.md",
     "manualSmokeTestReported": true,
-    "manualSmokeTestScope": "Solo and multiplayer reported working for both mods. Detailed rank, interaction, latency and save/resume coverage is not exhaustive."
+    "manualSmokeTestVersion": "0.9.7",
+    "manualSmokeTestScope": "Basic Solo and multiplayer reported working at0.9.6. Iron Grip0.9.7 subsequently reported working in a manual test; full pickup/block/cleanup/latency/save-resume and new-skill multiplayer coverage is not established."
   },
   "directHitReview": {
     "version": "0.9.3",
@@ -564,8 +581,9 @@
     ]
   },
   "multiplayerTesting": {
+    "version": "0.9.6",
     "status": "manual-play-reported-successful",
-    "scope": "Basic multiplayer play for Foundation/Terms & Contusions and Battle Numbers.",
+    "scope": "Basic multiplayer play for Foundation/Terms & Contusions 0.9.6 and Battle Numbers 0.2.2; does not establish Iron Grip 0.9.7 multiplayer coverage.",
     "remaining": "Weird edge cases and untested interactions are still expected.",
     "exhaustiveRuntimeVerification": false
   }

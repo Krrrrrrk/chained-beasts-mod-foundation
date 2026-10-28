@@ -36,7 +36,7 @@ internal static class SkillsFeature
     internal static int Rank(PlayerData data, CustomSkill kind)
     {
         var entry = SkillDefinitions.Get(kind);
-        return Enabled(entry) && data is not null ? SkillMath.Rank(data.HasSkill((SkillType)entry.Id)) : 0;
+        return Enabled(entry) && data is not null ? Math.Clamp(data.HasSkill((SkillType)entry.Id), 0, entry.MaxRank) : 0;
     }
     internal static string DescriptionTerm(CustomSkill kind)
     {
@@ -93,7 +93,7 @@ internal static class SkillsFeature
         FoundationServices.CheckpointValidating += ValidateSnapshot;
         FoundationServices.CheckpointRestored += _ => Restore();
         FoundationServices.OwnershipChanged += Ownership;
-        logger.LogInfo("[Terms & Contusions] four-rank skills registered; direct-hit/HP-loss/weapon-break and matched checkpoint state enabled");
+        logger.LogInfo("[Terms & Contusions] skills registered with per-skill rank limits; direct-hit/HP-loss/weapon-break and matched checkpoint state enabled");
     }
     private static string Summary(CustomSkill kind) => SkillMath.Effect(kind, 1);
     private static void Register(CustomSkill kind, StatChannel channel, Func<NativeStatContext, double> factor)
@@ -113,7 +113,7 @@ internal static class SkillsFeature
         var icon = visuals.Selected;
         if (icon is null) throw new InvalidOperationException("Native skill visual source missing: " + entry.Key);
         library.allSkills.Add(new SkillDef { name = entry.Key, skillType = (SkillType)entry.Id, releaseStatus = ReleaseStatus.InFullGame,
-            offerModifiers = (OfferModifiers)0, offerType = OfferType.Normal, maxLevel = 4, requiresCategory = (SkillCategory)0,
+            offerModifiers = (OfferModifiers)0, offerType = OfferType.Normal, maxLevel = entry.MaxRank, requiresCategory = (SkillCategory)0,
             unlocksCategory = (SkillCategory)0, tooltipCategories = StatusTooltipType.None, sprite = icon });
         Added.Add(entry.Key);
     }

@@ -1,15 +1,17 @@
 # Play Terms & Contusions
 
-**Terms & Contusions 0.9.6** is the experimental gameplay pack built on Chained Beasts Mod Foundation.
+**Terms & Contusions** is the experimental gameplay pack built on Chained Beasts Mod Foundation. The current release is **0.9.7**.
 
 This release targets **game 1.0.2 / Steam build 26231777**. Solo has been working in my
 recent tests; the latest fixes still need broader manual testing.
 Older releases through 0.9.1 target game 1.0.1.
 See [compatibility notes](../GAME_UPDATE_1.0.2.md) and [multiplayer setup](../MULTIPLAYER.md).
 
-**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/TermsAndContusions-with-Foundation-0.9.6.zip) includes both required mod DLLs. BepInEx is installed separately.
+**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/TermsAndContusions-with-Foundation-0.9.7.zip) includes both required mod DLLs. BepInEx is installed separately.
 
 This page explains the content, settings and limitations. For source builds, use the [developer guide](../foundation/README.md).
+
+**New in 0.9.7:** Iron Grip, a one-rank skill that keeps carried enemies in your hands when you take a hit. It worked in my manual test. The pack now contains 47 additions; broader interaction and multiplayer checks for the new skill are still needed.
 
 <a id="what-exists-now"></a>
 
@@ -17,11 +19,11 @@ This page explains the content, settings and limitations. For source builds, use
 
 | Category | Entries | Progression |
 |---|---:|---|
-| Skills | 12 | Four ranks per custom skill |
+| Skills | 13 | Twelve four-rank skills; Iron Grip has one rank |
 | Equipment | 12 | Effects while equipped |
 | Potion afflictions | 11 | One to three skulls |
 | Surgeries | 11 | Once per player per run |
-| **Total** | **46** | |
+| **Total** | **47** | |
 
 Custom descriptions start with **`TC:`**. Content uses the game's normal offer and acquisition paths, so a custom item or skill is not guaranteed to appear on the first offer screen. Names and content IDs are unchanged by the description marker.
 
@@ -31,13 +33,13 @@ I have made no attempt to balance these additions. They may be overpowered, unde
 
 ## Complete catalog
 
-The [content catalog](CATALOG.md) lists names, effects, scaling and prices. The [manifest](manifest.json) maps all 46 entries to stable keys, numeric IDs, implementation files, configuration and source files.
+The [content catalog](CATALOG.md) lists names, effects, scaling and prices. The [manifest](manifest.json) maps all 47 entries to stable keys, numeric IDs, implementation files, configuration and source files.
 
 All entries have implemented source; that does not mean every gameplay case has been verified. For the detailed mechanics and interactions, see:
 
 | Category | Detailed guide |
 |---|---|
-| Skills and throwing | [Four-rank skills, Longshot and Counterweight Sling](SKILLS.md) |
+| Skills and throwing | [Ranked skills, Iron Grip, Longshot and Counterweight Sling](SKILLS.md) |
 | Equipment | [Prices, effects and per-battle allowances](EQUIPMENT.md) |
 | Potion afflictions | [Severity, suppression, reduction and cures](AFFLICTIONS.md) |
 | Surgeries | [Tradeoffs, prices, offers and completion](SURGERIES.md) |
@@ -62,6 +64,8 @@ After the first launch with the pack installed, edit:
 
 Close the game before editing and restart afterward. The catalog identifies each entry's setting. **Keep content enabled while a saved run owns it.**
 
+Iron Grip is enabled by default with `[Skills] EnableIronGrip = true`. It joins the normal skill pool and has one rank. It preserves normal throws, voluntary releases and death cleanup, and gives no damage or stun immunity. Disable it before starting a fresh run if you do not want it offered; do not disable it while resuming a run that owns it.
+
 Normal offers are the default. Leave `[DeveloperOffers] EnableForcedOffers = false` for normal play. Deliberately forcing one of the four original examples requires that master switch and the corresponding individual `Force*` option. Existing offers already stored in a run are not rewritten.
 
 The first-load configuration migration imports the eight legacy content enable/force choices where no explicit destination value exists. The separate master switch prevents an old true Force setting from silently enabling forced offers. See [configuration migration](../foundation/CONFIGURATION_MIGRATION.md).
@@ -82,16 +86,16 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 ## Verification and known limitations
 
-- Solo has been working in my recent tests. The latest description/client-transition fixes pass builds and nongame checks, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
-- **Multiplayer is experimental and host/client tests remain pending.** Every PC needs matching gameplay DLLs, content settings and the [required lobby/checkpoint setup](../MULTIPLAYER.md). Developer actions and forced offers still require the actual Solo session/authority checks.
+- Solo has been working in my recent tests. The latest description/client-transition fixes pass builds and nongame checks, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
+- Multiplayer testing of **0.9.6** went well, but I still expect weird edge cases. **Iron Grip in 0.9.7 worked in my manual test; its multiplayer coverage still needs checking.** Every PC needs matching gameplay DLLs, content settings and the [required lobby/checkpoint setup](../MULTIPLAYER.md). Developer actions and forced offers still require the actual Solo session/authority checks.
 - Original icons and models are not included; the pack reuses visuals already present in the installed game.
 - New descriptions use English fallback. Previously supplied translations are retained but have not had native-speaker review.
 - Automatic Steam Cloud synchronization of custom save files is not implemented. Full arena-instance and current-stamina restoration are also outside the supported save behavior.
 
 ## Build and installation
 
-Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.6). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
+Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
 
-The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. Current 0.9.6 source declares Foundation `>=0.9.6 <0.10.0`; keep the matching production DLLs together. Older 0.8.3 downloads target the previous game build.
+The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The 0.9.7 release declares Foundation `>=0.9.7 <0.10.0`; keep the matching production DLLs together. Older 0.8.3 downloads target the previous game build.
 
 Optional teaching examples are separate projects and are excluded from the normal packages and deployment. Game, loader, Unity, generated interop, extracted assets and saves are not redistributed. Original source and documentation remain MIT.

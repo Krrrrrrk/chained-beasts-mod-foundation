@@ -9,7 +9,9 @@ public sealed class SkillEntry
     public string Key { get; }
     public int Id { get; }
     public string Name { get; }
-    public SkillEntry(CustomSkill kind, string key, int id, string name) { Kind = kind; Key = key; Id = id; Name = name; }
+    public int MaxRank { get; }
+    public SkillEntry(CustomSkill kind, string key, int id, string name, int maxRank = 4)
+    { Kind = kind; Key = key; Id = id; Name = name; MaxRank = maxRank; }
 }
 
 public static class SkillDefinitions
@@ -27,7 +29,8 @@ public static class SkillDefinitions
         new(CustomSkill.PaybackPlan, "terms-and-contusions:skill/payback-plan", 11008, "Payback Plan"),
         new(CustomSkill.WasteNot, "terms-and-contusions:skill/waste-not", 11009, "Waste Not"),
         new(CustomSkill.BreathingRoom, "terms-and-contusions:skill/breathing-room", 11010, "Breathing Room"),
-        new(CustomSkill.Longshot, "terms-and-contusions:skill/longshot", 11011, "Longshot")
+        new(CustomSkill.Longshot, "terms-and-contusions:skill/longshot", 11011, "Longshot"),
+        new(CustomSkill.IronGrip, "terms-and-contusions:skill/iron-grip", 11012, "Iron Grip", 1)
     };
     public static SkillEntry Get(CustomSkill kind) => All.Single(value => value.Kind == kind);
     public static SkillEntry Find(int id) => All.FirstOrDefault(value => value.Id == id);

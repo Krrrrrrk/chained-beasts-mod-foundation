@@ -1,6 +1,11 @@
 # Multiplayer setup
 
-Use **Foundation + Terms & Contusions 0.9.6** and optional **Battle Numbers 0.2.2**
+**0.9.7** adds Iron Grip and needs matching 0.9.7 Foundation/TC DLLs and
+settings on every PC. Iron Grip worked in my manual test; its multiplayer
+coverage still needs checking. The earlier successful multiplayer report
+applies to 0.9.6.
+
+Use **Foundation + Terms & Contusions 0.9.7** and optional **Battle Numbers 0.2.2**
 for **Chained Beasts 1.0.2 / Steam build 26231777**.
 
 - Multiplayer testing has gone well so far, but I still expect weird edge cases.
@@ -8,7 +13,7 @@ for **Chained Beasts 1.0.2 / Steam build 26231777**.
 The detailed checks below still need broader coverage. I have made no attempt
 to balance the additions.
 
-Download the [0.9.6 three-mod ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/Chained-Beasts-Multiplayer-Test-0.9.6.zip), or the [Foundation + TC ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.6/TermsAndContusions-with-Foundation-0.9.6.zip) and [Battle Numbers 0.2.2](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) separately. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
+Download the [0.9.7 three-mod ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/Chained-Beasts-Multiplayer-Test-0.9.7.zip), or the [Foundation + TC ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/TermsAndContusions-with-Foundation-0.9.7.zip) and [Battle Numbers 0.2.2](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) separately. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
 
 ## Client transition fixes
 
@@ -21,7 +26,8 @@ The release also keeps checkpoint transfer matching separate from strict saved-
 file fingerprints, preserves agreements across ordinary feature resets, and
 skips scene-dependent work until live player objects are available. These changes
 use state assignment; they do not grant acquisitions, heal players or edit saves.
-All 46 content IDs and the saved-file schema are unchanged.
+The original 46 content IDs and saved-file schema are unchanged. Iron Grip
+adds skill ID `11012` with one rank and existing sidecar ownership storage.
 
 The latest changes pass builds and nongame regressions, including native-style
 trainer lookups after empty, mixed and repeated ownership sync. Multiplayer play
@@ -45,8 +51,8 @@ target game 1.0.1 and do not support the updated game. See
    don't copy someone else's generated game bindings.
 3. Remove old copies of these three plugin assemblies from every plugin
    subfolder, including `BattleNumbers`. Extract the multiplayer ZIP's `BepInEx`
-   folder into the game root. The 0.9.6 ZIP contains Foundation 0.9.6,
-   TermsAndContusions 0.9.6 and BattleNumbers 0.2.2. It doesn't contain the loader.
+   folder into the game root. The 0.9.7 ZIP contains Foundation 0.9.7,
+   TermsAndContusions 0.9.7 and BattleNumbers 0.2.2. It doesn't contain the loader.
 4. Send the **same ZIP** to everyone. Match the content enable switches and
    surgery prices in `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`.
    Cosmetic Battle Numbers colors/scale/lifetime can differ. Forced offers and
@@ -142,8 +148,8 @@ on one PC need extra UI verification.
 Close the game before rolling back. Restore the **paired pre-test plugins,
 configuration and complete user-data backup together** on each PC. Don't just
 swap DLLs and continue a run owning incompatible custom content. Don't mix
-0.9.6 gameplay DLLs with older releases. The local deploy script records its
-backup in `artifacts/packages/0.9.6/deployment.json`; use
+0.9.7 gameplay DLLs with older releases. The local deploy script records its
+backup in `artifacts/packages/0.9.7/deployment.json`; use
 `scripts/restore-plugin-backup.ps1` with that checkpoint to restore the matching
 set.
 
@@ -174,5 +180,5 @@ pwsh -NoProfile -File scripts/build-and-deploy-plugin.ps1 -Deploy -SkipBuild -In
 ```
 
 The combined handoff is
-`artifacts/packages/0.9.6/Chained-Beasts-Multiplayer-Test-0.9.6.zip`. No build,
+`artifacts/packages/0.9.7/Chained-Beasts-Multiplayer-Test-0.9.7.zip`. No build,
 check or package command launches the game or publishes a GitHub release.

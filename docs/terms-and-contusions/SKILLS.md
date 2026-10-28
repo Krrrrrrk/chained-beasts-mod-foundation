@@ -1,6 +1,6 @@
 # Skills
 
-Each custom skill has four ranks. Offers describe the rank being purchased; owned views describe the current rank. Native trainer eligibility and costs still apply. Removing a rank removes its contribution; restoring ownership does not replay a purchase or heal.
+The 0.9.7 release contains twelve four-rank skills and **Iron Grip**, which has one rank. Iron Grip worked in my manual test; broader interactions and multiplayer cases still need checking. Offers describe the rank being purchased; owned views describe the current rank. Native trainer eligibility and costs still apply. Removing a rank removes its contribution; restoring ownership does not replay a purchase or heal.
 
 | Content / ID | Full scaling and limits | Setting |
 |---|---|---|
@@ -16,6 +16,9 @@ Each custom skill has four ranks. Offers describe the rank being purchased; owne
 | Waste Not / 11009 | Rank 1: A genuine weapon break from normal durability loss restores 25% maximum stamina, within the normal cap. / Rank 2: A genuine weapon break from normal durability loss restores 50% maximum stamina, within the normal cap. / Rank 3: A genuine weapon break from normal durability loss restores 75% maximum stamina, within the normal cap. / Rank 4: A genuine weapon break from normal durability loss restores 100% maximum stamina, within the normal cap. | `[Skills] EnableWasteNot` |
 | Breathing Room / 11010 | Rank 1: 5% damage reduction per living hostile within 3m, capped at 20%. / Rank 2: 10% damage reduction per living hostile within 3m, capped at 40%. / Rank 3: 15% damage reduction per living hostile within 3m, capped at 60%. / Rank 4: 20% damage reduction per living hostile within 3m, capped at 80%. | `[Skills] EnableBreathingRoom` |
 | Longshot / 11011 | Rank 1: 2x normal throw range and charge speed. Charging takes 1/2 of normal time; stacks multiplicatively with Counterweight Sling. / Rank 2: 3x normal throw range and charge speed. Charging takes 1/3 of normal time; stacks multiplicatively with Counterweight Sling. / Rank 3: 4x normal throw range and charge speed. Charging takes 1/4 of normal time; stacks multiplicatively with Counterweight Sling. / Rank 4: 5x normal throw range and charge speed. Charging takes 1/5 of normal time; stacks multiplicatively with Counterweight Sling. | `[Skills] EnableLongshot` |
+| Iron Grip / 11012 | Single rank: taking hits no longer makes you drop carried enemies. Normal throws, voluntary releases and death cleanup stay unchanged; no damage or stun immunity. | `[Skills] EnableIronGrip` |
+
+Iron Grip is enabled by default and joins the normal skill pool. Its description is `TC: Taking hits no longer makes you drop carried enemies.` Existing skills retain their IDs and four-rank progression. Ownership uses the shared checkpoint state, so removing the plugin or disabling owned Iron Grip can prevent restoring that run. Keep matching saves, sidecars and mod versions when rolling back. Multiplayer requires the same gameplay DLLs and content settings on every PC.
 
 For implementation details, use the [content index](manifest.json), [shared mechanics and events](../foundation/MECHANICS.md) and [adding-content guide](../ADDING_CONTENT.md).
 

@@ -25,8 +25,8 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.termsandcontusions";
     public const string PluginName = "Terms & Contusions";
-    public const string PluginVersion = "0.9.6";
-    public const string FoundationVersionRange = ">=0.9.6 <0.10.0";
+    public const string PluginVersion = "0.9.7";
+    public const string FoundationVersionRange = ">=0.9.7 <0.10.0";
 
     public override void Load()
     {
@@ -87,7 +87,7 @@ public sealed class Plugin : BasePlugin
         var skillEnabled = new Dictionary<CustomSkill, bool> { [CustomSkill.BulkUp] = enableBulkUp.Value };
         foreach (var skill in SkillDefinitions.All.Where(value => value.Kind != CustomSkill.BulkUp))
             skillEnabled[skill.Kind] = BindToggle(LegacyConfigurationSnapshot.Parse(null), true, "Skills", "Enable" + skill.Kind, true,
-                "Register the four-rank " + skill.Name + " skill on the next launch.").Value;
+                "Register " + skill.Name + " (" + skill.MaxRank + " rank" + (skill.MaxRank == 1 ? "" : "s") + ") on the next launch.").Value;
         var slingEnabled = Config.Bind("CounterweightSling", "EnableCounterweightSling", true,
             "Register Counterweight Sling equipment on the next launch.").Value;
         var equipmentEnabled = EquipmentDefinitions.All.ToDictionary(entry => entry.Kind, entry =>
@@ -113,7 +113,7 @@ public sealed class Plugin : BasePlugin
             ContentCategory.Surgery, CustomContentIds.AdrenalGraftSurgery, 1, enableAdrenalGraft.Value)
         };
         claims.AddRange(SkillDefinitions.All.Where(value => value.Kind != CustomSkill.BulkUp).Select(skill =>
-            new ContentDescriptor(skill.Key, PluginGuid, ContentCategory.Skill, skill.Id, 4, skillEnabled[skill.Kind])));
+            new ContentDescriptor(skill.Key, PluginGuid, ContentCategory.Skill, skill.Id, skill.MaxRank, skillEnabled[skill.Kind])));
         claims.Add(new ContentDescriptor(CounterweightSlingFeature.Key, PluginGuid, ContentCategory.Equipment,
             CounterweightSlingFeature.Id, 1, slingEnabled));
         claims.AddRange(EquipmentDefinitions.All.Select(entry => new ContentDescriptor(entry.Key, PluginGuid,
@@ -139,7 +139,8 @@ public sealed class Plugin : BasePlugin
         {
             BulkUpFeature.Install(harmony, Log, allowForcedOffers && forceBulkUp.Value);
         });
-        InstallFeature("four-rank skills", "skills", skillEnabled.Values.Any(value => value), harmony => SkillsFeature.Install(harmony, Log));
+        InstallFeature("skill catalog", "skills", skillEnabled.Values.Any(value => value), harmony => SkillsFeature.Install(harmony, Log));
+        InstallFeature("Iron Grip", "irongrip", skillEnabled[CustomSkill.IronGrip], harmony => IronGripFeature.Install(harmony, Log));
         InstallFeature("Counterweight Sling", "sling", slingEnabled, CounterweightSlingFeature.Install);
         InstallFeature("equipment catalog", "equipment", equipmentEnabled.Values.Any(value => value), harmony => EquipmentFeature.Install(harmony, Log));
         InstallFeature("Runner's Wraps", "runnerswraps", enableRunnersWraps.Value,
@@ -183,6 +184,7 @@ public sealed class Plugin : BasePlugin
                 "leadfoot" => CustomContentIds.LeadfootKey,
                 "adrenalgraft" => CustomContentIds.AdrenalGraftKey,
                 "sling" => CounterweightSlingFeature.Key,
+                "irongrip" => SkillDefinitions.Get(CustomSkill.IronGrip).Key,
                 _ => null
             };
             if (key is not null) FoundationServices.Content.Disable(key);

@@ -6,7 +6,7 @@ namespace TermsAndContusions.Skills;
 public enum CustomSkill
 {
     BulkUp, MeasuredViolence, RunningOnFumes, CatchYourBreath, ExpensiveTaste, FreshMeat,
-    PickYourMoment, MixedMartialArts, PaybackPlan, WasteNot, BreathingRoom, Longshot
+    PickYourMoment, MixedMartialArts, PaybackPlan, WasteNot, BreathingRoom, Longshot, IronGrip
 }
 
 public static class SkillMath
@@ -53,6 +53,7 @@ public static class SkillMath
             CustomSkill.WasteNot => $"Breaking a weapon restores {Percent(.25d * r)} stamina.",
             CustomSkill.BreathingRoom => $"Take {5 * r}% less damage per nearby enemy (3m). Maximum {20 * r}%.",
             CustomSkill.Longshot => $"{1 + r}x throw range and charge speed.",
+            CustomSkill.IronGrip => "Taking hits no longer makes you drop carried enemies.",
             _ => throw new ArgumentOutOfRangeException(nameof(skill))
         });
     }

@@ -36,10 +36,15 @@ foreach($package in $packages){
 # $($package.name) $script:ReleaseVersion — release
 
 Included DLLs: $members. This archive does not install or contain BepInEx.
-TermsAndContusions requires ChainedBeasts.ModFoundation >=0.9.6 <0.10.0.
+TermsAndContusions requires ChainedBeasts.ModFoundation >=0.9.7 <0.10.0.
 The optional combined multiplayer test ZIP also includes Battle Numbers 0.2.x;
 see package-manifest.json for its exact version and hash.
 Foundation alone is supported. Optional teaching examples are not included.
+0.9.7 adds Iron Grip (one rank): hits no longer make you drop carried enemies.
+It is enabled by default through [Skills] EnableIronGrip in
+BepInEx/config/local.chainedbeasts.termsandcontusions.cfg. Normal throws,
+releases and cleanup still apply. Iron Grip worked in a manual test; broader
+interaction and matching-party multiplayer coverage still needs checking.
 
 1. Close the game. Back up all BepInEx/plugins, BepInEx/config and the complete
    LocalLow/Featherweight Games/ChainedBeasts user-data folder, including any
@@ -64,7 +69,8 @@ Foundation alone is supported. Optional teaching examples are not included.
 Native SaveData and its exact matching sidecars must be copied/restored together.
 Do not remove/disable owned custom content and resume that run. Old v0.7.3 cannot
 read the new checkpoint protocol: downgrade DLL/config/user-data as a matching
-pre-expansion set, not just the DLL. Multiplayer is experimental and unverified.
+pre-expansion set, not just the DLL. Multiplayer is experimental; the new skill's
+network and edge-case coverage remain incomplete.
 Automatic Steam Cloud sidecar sync, original icons and full arena-instance
 restoration are not supported.
 New text uses English fallback; surgery reroll remains deferred.
@@ -74,7 +80,7 @@ https://github.com/Krrrrrrk/chained-beasts-mod-foundation/blob/main/docs/INSTALL
 "@ | Set-Content (Join-Path $stage 'README_INSTALL.md') -Encoding utf8
     $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | ForEach-Object { @{path=([IO.Path]::GetRelativePath($stage,$_.FullName).Replace('\','/'));sha256=(Get-Sha $_.FullName)} })
     @{schemaVersion=1;version=$script:ReleaseVersion;package=$package.name;runtimeVerified=$false;published=$false;
-        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=0.9.6 <0.10.0';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
+        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=0.9.7 <0.10.0';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
         ConvertTo-Json -Depth 8 | Set-Content (Join-Path $stage 'package-manifest.json') -Encoding utf8
     $archive=Join-Path $OutputRoot ($package.name+'-'+$script:ReleaseVersion+'.zip')
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $archive -Force
