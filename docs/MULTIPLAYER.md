@@ -1,19 +1,10 @@
 # Multiplayer setup
 
-**0.9.7** adds Iron Grip and needs matching 0.9.7 Foundation/TC DLLs and
-settings on every PC. Iron Grip worked in my manual test; its multiplayer
-coverage still needs checking. The earlier successful multiplayer report
-applies to 0.9.6.
+**Foundation + Terms & Contusions 1.0.0** includes [host-controlled TC content selection](CONTENT_SELECTION.md), developed in the 0.9.9 build. Choose and save at the main menu before hosting or joining. Clients temporarily adopt the host's offer toggles without changing their saved preferences; editing is locked while connected. This new selection/handshake still needs a manual two-PC test.
 
-Use **Foundation + Terms & Contusions 0.9.7** and optional **Battle Numbers 0.2.2**
-for **Chained Beasts 1.0.2 / Steam build 26231777**.
+Earlier multiplayer testing went well, but I still expect weird edge cases. Iron Grip worked in my Solo test; its multiplayer coverage remains incomplete. Publishing v1 does not establish exhaustive gameplay or save/resume verification.
 
-- Multiplayer testing has gone well so far, but I still expect weird edge cases.
-
-The detailed checks below still need broader coverage. I have made no attempt
-to balance the additions.
-
-Download the [0.9.7 three-mod ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/Chained-Beasts-Multiplayer-Test-0.9.7.zip), or the [Foundation + TC ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/TermsAndContusions-with-Foundation-0.9.7.zip) and [Battle Numbers 0.2.2](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) separately. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
+Download the [Foundation + TC 1.0.0 ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip). Optional [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is a separate download; this release contains the two gameplay plugins. Use the same gameplay DLLs on every PC. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
 
 ## Client transition fixes
 
@@ -49,12 +40,8 @@ target game 1.0.1 and do not support the updated game. See
 2. Keep BepInEx **6.0.0-be.791+b782da4 Unity IL2CPP x64**, game 1.0.2 / Steam
    build 26231777 / Unity 6000.3.21f1. Generate interop locally through the loader;
    don't copy someone else's generated game bindings.
-3. Remove old copies of these three plugin assemblies from every plugin
-   subfolder, including `BattleNumbers`. Extract the multiplayer ZIP's `BepInEx`
-   folder into the game root. The 0.9.7 ZIP contains Foundation 0.9.7,
-   TermsAndContusions 0.9.7 and BattleNumbers 0.2.2. It doesn't contain the loader.
-4. Send the **same ZIP** to everyone. Match the content enable switches and
-   surgery prices in `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`.
+3. Remove old copies of Foundation and TermsAndContusions from every plugin subfolder after backing them up. Extract the combined ZIP's `BepInEx` folder into the game root. It contains Foundation 1.0.0 and TermsAndContusions 1.0.0, without the loader or optional number plugins.
+4. Send the **same ZIP** to everyone. The host's content offer toggles are adopted automatically; match surgery prices and other gameplay settings in `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`.
    Cosmetic Battle Numbers colors/scale/lifetime can differ. Forced offers and
    F1 cheats remain Solo-only, even if enabled in configuration.
 5. Have everyone join the host's lobby **before starting or resuming the run**.
@@ -148,16 +135,14 @@ on one PC need extra UI verification.
 Close the game before rolling back. Restore the **paired pre-test plugins,
 configuration and complete user-data backup together** on each PC. Don't just
 swap DLLs and continue a run owning incompatible custom content. Don't mix
-0.9.7 gameplay DLLs with older releases. The local deploy script records its
-backup in `artifacts/packages/0.9.7/deployment.json`; use
+1.0.0 gameplay DLLs with older releases. The local deploy script records its
+backup in `artifacts/packages/1.0.0/deployment.json`; use
 `scripts/restore-plugin-backup.ps1` with that checkpoint to restore the matching
 set.
 
 ## Build and local handoff
 
-The companion checkout belongs at `chained-beasts-battle-numbers` and has its own
-Git history; it is ignored by this repository. Use its matching 0.2.2 source
-when building the all-three package.
+Battle Numbers has its own repository and release cycle. The default package/deploy workflow targets Foundation and TC only.
 
 Independent content providers must register compatibility during plugin load:
 
@@ -173,12 +158,11 @@ its state mutations still need the correct native authority and synchronization.
 
 ```powershell
 pwsh -NoProfile -File scripts/build-plugins.ps1
-dotnet build chained-beasts-battle-numbers/src/ChainedBeasts.BattleNumbers/ChainedBeasts.BattleNumbers.csproj -c Release
-pwsh -NoProfile -File scripts/package-plugins.ps1 -SkipBuild -IncludeBattleNumbers
+pwsh -NoProfile -File scripts/package-plugins.ps1 -SkipBuild
 # Only after the game is closed; backs up plugins/configs/user data together:
-pwsh -NoProfile -File scripts/build-and-deploy-plugin.ps1 -Deploy -SkipBuild -IncludeBattleNumbers
+pwsh -NoProfile -File scripts/build-and-deploy-plugin.ps1 -Deploy -SkipBuild
 ```
 
 The combined handoff is
-`artifacts/packages/0.9.7/Chained-Beasts-Multiplayer-Test-0.9.7.zip`. No build,
+`artifacts/packages/1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip`. No build,
 check or package command launches the game or publishes a GitHub release.

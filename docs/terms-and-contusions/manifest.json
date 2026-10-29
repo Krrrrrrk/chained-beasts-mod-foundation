@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "pack": "Terms & Contusions",
-  "version": "0.9.7",
+  "version": "1.0.0",
   "pluginGuid": "local.chainedbeasts.termsandcontusions",
-  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7",
-  "releaseChannel": "release",
-  "stableReleaseVersion": "0.9.7",
-  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7",
-  "status": "0.9.7 adds one-rank Iron Grip, reported working in a manual test. Prior basic Solo/multiplayer play has gone well; new-skill multiplayer and wider edge cases remain incompletely tested.",
+  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0",
+  "releaseChannel": "regular",
+  "stableReleaseVersion": "1.0.0",
+  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0",
+  "status": "Version1.0.0 promotes the0.9.9 development build. Styled TC selector observed; search unavailable. Host selection and broader gameplay remain pending manual checks.",
   "entries": [
     {
       "key": "terms-and-contusions:skill/bulk-up",
@@ -510,8 +510,8 @@
     "gameAssemblySha256": "ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29",
     "metadataSha256": "b689ca1c435476874b1a2e6e0aab140f07af02a6a9700d8f457c79e89b170075",
     "bepInExVersion": "6.0.0-be.791+b782da4",
-    "foundationVersion": "0.9.7",
-    "contentPackVersion": "0.9.7",
+    "foundationVersion": "1.0.0",
+    "contentPackVersion": "1.0.0",
     "battleNumbersVersion": "0.2.2",
     "runtimeVerified": false,
     "report": "docs/GAME_UPDATE_1.0.2.md",
@@ -586,5 +586,24 @@
     "scope": "Basic multiplayer play for Foundation/Terms & Contusions 0.9.6 and Battle Numbers 0.2.2; does not establish Iron Grip 0.9.7 multiplayer coverage.",
     "remaining": "Weird edge cases and untested interactions are still expected.",
     "exhaustiveRuntimeVerification": false
+  },
+  "contentSelection": {
+    "version": "1.0.0",
+    "guide": "docs/CONTENT_SELECTION.md",
+    "entries": 47,
+    "defaultEnabled": true,
+    "hostAuthoritative": true,
+    "clientPreferencesPreserved": true,
+    "editableBeforeConnecting": true,
+    "appliesWithoutRestart": true,
+    "scope": "New generator offers; owned content, mechanics, names, save schema and stored offer indices remain intact.",
+    "configuration": "Existing per-content Enable* keys; now offer preferences rather than startup registration switches.",
+    "runtimeVerified": false,
+    "manualTestPending": true,
+    "localDeployed": false,
+    "nongameSelectionChecks": 192,
+    "layout": "Matches the public lobby browser and party chat: plum panels, cream text, gold headings, teal accents and square controls. Searchable responsive cards, category counts, draft state and explicit save/discard.",
+    "randomInjuryFilter": "InjuryGenerator.GetRandomInjury including Clever Monkey training events; vanilla content preserved.",
+    "searchAvailable": false
   }
 }

@@ -8,7 +8,7 @@ Start from the [standalone skill project](../../examples/StandaloneContentExampl
 |---|---|---|
 | Project/assembly/namespace | `StandaloneContentExample` | A unique product name; update csproj, namespace and output filename together |
 | BepInEx GUID | `example.chainedbeasts.standalonecontent` | Your own stable reverse-domain identity; independent config and Harmony owner |
-| Display name/version | Standalone Content Example / 0.8.0 | Your own name/version, Foundation hard dependency `>=0.9.0 <0.10.0` for the current source |
+| Display name/version | Standalone Content Example / 0.8.0 | Your own name/version, Foundation hard dependency `>=1.0.0 <2.0.0` for the current source |
 | Content key | `example.standalone:skill/training-footwork` | Your own namespace/category/slug; independent ownership and text |
 | Skill ID | `12000` | Verify a vacant installed category ID and coordinate with other mods |
 | Other sample IDs | equipment `2470`, injury `12010`, surgery `12020` | Demonstrations verified vacant in this build, not a global reservation service |

@@ -53,7 +53,7 @@ The current source builds **0.9.6** for game 1.0.2. Packages are written to `art
 
 The build command supports `-FoundationOnly`. Build commands never deploy or launch the game. Deployment requires explicit -Deploy and makes a matching complete checkpoint; default build invocations cannot install.
 
-The current source pack requires Foundation `>=0.9.6 <0.10.0`; the minimal examples still use the compatible `>=0.9.0 <0.10.0` API range and require the matching current Foundation for game 1.0.2. The published 0.8.3 pack declares `>=0.8.0 <0.9.0`; keep matching production DLLs together. The range alone doesn't establish gameplay compatibility, and multiplayer additionally requires exact gameplay DLL fingerprints and settings. The installed BepInEx API interprets a bare version as exact, so the range is intentional. Missing/incompatible Foundation blocks the dependent plugin. A failed shared-core install leaves `FoundationServices.IsReady=false`; dependent plugins explicitly refuse to initialize.
+The current source pack requires Foundation `>=1.0.0 <2.0.0`; the minimal examples still use the compatible `>=1.0.0 <2.0.0` API range and require the matching current Foundation for game 1.0.2. The published 0.8.3 pack declares `>=0.8.0 <0.9.0`; keep matching production DLLs together. The range alone doesn't establish gameplay compatibility, and multiplayer additionally requires exact gameplay DLL fingerprints and settings. The installed BepInEx API interprets a bare version as exact, so the range is intentional. Missing/incompatible Foundation blocks the dependent plugin. A failed shared-core install leaves `FoundationServices.IsReady=false`; dependent plugins explicitly refuse to initialize.
 
 ## Public extension points
 

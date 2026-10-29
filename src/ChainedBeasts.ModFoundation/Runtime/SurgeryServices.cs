@@ -50,7 +50,7 @@ internal static class NativeSurgeries
     private static void Offers(PlayerData playerData, int numberOfOptions, int remainingMoney, RunDataManager runDataManager, Il2CppSystem.Collections.Generic.List<Surgery> __result)
     {
         if (!SessionAccess.GameplayReady || playerData is null || __result is null) return;
-        var providers = SurgeryServices.Offers.Values.Where(offer => FoundationServices.Content.TryGet(offer.Key, out var entry) && entry.Enabled &&
+        var providers = SurgeryServices.Offers.Values.Where(offer => FoundationServices.Content.TryGet(offer.Key, out var entry) && entry.Enabled && ContentOfferServices.Allows(entry.Key) &&
             !SurgeryServices.IsOwned(playerData, offer.Key) && remainingMoney >= offer.Price).OrderBy(offer => offer.Key, StringComparer.Ordinal).ToArray();
         if (providers.Length == 0) return;
         var force = Array.FindIndex(providers, offer => offer.Force);

@@ -66,7 +66,7 @@ internal static class NativeMultiplayer
     private static CustomMessagingManager.HandleNamedMessageDelegate _handler;
     private static readonly Dictionary<ulong, double> Waiting = new();
     private static readonly HashSet<ulong> Matched = new();
-    private static string _session, _fingerprint;
+    private static string _session, _fingerprint, _offerJson, _offerDigest;
     private static bool _ready;
     private static bool _arming, _faulted;
     private static readonly ReadyBarrier ReadyAcks = new();
@@ -77,7 +77,21 @@ internal static class NativeMultiplayer
     private static readonly SequenceWindow MoneySequence = new();
     internal static readonly HashSet<int> Ledger = new();
     internal static string LedgerBattle;
-    internal static bool Ready => _ready && _manager != null && _manager.IsListening;
+    internal static bool Ready
+    {
+        get
+        {
+            if (!_ready || _manager == null || !_manager.IsListening) return false;
+            if (!_manager.IsServer) return true;
+            // A newly connected peer must block Start even before the next
+            // quarter-second handshake tick or its first hello packet.
+            if (!ReadyAcks.Complete) return false;
+            var clients = _manager.ConnectedClientsIds;
+            var count = clients.Cast<Il2CppSystem.Collections.Generic.IReadOnlyCollection<ulong>>().Count;
+            for (var i = 0; i < count; i++) if (clients[i] != _manager.LocalClientId && !Matched.Contains(clients[i])) return false;
+            return true;
+        }
+    }
     internal static bool Online => GameManager.InstanceExists && GameManager.Instance.CurrentGameMode is GameMode.Online or GameMode.Local;
     internal static event Action<ulong, MultiplayerPacket> Message;
 
@@ -126,6 +140,12 @@ internal static class NativeMultiplayer
             if (manager.CustomMessagingManager is null) return;
             Reset(); _manager = manager; _fingerprint = MultiplayerServices.Fingerprint();
             _session = manager.IsServer ? Guid.NewGuid().ToString("N") : null;
+            if (manager.IsServer)
+            {
+                ContentOfferServices.FreezeHost();
+                _offerJson = ContentOfferServices.Snapshot();
+                _offerDigest = ContentOfferServices.Digest(_offerJson);
+            }
             _handler = (Action<ulong, FastBufferReader>)Receive;
             manager.CustomMessagingManager.RegisterNamedMessageHandler(Channel, _handler);
             FoundationServices.Logger?.LogInfo("[Multiplayer] transport ready; checking peer compatibility " + _fingerprint);
@@ -166,7 +186,7 @@ internal static class NativeMultiplayer
             if (!_arming)
             {
                 ReadyAcks.Begin(Matched);
-                _arming = true; foreach (var id in Matched) Send(id, new() { Kind = "ready", Fingerprint = _fingerprint });
+                _arming = true; foreach (var id in Matched) Send(id, new() { Kind = "ready", Fingerprint = _fingerprint, Nonce = _offerDigest });
             }
             if (ReadyAcks.Complete) { _ready = true; FoundationServices.Logger?.LogInfo("[Multiplayer] party compatibility confirmed; host and clients ready"); }
         }
@@ -178,6 +198,7 @@ internal static class NativeMultiplayer
         _manager = null; _handler = null; _ready = false; _session = null; Waiting.Clear(); Matched.Clear(); MoneySequence.Clear(); Ledger.Clear(); GoldClaims.Clear(); GoldStates.Clear(); GoldFeedback.Clear();
         _helloAt = _nextTick = _moneyAt = 0; _sequence = 0; NetworkCombat.Reset(); NetworkCheckpoints.ResetSession(); NativeHealthGrants.ResetSession();
         _arming = false; ReadyAcks.Clear(); LedgerBattle = null;
+        _offerJson = _offerDigest = null; ContentOfferServices.ResetSession();
     }
     internal static void Send(ulong client, MultiplayerPacket packet)
     {
@@ -209,24 +230,52 @@ internal static class NativeMultiplayer
                     if (!Matched.Contains(sender) && NetworkSession.InstanceExists && NetworkSession.Instance.runDataManager?.runStartTime > 0)
                     { _manager.DisconnectClient(sender, "Join the modded lobby before starting the run. Mid-run joining is not supported."); return; }
                     if (packet.Fingerprint != _fingerprint) { _manager.DisconnectClient(sender, "Chained Beasts mod versions, enabled content or prices differ from host."); return; }
-                    Matched.Add(sender); Waiting.Remove(sender);
-                    Send(sender, new() { Kind = "accepted", Fingerprint = _fingerprint });
-                    _ready = false; // Tick publishes the complete-party result to ALL peers.
+                    if (!Matched.Contains(sender) && !Waiting.ContainsKey(sender)) Waiting[sender] = Time.unscaledTimeAsDouble;
+                    if (!Matched.Contains(sender)) { _ready = false; _arming = false; ReadyAcks.Clear(); }
+                    Send(sender, new() { Kind = "accepted", Fingerprint = _fingerprint, Json = _offerJson, Nonce = _offerDigest });
+                    return;
+                }
+                if (packet.Kind == "settings-ack")
+                {
+                    if (!OfferSelectionAcknowledgement.Matches(_session, _fingerprint, _offerDigest, packet) ||
+                        (!Waiting.ContainsKey(sender) && !Matched.Contains(sender))) return;
+                    if (Matched.Add(sender))
+                    {
+                        _ready = false; _arming = false; ReadyAcks.Clear();
+                        FoundationServices.Logger?.LogInfo("[Multiplayer] peer acknowledged host offer selection: " + sender);
+                    }
+                    Waiting.Remove(sender);
                     return;
                 }
                 if (!Matched.Contains(sender) || packet.Session != _session) return;
-                if (packet.Kind == "ready-ack") { ReadyAcks.Acknowledge(sender); return; }
+                if (packet.Kind == "ready-ack") { if (OfferSelectionAcknowledgement.Matches(_session, _fingerprint, _offerDigest, packet)) ReadyAcks.Acknowledge(sender); return; }
             }
             else
             {
                 if (sender != NetworkManager.ServerClientId) return;
                 if (packet.Kind == "accepted")
                 {
-                    if (packet.Fingerprint != _fingerprint || string.IsNullOrEmpty(packet.Session)) return;
-                    _session = packet.Session; return;
+                    if (packet.Fingerprint != _fingerprint || string.IsNullOrEmpty(packet.Session) ||
+                        (_session is not null && packet.Session != _session)) return;
+                    var firstSelection = _offerDigest is null;
+                    ContentOfferServices.Adopt(packet.Json, packet.Nonce);
+                    _session = packet.Session; _offerDigest = packet.Nonce;
+                    if (firstSelection)
+                    {
+                        var choices = ContentOfferServices.EffectivePreferences();
+                        FoundationServices.Logger?.LogInfo("[Multiplayer] host offer selection adopted before ready: " + choices.Count(item => item.Value) + "/" + choices.Count + "; personal preferences unchanged");
+                    }
+                    Send(NetworkManager.ServerClientId, new() { Kind = "settings-ack", Fingerprint = _fingerprint, Nonce = _offerDigest });
+                    return;
                 }
                 if (packet.Session != _session || _session is null) return;
-                if (packet.Kind is "ready" or "waiting") { _ready = packet.Kind == "ready"; if (_ready) Send(NetworkManager.ServerClientId, new() { Kind = "ready-ack" }); return; }
+                if (packet.Kind is "ready" or "waiting")
+                {
+                    _ready = packet.Kind == "ready" && ContentOfferServices.SessionLocked &&
+                        OfferSelectionAcknowledgement.Matches(_session, _fingerprint, _offerDigest, packet);
+                    if (_ready) Send(NetworkManager.ServerClientId, new() { Kind = "ready-ack", Fingerprint = _fingerprint, Nonce = _offerDigest });
+                    return;
+                }
             }
             if (packet.Kind == "money") { ReceiveMoney(packet); return; }
             if (packet.Kind == "gold") { ReceiveGold(sender, packet); return; }

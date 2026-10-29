@@ -170,7 +170,7 @@ internal static class LeadfootFeature
 
     private static void GeneratePotionsPostfix(List<Potion> __result)
     {
-        if (!_forceNextOffer || !SessionAccess.CanUseDeveloperTools || !_registrationReady || __result is null || __result.Count == 0)
+        if (!ContentOfferServices.Allows(CustomContentIds.LeadfootKey) || !_forceNextOffer || !SessionAccess.CanUseDeveloperTools || !_registrationReady || __result is null || __result.Count == 0)
         {
             return;
         }

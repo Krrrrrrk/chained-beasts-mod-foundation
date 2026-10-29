@@ -5,7 +5,7 @@ Minimal independent plugin using the public Foundation API. It supplies **Traini
 | Identity | Value |
 |---|---|
 | Assembly / namespace | `StandaloneContentExample` |
-| Plugin GUID / dependency | `example.chainedbeasts.standalonecontent` / Foundation `>=0.9.0 <0.10.0` |
+| Plugin GUID / dependency | `example.chainedbeasts.standalonecontent` / Foundation `>=1.0.0 <2.0.0` |
 | Stable content key | `example.standalone:skill/training-footwork` |
 | Skill ID / maximum rank | `12000` / `1` |
 | Localization | Namespaced Name/Description terms, explicit English fallback |

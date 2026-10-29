@@ -9,7 +9,7 @@ namespace CategoryExamples;
 
 // Optional teaching assembly. Never included in product ZIPs or normal deployment.
 [BepInPlugin(Guid, "Foundation Category Examples", "0.8.0")]
-[BepInDependency(ChainedBeasts.ModFoundation.Plugin.PluginGuid, ">=0.9.0 <0.10.0")]
+[BepInDependency(ChainedBeasts.ModFoundation.Plugin.PluginGuid, ">=1.0.0 <2.0.0")]
 public sealed class Plugin : BasePlugin
 {
     public const string Guid = "example.chainedbeasts.categoryexamples";

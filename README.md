@@ -2,11 +2,9 @@
 
 **Terms & Contusions** is my experimental content pack for Chained Beasts: 47 skills, equipment items, potion afflictions and surgeries. **Mod Foundation** is the shared code behind it, which other modders can use to make their own additions.
 
-The [**0.9.7 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7) targets **Chained Beasts 1.0.2**, Steam build **26231777**. [**Battle Numbers 0.2.2**](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2) is the optional companion. See [compatibility notes](docs/GAME_UPDATE_1.0.2.md).
+The [**1.0.0 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0) targets **Chained Beasts 1.0.2**, Steam build **26231777**. [**Battle Numbers**](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is an optional, separate download. See [compatibility notes](docs/GAME_UPDATE_1.0.2.md).
 
-**New in 0.9.7:** **Iron Grip**, a one-rank skill that stops hits from making you drop carried enemies. It worked in my manual test. Normal throws, releases and damage still apply; broader interaction and multiplayer checks are still needed.
-
-**Upcoming 0.9.9 preview:** adds the [TC Content menu](#choose-your-tc-content) with category counts and individual ON/OFF cards. It also filters random-affliction training events. Choose individual entries before a run; clients adopt the host's selection. The styled menu is shown below; search is currently unavailable, and broader gameplay/host-client checks are still needed. The download below remains 0.9.7.
+**New in v1:** the [TC Content menu](#choose-your-tc-content) lets you toggle individual additions before a run. All 47 entries default to enabled, and multiplayer clients temporarily use the host's selection. This is the 0.9.9 development build promoted to 1.0.0. Search is currently unavailable; categories and pages work. The menu has appeared in my tests, but broader gameplay and host-client checks are still needed.
 
 **Latest fixes:** client trainer generation keeps the zero-rank skill entries it needs,
 checkpoint transfers survive scene changes, and custom skill previews show their
@@ -25,7 +23,7 @@ advertised effect before acquisition. See [multiplayer setup and checks](docs/MU
 
 ## Quick install
 
-These steps are for the **Steam version of Chained Beasts on 64-bit Windows**. The current release is **0.9.7**, built for game version **1.0.2**, Steam build **26231777**. You do not need Git, PowerShell or a .NET SDK to install the downloads.
+These steps are for the **Steam version of Chained Beasts on 64-bit Windows**. The current release is **1.0.0**, built for game version **1.0.2**, Steam build **26231777**. You do not need Git, PowerShell or a .NET SDK to install the downloads.
 
 **Already using an older version of this mod?** Follow [updating an existing install](docs/INSTALLATION.md#updating-an-existing-install) first.
 
@@ -47,7 +45,7 @@ Use the linked IL2CPP x64 build; the Mono and x86 downloads are for other game s
 
 ### 3. Install Terms & Contusions
 
-[**Download Terms & Contusions 0.9.7 + Foundation — the recommended mod ZIP**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/TermsAndContusions-with-Foundation-0.9.7.zip)
+[**Download Terms & Contusions 1.0.0 + Foundation — the recommended mod ZIP**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip)
 
 Open that ZIP and copy its **`BepInEx` folder into the same game folder** from step 1, merging it with the existing `BepInEx` folder.
 
@@ -64,14 +62,14 @@ Start the game normally and play **Solo**. The additions appear through the norm
 
 Custom descriptions begin with **`TC:`**, making them easy to spot. You do not need to open the F1 testing menu or enable forced offers to play.
 
-**Need help?** See [troubleshooting](docs/INSTALLATION.md#troubleshooting), [settings](docs/INSTALLATION.md#configuration), or [removing the mod and rolling back](docs/INSTALLATION.md#uninstalling-and-rolling-back). [All release downloads](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7) are available for people who need individual packages.
+**Need help?** See [troubleshooting](docs/INSTALLATION.md#troubleshooting), [settings](docs/INSTALLATION.md#configuration), or [removing the mod and rolling back](docs/INSTALLATION.md#uninstalling-and-rolling-back). [All release downloads](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0) are available for people who need individual packages.
 
 ## Experimental multiplayer downloads
 
-The [**0.9.7 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7) includes multiplayer support, mechanics fixes and activation cues for game **1.0.2**. Broader gameplay and host/client testing are still needed.
+The [**1.0.0 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0) includes multiplayer support, mechanics fixes and activation cues for game **1.0.2**. Broader gameplay and host/client testing are still needed.
 
-- [Foundation + Terms & Contusions 0.9.7](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/TermsAndContusions-with-Foundation-0.9.7.zip)
-- [All three multiplayer test mods, including Battle Numbers 0.2.2](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v0.9.7/Chained-Beasts-Multiplayer-Test-0.9.7.zip)
+- [Foundation + Terms & Contusions 1.0.0](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip)
+- [Optional Battle Numbers downloads](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) — installed separately
 
 Use the [multiplayer setup guide](docs/MULTIPLAYER.md): everyone needs matching gameplay DLLs/settings and must join before starting or resuming. Back up your complete save/config/plugin set before switching versions.
 
@@ -90,7 +88,7 @@ Read the [complete content catalog](docs/terms-and-contusions/CATALOG.md) for na
 
 ## Choose your TC content
 
-**Shown here: the 0.9.9 preview. The linked 0.9.7 release does not include this menu yet.**
+**Included in v1.0.0.** These screenshots were taken during the 0.9.9 development build; the menu is part of this release.
 
 I added a **TC Content** menu so you can choose which of my additions appear in your runs. If Iron Grip feels too strong, turn it off and keep the rest. All 47 entries are enabled by default on a new install; existing saved choices are kept.
 
@@ -134,7 +132,7 @@ After launching with the mod installed, its settings are in:
 - **Content pack:** `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`
 - **Foundation and F1 tools:** `BepInEx/config/local.chainedbeasts.modfoundation.cfg`
 
-Close the game before editing these files, then restart. Normal offers are enabled by default. Keep owned content enabled while continuing a saved run; see [configuration and save guidance](docs/INSTALLATION.md#configuration).
+Use the TC Content menu to change future offers without restarting. Close the game before editing configuration files directly, then restart. Normal offers are enabled by default. Offer toggles keep already-owned content and stored offers intact; removing the plugin or downgrading is different. See [configuration and save guidance](docs/INSTALLATION.md#configuration).
 
 **F1 opens an optional testing menu** with healing, gold, skill/injury controls, offer rerolls and temporary cheats. Use a disposable run when experimenting with those controls. Surgery rerolls are still unreliable.
 
@@ -166,7 +164,7 @@ For deeper work, see [architecture](docs/foundation/ARCHITECTURE.md), [mechanics
 
 The current build targets **Chained Beasts 1.0.2**, Steam build **26231777**, **Unity 6000.3.21f1**, Windows x64, and the BepInEx build linked above.
 
-Solo and multiplayer have been working in my tests. I haven't verified every rank, interaction or save/resume case, and I still expect weird edge cases. See the [0.9.7 release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7).
+Solo and multiplayer have been working in my tests. I haven't verified every rank, interaction or save/resume case, and I still expect weird edge cases. See the [1.0.0 release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0).
 
 - [Experimental multiplayer](docs/MULTIPLAYER.md) requires matching gameplay mods and settings on every PC, with everyone joining before starting/resuming. Late joining, reconnecting and host migration are not supported.
 - Icons and models reuse the game's existing visuals.

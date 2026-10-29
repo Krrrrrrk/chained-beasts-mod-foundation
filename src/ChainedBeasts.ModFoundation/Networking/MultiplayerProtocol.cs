@@ -72,6 +72,13 @@ public sealed class ReadyBarrier
     public void Retain(IEnumerable<ulong> peers) => _pending.IntersectWith(peers);
     public void Clear() => _pending.Clear();
 }
+/// <summary>A settings/ready receipt proves the same host session, compiled setup and offer snapshot.</summary>
+public static class OfferSelectionAcknowledgement
+{
+    public static bool Matches(string session, string fingerprint, string digest, MultiplayerPacket packet) =>
+        !string.IsNullOrEmpty(session) && !string.IsNullOrEmpty(fingerprint) && !string.IsNullOrEmpty(digest) && packet is not null &&
+        packet.Session == session && packet.Fingerprint == fingerprint && packet.Nonce == digest;
+}
 public static class ReceiptAuthority
 {
     public static bool Allows(ulong sender, int player, bool outgoing, int before, int after,

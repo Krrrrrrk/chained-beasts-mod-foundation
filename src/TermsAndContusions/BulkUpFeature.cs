@@ -174,7 +174,7 @@ internal static class BulkUpFeature
         int layer,
         Il2CppSystem.Collections.Generic.List<SkillType> __result)
     {
-        if (!SessionAccess.CanUseDeveloperTools || !_forceFirstOffer || !_registrationReady || __result is null || __result.Count == 0)
+        if (!ContentOfferServices.Allows(CustomContentIds.BulkUpKey) || !SessionAccess.CanUseDeveloperTools || !_forceFirstOffer || !_registrationReady || __result is null || __result.Count == 0)
         {
             return;
         }

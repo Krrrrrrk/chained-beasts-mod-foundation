@@ -16,6 +16,7 @@ using TermsAndContusions.Skills;
 using System.Collections.Generic;
 using System.Linq;
 using FoundationPlugin = ChainedBeasts.ModFoundation.Plugin;
+using TermsAndContusions.ContentMenu;
 
 namespace TermsAndContusions;
 
@@ -25,8 +26,10 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.termsandcontusions";
     public const string PluginName = "Terms & Contusions";
-    public const string PluginVersion = "0.9.7";
-    public const string FoundationVersionRange = ">=0.9.7 <0.10.0";
+    public const string PluginVersion = "1.0.0";
+    public const string FoundationVersionRange = ">=1.0.0 <2.0.0";
+    private readonly Dictionary<string, ConfigEntry<bool>> _offerSettings = new(StringComparer.Ordinal);
+    private void Track(string key, ConfigEntry<bool> setting) => _offerSettings.Add(key, setting);
 
     public override void Load()
     {
@@ -51,19 +54,19 @@ public sealed class Plugin : BasePlugin
             var legacyPath = Path.Combine(Paths.ConfigPath, FoundationPlugin.PluginGuid + ".cfg");
             var legacy = LegacyConfigurationMigration.Read(legacyPath, migration.Value);
             enableBulkUp = BindToggle(legacy, migration.Value, "BulkUp", "EnableBulkUp", true,
-                "Register Bulk Up with four ranks on the next launch (2x/3x/4x/5x maximum HP).");
+                "Allow Bulk Up in new training offers (four ranks). Also editable in the main-menu TC Content panel.");
             forceBulkUp = BindToggle(legacy, migration.Value, "BulkUp", "ForceBulkUpFirstOffer", false,
                 "Developer override: keep Bulk Up in an eligible training offer until acquired.");
             enableRunnersWraps = BindToggle(legacy, migration.Value, "RunnersWraps", "EnableRunnersWraps", true,
-                "Register Runner's Wraps on the next launch.");
+                "Allow Runner's Wraps in new equipment offers. Also editable in TC Content.");
             forceRunnersWraps = BindToggle(legacy, migration.Value, "RunnersWraps", "ForceRunnersWrapsNextOffer", false,
                 "Developer override: replace an eligible equipment-shop slot with Runner's Wraps.");
             enableLeadfoot = BindToggle(legacy, migration.Value, "Leadfoot", "EnableLeadfoot", true,
-                "Register Leadfoot on the next launch.");
+                "Allow Leadfoot in new potion offers. Also editable in TC Content.");
             forceLeadfoot = BindToggle(legacy, migration.Value, "Leadfoot", "ForceLeadfootNextOffer", false,
                 "Developer override: replace an eligible potion slot with Leadfoot.");
             enableAdrenalGraft = BindToggle(legacy, migration.Value, "AdrenalGraft", "EnableAdrenalGraft", true,
-                "Register Adrenal Graft on the next launch.");
+                "Allow Adrenal Graft in new surgery offers. Also editable in TC Content.");
             forceAdrenalGraft = BindToggle(legacy, migration.Value, "AdrenalGraft", "ForceAdrenalGraftNextOffer", false,
                 "Developer override: show free Adrenal Graft at the next surgeon.");
             if (!migration.Value)
@@ -84,45 +87,49 @@ public sealed class Plugin : BasePlugin
         var allowForcedOffers = Config.Bind("DeveloperOffers", "EnableForcedOffers", false,
             "Testing only: allow the four Force* offer overrides. False keeps all content in normal pools, even if old Force* settings are true. Restart to apply.").Value;
         Log.LogInfo($"[Terms & Contusions] EnableForcedOffers={allowForcedOffers}");
-        var skillEnabled = new Dictionary<CustomSkill, bool> { [CustomSkill.BulkUp] = enableBulkUp.Value };
+        Track(CustomContentIds.BulkUpKey, enableBulkUp);
+        Track(CustomContentIds.RunnersWrapsKey, enableRunnersWraps);
+        Track(CustomContentIds.LeadfootKey, enableLeadfoot);
+        Track(CustomContentIds.AdrenalGraftKey, enableAdrenalGraft);
         foreach (var skill in SkillDefinitions.All.Where(value => value.Kind != CustomSkill.BulkUp))
-            skillEnabled[skill.Kind] = BindToggle(LegacyConfigurationSnapshot.Parse(null), true, "Skills", "Enable" + skill.Kind, true,
-                "Register " + skill.Name + " (" + skill.MaxRank + " rank" + (skill.MaxRank == 1 ? "" : "s") + ") on the next launch.").Value;
-        var slingEnabled = Config.Bind("CounterweightSling", "EnableCounterweightSling", true,
-            "Register Counterweight Sling equipment on the next launch.").Value;
-        var equipmentEnabled = EquipmentDefinitions.All.ToDictionary(entry => entry.Kind, entry =>
-            Config.Bind("Equipment", "Enable" + entry.Kind, true, "Register " + entry.Name + " on the next launch.").Value);
-        var afflictionEnabled = AfflictionDefinitions.All.ToDictionary(entry => entry.Kind, entry =>
-            Config.Bind("Afflictions", "Enable" + entry.Kind, true, "Register the three-severity " + entry.Name + " potion affliction on the next launch.").Value);
-        var surgeryEnabled = SurgeryDefinitions.All.ToDictionary(entry => entry.Kind, entry => entry.Kind == CustomSurgery.AdrenalGraft ? enableAdrenalGraft.Value :
-            Config.Bind("Surgeries", "Enable" + entry.Kind, true, "Offer " + entry.Name + " once per player/run on the next launch.").Value);
+            Track(skill.Key, BindToggle(LegacyConfigurationSnapshot.Parse(null), true, "Skills", "Enable" + skill.Kind, true,
+                "Allow " + skill.Name + " in newly generated offers. Also editable from the main-menu TC Content panel."));
+        Track(CounterweightSlingFeature.Key, Config.Bind("CounterweightSling", "EnableCounterweightSling", true,
+            "Allow Counterweight Sling in newly generated offers. Also editable in TC Content."));
+        foreach (var entry in EquipmentDefinitions.All)
+            Track(entry.Key, Config.Bind("Equipment", "Enable" + entry.Kind, true, "Allow " + entry.Name + " in newly generated offers. Also editable in TC Content."));
+        foreach (var entry in AfflictionDefinitions.All)
+            Track(entry.Key, Config.Bind("Afflictions", "Enable" + entry.Kind, true, "Allow " + entry.Name + " potion offers. Also editable in TC Content."));
+        foreach (var entry in SurgeryDefinitions.All.Where(e => e.Kind != CustomSurgery.AdrenalGraft))
+            Track(entry.Key, Config.Bind("Surgeries", "Enable" + entry.Kind, true, "Allow " + entry.Name + " surgery offers. Also editable in TC Content."));
         var surgeryPrices = SurgeryDefinitions.All.ToDictionary(entry => entry.Kind, entry => entry.Kind == CustomSurgery.AdrenalGraft ? 0 :
             Config.Bind("SurgeryPrices", entry.Kind.ToString(), entry.DefaultPrice,
                 new ConfigDescription("Gold cost. Technical examples, not balanced. Restart to apply.", new AcceptableValueRange<int>(1, 10000))).Value);
         var claims = new List<ContentDescriptor>
         {
         new ContentDescriptor(CustomContentIds.BulkUpKey, PluginGuid,
-            ContentCategory.Skill, CustomContentIds.BulkUpSkill, 4, enableBulkUp.Value,
+            ContentCategory.Skill, CustomContentIds.BulkUpSkill, 4, true,
             new LegacyMarker(ContentCategory.Skill, (int)SkillType.None)),
         new ContentDescriptor(CustomContentIds.RunnersWrapsKey, PluginGuid,
-            ContentCategory.Equipment, CustomContentIds.RunnersWrapsPurchase, 1, enableRunnersWraps.Value),
+            ContentCategory.Equipment, CustomContentIds.RunnersWrapsPurchase, 1, true),
         new ContentDescriptor(CustomContentIds.LeadfootKey, PluginGuid,
-            ContentCategory.Affliction, CustomContentIds.LeadfootInjury, 3, enableLeadfoot.Value,
+            ContentCategory.Affliction, CustomContentIds.LeadfootInjury, 3, true,
             new LegacyMarker(ContentCategory.Affliction, (int)InjuryType.EmptySlot1)),
         new ContentDescriptor(CustomContentIds.AdrenalGraftKey, PluginGuid,
-            ContentCategory.Surgery, CustomContentIds.AdrenalGraftSurgery, 1, enableAdrenalGraft.Value)
+            ContentCategory.Surgery, CustomContentIds.AdrenalGraftSurgery, 1, true)
         };
         claims.AddRange(SkillDefinitions.All.Where(value => value.Kind != CustomSkill.BulkUp).Select(skill =>
-            new ContentDescriptor(skill.Key, PluginGuid, ContentCategory.Skill, skill.Id, skill.MaxRank, skillEnabled[skill.Kind])));
+            new ContentDescriptor(skill.Key, PluginGuid, ContentCategory.Skill, skill.Id, skill.MaxRank)));
         claims.Add(new ContentDescriptor(CounterweightSlingFeature.Key, PluginGuid, ContentCategory.Equipment,
-            CounterweightSlingFeature.Id, 1, slingEnabled));
+            CounterweightSlingFeature.Id, 1));
         claims.AddRange(EquipmentDefinitions.All.Select(entry => new ContentDescriptor(entry.Key, PluginGuid,
-            ContentCategory.Equipment, entry.Id, 1, equipmentEnabled[entry.Kind])));
+            ContentCategory.Equipment, entry.Id, 1)));
         claims.AddRange(AfflictionDefinitions.All.Select(entry => new ContentDescriptor(entry.Key, PluginGuid,
-            ContentCategory.Affliction, entry.Id, 3, afflictionEnabled[entry.Kind])));
+            ContentCategory.Affliction, entry.Id, 3)));
         claims.AddRange(SurgeryDefinitions.All.Where(entry => entry.Kind != CustomSurgery.AdrenalGraft).Select(entry =>
-            new ContentDescriptor(entry.Key, PluginGuid, ContentCategory.Surgery, entry.Id, 1, surgeryEnabled[entry.Kind])));
+            new ContentDescriptor(entry.Key, PluginGuid, ContentCategory.Surgery, entry.Id, 1)));
         FoundationServices.Content.RegisterMany(claims);
+        foreach (var setting in _offerSettings) ContentOfferServices.Register(setting.Key, setting.Value.Value);
         MultiplayerServices.RegisterGoldRule(EquipmentDefinitions.Get(CustomEquipment.PickpocketsMitts).Key, true, 1);
         MultiplayerServices.RegisterGoldRule(AfflictionDefinitions.Get(CustomAffliction.LooseChange).Key, false, 3);
         MultiplayerServices.RegisterCompatibility(PluginGuid, PluginVersion, string.Join(";", surgeryPrices.OrderBy(x => x.Key).Select(x => x.Key + "=" + x.Value)));
@@ -132,24 +139,28 @@ public sealed class Plugin : BasePlugin
         ActivationFeedback.Install(Config, Log);
 
         InstallFeature("custom localization", "localization",
-            enableBulkUp.Value || enableRunnersWraps.Value || enableLeadfoot.Value || enableAdrenalGraft.Value,
-            harmony => CustomLocalization.Install(harmony, Log, enableBulkUp.Value, enableRunnersWraps.Value,
-                enableLeadfoot.Value, enableAdrenalGraft.Value));
-        InstallFeature("Bulk Up", "bulkup", enableBulkUp.Value, harmony =>
+            true, harmony => CustomLocalization.Install(harmony, Log, true, true, true, true));
+        InstallFeature("Bulk Up", "bulkup", true, harmony =>
         {
             BulkUpFeature.Install(harmony, Log, allowForcedOffers && forceBulkUp.Value);
         });
-        InstallFeature("skill catalog", "skills", skillEnabled.Values.Any(value => value), harmony => SkillsFeature.Install(harmony, Log));
-        InstallFeature("Iron Grip", "irongrip", skillEnabled[CustomSkill.IronGrip], harmony => IronGripFeature.Install(harmony, Log));
-        InstallFeature("Counterweight Sling", "sling", slingEnabled, CounterweightSlingFeature.Install);
-        InstallFeature("equipment catalog", "equipment", equipmentEnabled.Values.Any(value => value), harmony => EquipmentFeature.Install(harmony, Log));
-        InstallFeature("Runner's Wraps", "runnerswraps", enableRunnersWraps.Value,
+        InstallFeature("skill catalog", "skills", true, harmony => SkillsFeature.Install(harmony, Log));
+        InstallFeature("Iron Grip", "irongrip", true, harmony => IronGripFeature.Install(harmony, Log));
+        InstallFeature("Counterweight Sling", "sling", true, CounterweightSlingFeature.Install);
+        InstallFeature("equipment catalog", "equipment", true, harmony => EquipmentFeature.Install(harmony, Log));
+        InstallFeature("Runner's Wraps", "runnerswraps", true,
             harmony => RunnersWrapsFeature.Install(harmony, Log, allowForcedOffers && forceRunnersWraps.Value));
-        InstallFeature("Leadfoot", "leadfoot", enableLeadfoot.Value,
+        InstallFeature("Leadfoot", "leadfoot", true,
             harmony => LeadfootFeature.Install(harmony, Log, allowForcedOffers && forceLeadfoot.Value));
-        InstallFeature("potion affliction catalog", "afflictions", afflictionEnabled.Values.Any(value => value), harmony => AfflictionsFeature.Install(harmony, Log));
-        InstallFeature("surgery catalog", "surgeries", surgeryEnabled.Values.Any(value => value),
+        InstallFeature("potion affliction catalog", "afflictions", true, harmony => AfflictionsFeature.Install(harmony, Log));
+        InstallFeature("surgery catalog", "surgeries", true,
             harmony => SurgeriesFeature.Install(harmony, Log, surgeryPrices, allowForcedOffers && forceAdrenalGraft.Value));
+        ContentMenuSettings.Initialize(Config, _offerSettings, Log);
+        InstallFeature("TC content menu", "contentmenu", true, harmony =>
+        {
+            ContentMenuFeature.Install(harmony);
+            AddComponent<TcContentMenuController>();
+        });
     }
 
     private ConfigEntry<bool> BindToggle(LegacyConfigurationSnapshot legacy, bool migrationCompleted,

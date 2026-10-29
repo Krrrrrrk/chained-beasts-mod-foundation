@@ -28,18 +28,30 @@ foreach($package in $packages){
     Copy-Verified (Join-Path $repo 'LICENSE') (Join-Path $stage 'LICENSE')
     Copy-Verified (Join-Path $repo 'THIRD_PARTY_NOTICES.md') (Join-Path $stage 'THIRD_PARTY_NOTICES.md')
     Copy-Verified (Join-Path $repo 'docs/MULTIPLAYER.md') (Join-Path $stage 'MULTIPLAYER.md')
+    Copy-Verified (Join-Path $repo 'docs/CONTENT_SELECTION.md') (Join-Path $stage 'CONTENT_SELECTION.md')
     Copy-Verified (Join-Path $repo 'docs/ACTIVATION_FEEDBACK.md') (Join-Path $stage 'ACTIVATION_FEEDBACK.md')
     Copy-Verified (Join-Path $repo 'docs/GAME_UPDATE_1.0.2.md') (Join-Path $stage 'GAME_UPDATE_1.0.2.md')
     if($package.members -contains 'ChainedBeasts.BattleNumbers'){Copy-Verified (Join-Path $repo 'chained-beasts-battle-numbers/LICENSE') (Join-Path $stage 'BattleNumbers-LICENSE.txt')}
     $members=$package.members -join ', '
     @"
-# $($package.name) $script:ReleaseVersion — release
+# $($package.name) $script:ReleaseVersion — local build
 
 Included DLLs: $members. This archive does not install or contain BepInEx.
-TermsAndContusions requires ChainedBeasts.ModFoundation >=0.9.7 <0.10.0.
+TermsAndContusions requires ChainedBeasts.ModFoundation >=1.0.0 <2.0.0.
 The optional combined multiplayer test ZIP also includes Battle Numbers 0.2.x;
 see package-manifest.json for its exact version and hash.
 Foundation alone is supported. Optional teaching examples are not included.
+0.9.8 adds the main-menu TC Content panel. All content defaults enabled.
+1.0.0 promotes the 0.9.9 build: styled TC Content cards, category counts,
+clear save state and filtering of direct random training injuries. Search is
+currently unavailable; category and page controls remain usable.
+Choose entries and Save before creating/joining a party or starting Solo;
+no restart is needed. The host's offer selection is applied temporarily on
+clients before the party can start. Their saved personal preferences remain
+unchanged and return on disconnect. Selection is locked while connected.
+Existing owned content and saved offers are preserved; filters affect newly
+generated offers. Matching mod versions and other gameplay settings/prices
+are still required. This menu/profile protocol awaits manual game testing.
 0.9.7 adds Iron Grip (one rank): hits no longer make you drop carried enemies.
 It is enabled by default through [Skills] EnableIronGrip in
 BepInEx/config/local.chainedbeasts.termsandcontusions.cfg. Normal throws,
@@ -67,7 +79,8 @@ interaction and matching-party multiplayer coverage still needs checking.
    testing is still needed. No attempt at balance was made.
 
 Native SaveData and its exact matching sidecars must be copied/restored together.
-Do not remove/disable owned custom content and resume that run. Old v0.7.3 cannot
+Offer toggles preserve owned content. Do not remove required content plugins
+and resume a run that owns their content. Old v0.7.3 cannot
 read the new checkpoint protocol: downgrade DLL/config/user-data as a matching
 pre-expansion set, not just the DLL. Multiplayer is experimental; the new skill's
 network and edge-case coverage remain incomplete.
@@ -80,7 +93,7 @@ https://github.com/Krrrrrrk/chained-beasts-mod-foundation/blob/main/docs/INSTALL
 "@ | Set-Content (Join-Path $stage 'README_INSTALL.md') -Encoding utf8
     $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | ForEach-Object { @{path=([IO.Path]::GetRelativePath($stage,$_.FullName).Replace('\','/'));sha256=(Get-Sha $_.FullName)} })
     @{schemaVersion=1;version=$script:ReleaseVersion;package=$package.name;runtimeVerified=$false;published=$false;
-        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=0.9.7 <0.10.0';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
+        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=1.0.0 <2.0.0';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
         ConvertTo-Json -Depth 8 | Set-Content (Join-Path $stage 'package-manifest.json') -Encoding utf8
     $archive=Join-Path $OutputRoot ($package.name+'-'+$script:ReleaseVersion+'.zip')
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $archive -Force

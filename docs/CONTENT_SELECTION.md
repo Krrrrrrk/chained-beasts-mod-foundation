@@ -1,6 +1,6 @@
-# TC Content menu — 0.9.9 development preview
+# TC Content menu — v1.0.0
 
-The main menu has a **TC Content** button in the bottom-right corner, with an enabled-count badge. The local 0.9.9 preview adds a clearer dark panel, content cards, category counts and an unsaved-changes indicator. The published 0.9.7 download does not contain this menu yet. The styled panel is visible in the [README screenshots](../README.md#choose-your-tc-content), with search unavailable. Broader selection, gameplay and host-client checks are still needed.
+The main menu has a **TC Content** button in the bottom-right corner, with an enabled-count badge. Version 1.0.0 includes the dark panel, content cards, category counts and unsaved-changes indicator developed in 0.9.9. The styled panel is visible in the [README screenshots](../README.md#choose-your-tc-content), with search unavailable. Broader selection, gameplay and host-client checks are still needed.
 
 1. Open **TC Content** before starting Solo or creating/joining a multiplayer party.
 2. Use **All content** or choose a category in the left sidebar, then use Previous/Next for more results. Category counts show how many entries are enabled. Search by name or effect is optional; if the panel says **Search unavailable**, use categories and pages instead.
@@ -14,7 +14,7 @@ All 47 entries default to enabled. Existing saved Enable* preferences are retain
 
 The **host's TC offer selection controls the party**. Clients temporarily adopt it before the party becomes ready, even if their personal checkboxes are different. Their saved preferences are not overwritten; leaving the party restores them.
 
-Every PC needs matching **Foundation + TC 0.9.9** DLLs. The host sends the complete selection, clients validate and acknowledge it, and the normal ready barrier must finish before the host can start. Clients cannot submit a replacement host selection. Missing, malformed or mismatched profiles are refused.
+Every PC needs matching **Foundation + TC 1.0.0** DLLs. The host sends the complete selection, clients validate and acknowledge it, and the normal ready barrier must finish before the host can start. Clients cannot submit a replacement host selection. Missing, malformed or mismatched profiles are refused.
 
 Editing is locked once connected or in a run. To change the selection, leave the party, save choices at the main menu, then host again. Surgery prices and other gameplay settings outside this menu still need to match. Optional cosmetic number mods are separate from TC content selection.
 

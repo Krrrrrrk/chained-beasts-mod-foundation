@@ -157,7 +157,7 @@ internal static class RunnersWrapsFeature
 
     private static void GenerateShopOptionsPostfix(List<PurchaseType> __result)
     {
-        if (!_forceNextOffer || !SessionAccess.CanUseDeveloperTools || !_registrationReady || __result is null || __result.Count == 0)
+        if (!ContentOfferServices.Allows(CustomContentIds.RunnersWrapsKey) || !_forceNextOffer || !SessionAccess.CanUseDeveloperTools || !_registrationReady || __result is null || __result.Count == 0)
         {
             return;
         }
