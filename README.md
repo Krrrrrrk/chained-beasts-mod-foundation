@@ -2,8 +2,8 @@
 
 I started messing around with modding **Chained Beasts** and ended up making two things:
 
-- **Terms & Contusions** — my collection of 47 custom skills, equipment items, potion afflictions, and surgeries. Some are useful. Some are probably ridiculous.
-- **Mod Foundation** — the code that makes those additions possible. It's also here for anyone else who wants to build their own mods.
+- **Terms & Contusions** - my collection of 47 custom skills, equipment items, potion afflictions, and surgeries. Some are useful. Some are probably ridiculous.
+- **Mod Foundation** - the code that makes those additions possible. It's also here for anyone else who wants to build their own mods.
 
 You can just download Terms & Contusions and play, or dig into Foundation and make something yourself. **You don't need to know anything about coding to install the playable mod.**
 
@@ -52,7 +52,7 @@ I'd also strongly recommend [backing up your saves](docs/INSTALLATION.md#back-up
 
 BepInEx is what loads the mods into the game. If you've already got **BepInEx 6 IL2CPP x64** working, you can skip this step.
 
-1. [Download the BepInEx build I've tested with](https://builds.bepinex.dev/projects/bepinex_be/791/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.791%2Bb782da4.zip) — version `6.0.0-be.791+b782da4`, Unity IL2CPP, Windows x64.
+1. [Download the BepInEx build I've tested with](https://builds.bepinex.dev/projects/bepinex_be/791/BepInEx-Unity.IL2CPP-win-x64-6.0.0-be.791%2Bb782da4.zip) - version `6.0.0-be.791+b782da4`, Unity IL2CPP, Windows x64.
 2. Extract **everything** from the ZIP into your game folder, right next to `ChainedBeasts.exe`. Don't accidentally put it all inside an extra folder with the ZIP's name.
 3. Launch the game normally. The first BepInEx launch can take longer than usual. Once you get to the main menu, close it again.
 
