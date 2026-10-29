@@ -6,6 +6,8 @@ The [**0.9.7 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundatio
 
 **New in 0.9.7:** **Iron Grip**, a one-rank skill that stops hits from making you drop carried enemies. It worked in my manual test. Normal throws, releases and damage still apply; broader interaction and multiplayer checks are still needed.
 
+**Upcoming 0.9.9 preview:** adds the [TC Content menu](#choose-your-tc-content) with category counts and individual ON/OFF cards. It also filters random-affliction training events. Choose individual entries before a run; clients adopt the host's selection. The styled menu is shown below; search is currently unavailable, and broader gameplay/host-client checks are still needed. The download below remains 0.9.7.
+
 **Latest fixes:** client trainer generation keeps the zero-rank skill entries it needs,
 checkpoint transfers survive scene changes, and custom skill previews show their
 advertised effect before acquisition. See [multiplayer setup and checks](docs/MULTIPLAYER.md).
@@ -86,7 +88,27 @@ The current release includes all 47 additions below.
 
 Read the [complete content catalog](docs/terms-and-contusions/CATALOG.md) for names, effects, prices and scaling, or the [content-pack guide](docs/terms-and-contusions/README.md) for more detail.
 
-## Screenshots
+## Choose your TC content
+
+**Shown here: the 0.9.9 preview. The linked 0.9.7 release does not include this menu yet.**
+
+I added a **TC Content** menu so you can choose which of my additions appear in your runs. If Iron Grip feels too strong, turn it off and keep the rest. All 47 entries are enabled by default on a new install; existing saved choices are kept.
+
+1. Click **TC Content** in the bottom-right of the main menu, before starting Solo or creating/joining a party. The count shows how many entries are enabled.
+2. Pick **All content**, **Skills**, **Equipment**, **Potions** or **Surgeries**, then use **Previous/Next** to browse. Click a card to toggle it **ON/OFF**.
+3. Click **Save changes** to apply your choices without restarting. **Enable all content** and **Disable all content** affect the entire list. Closing or discarding without saving leaves your previous choices intact.
+
+![Main menu with the TC Content button highlighted in the bottom-right corner](docs/images/tc-content-button.png)
+
+![TC Content menu showing categories, enabled counts, individual content cards and save controls](docs/images/tc-content-menu.png)
+
+The selection controls **new offers**, including random training afflictions. Vanilla content stays available. It does not remove content you already own or replace offers already stored in a saved run.
+
+In multiplayer, **the host's selection controls the party**. Clients temporarily use that selection while connected and keep their own saved preferences for later. Everyone needs the same Foundation/TC build. Choose and save before connecting; editing is locked during a party or run.
+
+Search is unavailable in the pictured build; categories and page controls still work. The **Find Public Games** button visible in these screenshots belongs to my separate Matchmaking mod and is not included with TC. See the [full content-selection guide](docs/CONTENT_SELECTION.md) for details.
+
+## Earlier screenshots
 
 These are from the earlier four-example build. They show the cards and optional F1 tools; they do not show the entire current catalog.
 
