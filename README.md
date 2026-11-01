@@ -7,7 +7,7 @@ I started messing around with modding **Chained Beasts** and ended up making two
 
 You can just download Terms & Contusions and play, or dig into Foundation and make something yourself. **You don't need to know anything about coding to install the playable mod.**
 
-**[Download Terms & Contusions + Foundation v1.1.0](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip)**
+**[Download Terms & Contusions + Foundation v1.1.1](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip)**
 
 Made for **Chained Beasts 1.0.2**, Steam build **26231777**, on **64-bit Windows**. If the game updates, check the [compatibility notes](docs/GAME_UPDATE_1.0.2.md) before assuming everything still works.
 
@@ -16,6 +16,8 @@ Made for **Chained Beasts 1.0.2**, Steam build **26231777**, on **64-bit Windows
 **Want to make your own stuff?** Skip to [Make your own mod](#make-your-own-mod).
 
 A small warning before we go any further: **I haven't tried to balance this stuff.** A skill might be hilariously overpowered, underwhelming, or just plain broken. That's half the fun of experimenting, but don't say I didn't warn you.
+
+**New in 1.1.1:** Foundation now supports the [Hybrids mod's](https://github.com/Krrrrrrk/Chained-Beasts_Hybrids) F1 progression controls. Use this release for Hybrids; the older 1.1.0 Foundation DLL doesn't have that hook.
 
 **New in 1.1.0:** Eye Level puts you in first person for the next battle. It's always a three-skull potion, with the strongest normal potion healing in that offer set. The TC menu lets you choose potion-only play or voluntary F9 switching. [How the modes work](#eye-level-and-fps-mod).
 
@@ -62,7 +64,7 @@ Make sure you grab the **IL2CPP x64** download, not Mono or x86. If it isn't loa
 
 ### 3. Install Terms & Contusions
 
-**[Download the v1.1.0 mod ZIP (includes Foundation)](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip)**
+**[Download the v1.1.0 mod ZIP (includes Foundation)](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip)**
 
 Extract the ZIP's `BepInEx` folder into the same game folder and merge it with the one you already installed.
 
@@ -165,7 +167,7 @@ The latest build includes fixes for client trainer skill generation, checkpoint 
 
 Back up your **entire save, config, and plugin setup** before changing versions, and follow the [multiplayer setup and testing guide](docs/MULTIPLAYER.md) rather than guessing.
 
-The recommended [Foundation + Terms & Contusions ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip) is the one you want for this.
+The recommended [Foundation + Terms & Contusions ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip) is the one you want for this.
 
 My separate [Battle Numbers mod](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is completely optional and has its own downloads.
 

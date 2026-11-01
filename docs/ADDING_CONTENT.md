@@ -2,10 +2,10 @@
 
 Read [separate mod setup](foundation/SEPARATE_MOD.md) first: change GUID/assembly/namespace/content keys/IDs, retain the hard version dependency and use installed generated runtime bindings. Then choose an end-to-end tutorial with complete compiled source:
 
-- [Skill: Training Footwork](foundation/tutorials/SKILL.md) — normal SkillDef/ownership, view terms, rank/order persistence and removal; four-rank pack extension explained.
-- [Equipment: Practice Wraps](foundation/tutorials/EQUIPMENT.md) — native PurchaseDef/price/shop/equipped history, current-equipped factor and limited-ledger pitfalls.
-- [Potion affliction: Practice Limp](foundation/tutorials/AFFLICTION.md) — normal InjuryDef/potion healing, effective severity, suppression/cure and independent state.
-- [Surgery: Practice Graft](foundation/tutorials/SURGERY.md) — shared offers, genuine completion, native payment/history and once-per-run ownership.
+- [Skill: Training Footwork](foundation/tutorials/SKILL.md) - normal SkillDef/ownership, view terms, rank/order persistence and removal; four-rank pack extension explained.
+- [Equipment: Practice Wraps](foundation/tutorials/EQUIPMENT.md) - native PurchaseDef/price/shop/equipped history, current-equipped factor and limited-ledger pitfalls.
+- [Potion affliction: Practice Limp](foundation/tutorials/AFFLICTION.md) - normal InjuryDef/potion healing, effective severity, suppression/cure and independent state.
+- [Surgery: Practice Graft](foundation/tutorials/SURGERY.md) - shared offers, genuine completion, native payment/history and once-per-run ownership.
 
 The standalone skill and category examples build independently against the actual public API; neither is deployed or packaged with the 46-entry pack. [Composition/events](foundation/MECHANICS.md), [localization/visuals](foundation/LOCALIZATION_VISUALS.md), [checkpoint state](foundation/PERSISTENCE.md) and [configuration migration](foundation/CONFIGURATION_MIGRATION.md) explain advanced cases. The [complete catalog](terms-and-contusions/CATALOG.md) and [manifest](terms-and-contusions/manifest.json) map every production entry to source and settings.
 

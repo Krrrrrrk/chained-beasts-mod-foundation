@@ -1,10 +1,10 @@
 # Multiplayer setup
 
-**Foundation + Terms & Contusions 1.1.0** includes [host-controlled TC content selection](CONTENT_SELECTION.md), developed in the 0.9.9 build. Choose and save at the main menu before hosting or joining. Clients temporarily adopt the host's offer toggles without changing their saved preferences; editing is locked while connected. This new selection/handshake still needs a manual two-PC test.
+**Foundation + Terms & Contusions 1.1.1** includes [host-controlled TC content selection](CONTENT_SELECTION.md), developed in the 0.9.9 build. Choose and save at the main menu before hosting or joining. Clients temporarily adopt the host's offer toggles without changing their saved preferences; editing is locked while connected. This new selection/handshake still needs a manual two-PC test.
 
 Earlier multiplayer testing went well, but I still expect weird edge cases. Iron Grip worked in my Solo test; its multiplayer coverage remains incomplete. Publishing v1 does not establish exhaustive gameplay or save/resume verification.
 
-Download the [Foundation + TC 1.1.0 ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip). Optional [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is a separate download; this release contains both gameplay plugins. Use the same gameplay DLLs on every PC. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
+Download the [Foundation + TC 1.1.1 ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip). Optional [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is a separate download; this release contains both gameplay plugins. Use the same gameplay DLLs on every PC. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
 
 ## Client transition fixes
 

@@ -1,13 +1,13 @@
 # Play Terms & Contusions
 
-**Terms & Contusions** is the experimental gameplay pack built on Chained Beasts Mod Foundation. The current release is **1.1.0**.
+**Terms & Contusions** is the experimental gameplay pack built on Chained Beasts Mod Foundation. The current release is **1.1.1**.
 
 This release targets **game 1.0.2 / Steam build 26231777**. Solo has been working in my
 recent tests; the latest fixes still need broader manual testing.
 Older releases through 0.9.1 target game 1.0.1.
 See [compatibility notes](../GAME_UPDATE_1.0.2.md) and [multiplayer setup](../MULTIPLAYER.md).
 
-**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip) includes Foundation and TC, with Eye Level camera support built into TC. BepInEx is installed separately.
+**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip) includes Foundation and TC, with Eye Level camera support built into TC. BepInEx is installed separately.
 
 This page explains the content, settings and limitations. For source builds, use the [developer guide](../foundation/README.md).
 

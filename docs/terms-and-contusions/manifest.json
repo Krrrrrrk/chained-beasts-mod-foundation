@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "pack": "Terms & Contusions",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "pluginGuid": "local.chainedbeasts.termsandcontusions",
-  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0",
+  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1",
   "releaseChannel": "stable",
-  "stableReleaseVersion": "1.1.0",
-  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0",
-  "status": "1.1.0 release: Eye Level and exclusive first-person modes. Manual mode tests went well; broader edge cases remain.",
+  "stableReleaseVersion": "1.1.1",
+  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1",
+  "status": "1.1.1 adds the optional Foundation F1 progression-panel hook used by Hybrids. TC retains Eye Level and the existing camera modes.",
   "entries": [
     {
       "key": "terms-and-contusions:skill/bulk-up",
@@ -148,7 +148,7 @@
     {
       "key": "terms-and-contusions:equipment/runners-wraps",
       "category": "equipment",
-      "name": "Runner\u2019s Wraps",
+      "name": "Runner’s Wraps",
       "numericId": 2499,
       "effect": "TC: Dodges use 25% less stamina while equipped.",
       "configuration": "[RunnersWraps] EnableRunnersWraps",
@@ -158,7 +158,7 @@
     {
       "key": "terms-and-contusions:equipment/executioners-hood",
       "category": "equipment",
-      "name": "Executioner\u2019s Hood",
+      "name": "Executioner’s Hood",
       "numericId": 2488,
       "effect": "TC: +35% melee damage to enemies below 30% health.",
       "configuration": "[Equipment] EnableExecutionersHood",
@@ -178,7 +178,7 @@
     {
       "key": "terms-and-contusions:equipment/borrowers-scabbard",
       "category": "equipment",
-      "name": "Borrower\u2019s Scabbard",
+      "name": "Borrower’s Scabbard",
       "numericId": 2490,
       "effect": "TC: A full-durability weapon's first hit each battle: +50% damage, +1 durability cost.",
       "configuration": "[Equipment] EnableBorrowersScabbard",
@@ -188,7 +188,7 @@
     {
       "key": "terms-and-contusions:equipment/butchers-apron",
       "category": "equipment",
-      "name": "Butcher\u2019s Apron",
+      "name": "Butcher’s Apron",
       "numericId": 2491,
       "effect": "TC: Executions restore 3% health.",
       "configuration": "[Equipment] EnableButchersApron",
@@ -208,7 +208,7 @@
     {
       "key": "terms-and-contusions:equipment/mercenarys-ledger",
       "category": "equipment",
-      "name": "Mercenary\u2019s Ledger",
+      "name": "Mercenary’s Ledger",
       "numericId": 2493,
       "effect": "TC: Pay 5 gold at battle start for +20% damage that battle.",
       "configuration": "[Equipment] EnableMercenarysLedger",
@@ -218,7 +218,7 @@
     {
       "key": "terms-and-contusions:equipment/pickpockets-mitts",
       "category": "equipment",
-      "name": "Pickpocket\u2019s Mitts",
+      "name": "Pickpocket’s Mitts",
       "numericId": 2494,
       "effect": "TC: Your first backstab against each enemy grants 1 gold. Maximum 10 per battle.",
       "configuration": "[Equipment] EnablePickpocketsMitts",
@@ -238,7 +238,7 @@
     {
       "key": "terms-and-contusions:equipment/salvagers-hook",
       "category": "equipment",
-      "name": "Salvager\u2019s Hook",
+      "name": "Salvager’s Hook",
       "numericId": 2496,
       "effect": "TC: Recover your thrown weapon to repair 1 durability. Once per weapon each battle.",
       "configuration": "[Equipment] EnableSalvagersHook",
@@ -248,7 +248,7 @@
     {
       "key": "terms-and-contusions:equipment/duelists-spurs",
       "category": "equipment",
-      "name": "Duelist\u2019s Spurs",
+      "name": "Duelist’s Spurs",
       "numericId": 2497,
       "effect": "TC: +20% melee damage when only one enemy is within 4m.",
       "configuration": "[Equipment] EnableDuelistsSpurs",

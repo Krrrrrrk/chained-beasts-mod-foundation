@@ -28,7 +28,7 @@ public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.termsandcontusions";
     public const string PluginName = "Terms & Contusions";
-    public const string PluginVersion = "1.1.0";
+    public const string PluginVersion = "1.1.1";
     public const string FoundationVersionRange = ">=1.1.0 <2.0.0";
     private readonly Dictionary<string, ConfigEntry<bool>> _offerSettings = new(StringComparer.Ordinal);
     private void Track(string key, ConfigEntry<bool> setting) => _offerSettings.Add(key, setting);

@@ -6,6 +6,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
 namespace ChainedBeasts.ModFoundation.DevTools;
 
@@ -49,6 +50,29 @@ internal static class DeveloperMenuFeature
     private static void ClearTemporaryOverrides()
     { GodModeEnabled = false; InfiniteStaminaEnabled = false; }
 
+    // UI access before a campaign exists must not relax GameplayReady or the
+    // existing guards around native HP, gold, skills, and combat overrides.
+    internal static bool CanOpenMenu
+    {
+        get
+        {
+            if (SessionAccess.CanUseDeveloperTools) return true;
+            if (!DeveloperMenuExtensions.HasPanels) return false;
+            try
+            {
+                if (!SessionAccess.IsSoloMode || !NetworkSession.InstanceExists) return false;
+                var session = NetworkSession.Instance;
+                var network = NetworkManager.Singleton;
+                var clients = session.clientList?.clients;
+                var lobby = session.sceneRoot?.TryCast<GameServerLobby>();
+                return network?.IsListening == true && network.IsServer && clients?.Count == 1 &&
+                    session.IsLocalClient(clients[0]) && !session.TransitionPending &&
+                    lobby?.uiState != null && !lobby.uiState.gameStarting && !lobby.uiState.isRestoringCheckpoint;
+            }
+            catch { return false; }
+        }
+    }
+
     private static void GodModePostfix(ref bool __result)
     {
         if (!SessionAccess.CanUseDeveloperTools) { GodModeEnabled = false; return; }
@@ -82,6 +106,7 @@ public sealed class DeveloperMenuController : MonoBehaviour
     private bool _cursorVisibleBeforeOpen;
     private CursorLockMode _cursorLockBeforeOpen;
     private bool _drawFailureLogged;
+    private bool _progressionPage;
 
     public DeveloperMenuController(IntPtr pointer)
         : base(pointer)
@@ -96,6 +121,9 @@ public sealed class DeveloperMenuController : MonoBehaviour
             {
                 DeveloperMenuFeature.GodModeEnabled = false;
                 DeveloperMenuFeature.InfiniteStaminaEnabled = false;
+            }
+            if (!DeveloperMenuFeature.CanOpenMenu)
+            {
                 if (_menuOpen) SetMenuOpen(false);
                 return;
             }
@@ -116,7 +144,7 @@ public sealed class DeveloperMenuController : MonoBehaviour
 
     public void OnGUI()
     {
-        if (!_menuOpen)
+        if (!_menuOpen || !DeveloperMenuFeature.CanOpenMenu)
         {
             return;
         }
@@ -130,9 +158,29 @@ public sealed class DeveloperMenuController : MonoBehaviour
         try
         {
             GUILayout.Space(22f);
+            if (DeveloperMenuExtensions.HasPanels)
+            {
+                if (!SessionAccess.CanUseDeveloperTools) _progressionPage = true;
+                GUILayout.BeginHorizontal();
+                var wasEnabled = GUI.enabled;
+                GUI.enabled = wasEnabled && SessionAccess.CanUseDeveloperTools;
+                if (GUILayout.Button("Game cheats")) _progressionPage = false;
+                GUI.enabled = wasEnabled;
+                if (GUILayout.Button("Progression")) _progressionPage = true;
+                GUILayout.EndHorizontal();
+            }
             // BeginScrollView is stripped from this game's IL2CPP player. The
             // basic GUILayout controls below are retained by a shipped demo.
-            DrawPanel();
+            if (_progressionPage && DeveloperMenuExtensions.HasPanels)
+            {
+                GUILayout.Label("Solo profile progression. Changes are saved.");
+                GUILayout.Space(10f);
+                DeveloperMenuExtensions.Draw(title => GUILayout.Label(title), message => SetStatus(message));
+                GUILayout.Space(12f);
+                GUILayout.Label($"Status: {_status}");
+                if (GUILayout.Button($"Close ({DeveloperMenuFeature.MenuKey})")) SetMenuOpen(false);
+            }
+            else if (SessionAccess.CanUseDeveloperTools) DrawPanel();
             _drawFailureLogged = false;
         }
         catch (Exception exception)
@@ -730,7 +778,7 @@ public sealed class DeveloperMenuController : MonoBehaviour
             _cursorLockBeforeOpen = Cursor.lockState;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            RefreshCatalogs();
+            if (SessionAccess.CanUseDeveloperTools) RefreshCatalogs();
         }
         else
         {
