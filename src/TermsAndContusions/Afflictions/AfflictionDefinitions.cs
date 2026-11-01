@@ -2,7 +2,7 @@ using System;
 
 namespace TermsAndContusions.Afflictions;
 
-public enum CustomAffliction { LeadBelly, BrittleGuard, ShakyResolve, TinEar, BurningLungs, HeavyLanding, LooseChange, ColdStart, ObsessiveFocus, Overheating }
+public enum CustomAffliction { LeadBelly, BrittleGuard, ShakyResolve, TinEar, BurningLungs, HeavyLanding, LooseChange, ColdStart, ObsessiveFocus, Overheating, EyeLevel }
 
 public sealed class AfflictionEntry
 {
@@ -26,7 +26,8 @@ public static class AfflictionDefinitions
         new(CustomAffliction.LooseChange, "loose-change", 11017, "Loose Change"),
         new(CustomAffliction.ColdStart, "cold-start", 11018, "Cold Start"),
         new(CustomAffliction.ObsessiveFocus, "obsessive-focus", 11019, "Obsessive Focus"),
-        new(CustomAffliction.Overheating, "overheating", 11020, "Overheating")
+        new(CustomAffliction.Overheating, "overheating", 11020, "Overheating"),
+        new(CustomAffliction.EyeLevel, "eye-level", 11021, "Eye Level")
     };
     public static AfflictionEntry Get(CustomAffliction kind) => Array.Find(All, entry => entry.Kind == kind);
     public static AfflictionEntry Find(int id) => Array.Find(All, entry => entry.Id == id);

@@ -9,6 +9,7 @@ using TermsAndContusions.Skills;
 using TermsAndContusions.Equipment;
 using TermsAndContusions.Afflictions;
 using TermsAndContusions.Surgeries;
+using TermsAndContusions.FirstPerson;
 
 namespace TermsAndContusions.ContentMenu;
 
@@ -33,29 +34,36 @@ internal static class ContentMenuSettings
         if (Entries.Length != settings.Count || Entries.Any(e => !settings.ContainsKey(e.Key)))
             throw new InvalidOperationException("TC content-menu configuration map is incomplete.");
     }
-    internal static void Save(Dictionary<string, bool> draft)
+    internal static void Save(Dictionary<string, bool> draft, bool? potionOnly = null)
     {
         if (!ContentMenuFeature.CanEdit) throw new InvalidOperationException("Return to the main menu and leave the party/run first.");
         var all = ContentOfferServices.LocalPreferences();
         if (draft.Count != _settings.Count || _settings.Keys.Any(k => !draft.ContainsKey(k))) throw new InvalidOperationException("Incomplete TC content selection.");
-        foreach (var item in draft) all[item.Key] = item.Value;
+        var mode = potionOnly ?? CameraIntegration.LocalPotionOnly;
+        var normalized = new Dictionary<string, bool>(draft, StringComparer.Ordinal);
+        normalized[FirstPersonPotionFeature.Key] = mode;
+        foreach (var item in normalized) all[item.Key] = item.Value;
         ContentOfferServices.SaveLocal(all, () =>
         {
             var before = _settings.ToDictionary(e => e.Key, e => e.Value.Value);
+            var cameraBefore = CameraIntegration.LocalPotionOnly;
             var automatic = _config.SaveOnConfigSet;
             _config.SaveOnConfigSet = false;
             try
             {
-                foreach (var item in draft) _settings[item.Key].Value = item.Value;
+                foreach (var item in normalized) _settings[item.Key].Value = item.Value;
+                CameraIntegration.PotionOnlySetting.Value = mode;
                 _config.Save();
             }
             catch
             {
                 foreach (var item in before) _settings[item.Key].Value = item.Value;
+                if (CameraIntegration.PotionOnlySetting != null) CameraIntegration.PotionOnlySetting.Value = cameraBefore;
                 throw;
             }
             finally { _config.SaveOnConfigSet = automatic; }
         });
-        Logger.LogInfo("[Terms & Contusions] saved TC offer selection: " + draft.Count(e => e.Value) + "/" + draft.Count + " enabled; host selection overrides clients for each session");
+        Logger.LogInfo("[Terms & Contusions] saved TC offer selection: " + normalized.Count(e => e.Value) + "/" + normalized.Count +
+            " enabled; camera mode=" + (mode ? "potion only" : "F9 switching") + "; host selection overrides clients for each session");
     }
 }

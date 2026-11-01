@@ -1,21 +1,23 @@
 # Play Terms & Contusions
 
-**Terms & Contusions** is the experimental gameplay pack built on Chained Beasts Mod Foundation. The current release is **1.0.0**.
+**Terms & Contusions** is the experimental gameplay pack built on Chained Beasts Mod Foundation. The current release is **1.1.0**.
 
 This release targets **game 1.0.2 / Steam build 26231777**. Solo has been working in my
 recent tests; the latest fixes still need broader manual testing.
 Older releases through 0.9.1 target game 1.0.1.
 See [compatibility notes](../GAME_UPDATE_1.0.2.md) and [multiplayer setup](../MULTIPLAYER.md).
 
-**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip) includes both required mod DLLs. BepInEx is installed separately.
+**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip) includes Foundation and TC, with Eye Level camera support built into TC. BepInEx is installed separately.
 
 This page explains the content, settings and limitations. For source builds, use the [developer guide](../foundation/README.md).
 
-**New in 0.9.7:** Iron Grip, a one-rank skill that keeps carried enemies in your hands when you take a hit. It worked in my manual test. The pack now contains 47 additions; broader interaction and multiplayer checks for the new skill are still needed.
+**New in 0.9.7:** Iron Grip, a one-rank skill that keeps carried enemies in your hands when you take a hit. It worked in my manual test. That brought the pack to 47 additions; broader interaction and multiplayer checks for the new skill are still needed.
 
 <a id="what-exists-now"></a>
 
 Version 1.0.0 promotes the 0.9.9 build with the [TC Content menu](../CONTENT_SELECTION.md): select individual offers before a run, with the host's selection applied temporarily to clients. Search is unavailable in the pictured build; categories and paging remain usable. Broader host-client testing is still needed.
+
+**New in 1.1.0:** Eye Level forces first person for the next battle, then wears off. It's always three skulls, with the strongest normal base healing in that offer set. Camera support is built into TC. With or without FPS Mod, the TC menu offers **POTION ONLY** (Eye Level locked on, F9 disabled) or **F9 SWITCHING** (Eye Level locked off, F9 enabled). The host mode controls the party. Shared-screen co-op offers exclude Eye Level.
 
 ## What's included
 
@@ -23,9 +25,9 @@ Version 1.0.0 promotes the 0.9.9 build with the [TC Content menu](../CONTENT_SEL
 |---|---:|---|
 | Skills | 13 | Twelve four-rank skills; Iron Grip has one rank |
 | Equipment | 12 | Effects while equipped |
-| Potion afflictions | 11 | One to three skulls |
+| Potion afflictions | 12 | One to three skulls; Eye Level is always three |
 | Surgeries | 11 | Once per player per run |
-| **Total** | **47** | |
+| **Total** | **48** | |
 
 Custom descriptions start with **`TC:`**. Content uses the game's normal offer and acquisition paths, so a custom item or skill is not guaranteed to appear on the first offer screen. Names and content IDs are unchanged by the description marker.
 
@@ -35,7 +37,7 @@ I have made no attempt to balance these additions. They may be overpowered, unde
 
 ## Complete catalog
 
-The [content catalog](CATALOG.md) lists names, effects, scaling and prices. The [manifest](manifest.json) maps all 47 entries to stable keys, numeric IDs, implementation files, configuration and source files.
+The [content catalog](CATALOG.md) lists names, effects, scaling and prices. The [manifest](manifest.json) maps all 48 entries to stable keys, numeric IDs, implementation files, configuration and source files.
 
 All entries have implemented source; that does not mean every gameplay case has been verified. For the detailed mechanics and interactions, see:
 
@@ -88,7 +90,7 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 ## Verification and known limitations
 
-- Solo has been working in my recent tests. The latest description/client-transition fixes pass builds and nongame checks, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
+- Solo has been working in my recent tests. The latest description/client-transition fixes pass builds and nongame checks, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
 - Multiplayer testing of **0.9.6** went well, but I still expect weird edge cases. **Iron Grip in 0.9.7 worked in my manual test; its multiplayer coverage still needs checking.** Every PC needs matching gameplay DLLs, content settings and the [required lobby/checkpoint setup](../MULTIPLAYER.md). Developer actions and forced offers still require the actual Solo session/authority checks.
 - Original icons and models are not included; the pack reuses visuals already present in the installed game.
 - New descriptions use English fallback. Previously supplied translations are retained but have not had native-speaker review.
@@ -96,8 +98,8 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 ## Build and installation
 
-Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
+Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
 
-The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The 1.0.0 release declares Foundation `>=1.0.0 <2.0.0`; keep the matching production DLLs together. Older 0.8.3 downloads target the previous game build.
+The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The 1.1.0 release declares Foundation `>=1.1.0 <2.0.0`; keep the matching production DLLs together. Older 0.8.3 downloads target the previous game build.
 
 Optional teaching examples are separate projects and are excluded from the normal packages and deployment. Game, loader, Unity, generated interop, extracted assets and saves are not redistributed. Original source and documentation remain MIT.

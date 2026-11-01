@@ -4,7 +4,9 @@
 
 ```mermaid
 flowchart LR
-    Pack[TermsAndContusions.dll] -->|hard dependency >=1.0.0 and <2.0.0| Foundation[ChainedBeasts.ModFoundation.dll]
+    Pack[TermsAndContusions.dll] -->|hard dependency >=1.1.0 and <2.0.0| Foundation[ChainedBeasts.ModFoundation.dll]
+    Pack -->|optional camera takeover, soft load ordering| FPS[ChainedBeasts.FirstPerson.dll]
+    Pack --> Embedded[Embedded Eye Level camera source]
     Example[Optional StandaloneContentExample.dll] -->|same version range| Foundation
     Pack --> Game[Installed generated IL2CPP bindings]
     Foundation --> Game

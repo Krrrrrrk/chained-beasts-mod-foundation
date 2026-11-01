@@ -17,17 +17,19 @@ using System.Collections.Generic;
 using System.Linq;
 using FoundationPlugin = ChainedBeasts.ModFoundation.Plugin;
 using TermsAndContusions.ContentMenu;
+using TermsAndContusions.FirstPerson;
 
 namespace TermsAndContusions;
 
 [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
 [BepInDependency(FoundationPlugin.PluginGuid, FoundationVersionRange)]
+[BepInDependency(CameraIntegration.StandaloneGuid, BepInDependency.DependencyFlags.SoftDependency)]
 public sealed class Plugin : BasePlugin
 {
     public const string PluginGuid = "local.chainedbeasts.termsandcontusions";
     public const string PluginName = "Terms & Contusions";
-    public const string PluginVersion = "1.0.0";
-    public const string FoundationVersionRange = ">=1.0.0 <2.0.0";
+    public const string PluginVersion = "1.1.0";
+    public const string FoundationVersionRange = ">=1.1.0 <2.0.0";
     private readonly Dictionary<string, ConfigEntry<bool>> _offerSettings = new(StringComparer.Ordinal);
     private void Track(string key, ConfigEntry<bool> setting) => _offerSettings.Add(key, setting);
 
@@ -129,6 +131,10 @@ public sealed class Plugin : BasePlugin
         claims.AddRange(SurgeryDefinitions.All.Where(entry => entry.Kind != CustomSurgery.AdrenalGraft).Select(entry =>
             new ContentDescriptor(entry.Key, PluginGuid, ContentCategory.Surgery, entry.Id, 1)));
         FoundationServices.Content.RegisterMany(claims);
+        // Mode and Eye Level eligibility are one choice. Repair stale independent
+        // EnableEyeLevel values before the first offer/profile is registered.
+        CameraIntegration.Configure(Config);
+        _offerSettings[FirstPersonPotionFeature.Key].Value = CameraIntegration.LocalPotionOnly;
         foreach (var setting in _offerSettings) ContentOfferServices.Register(setting.Key, setting.Value.Value);
         MultiplayerServices.RegisterGoldRule(EquipmentDefinitions.Get(CustomEquipment.PickpocketsMitts).Key, true, 1);
         MultiplayerServices.RegisterGoldRule(AfflictionDefinitions.Get(CustomAffliction.LooseChange).Key, false, 3);
@@ -152,6 +158,12 @@ public sealed class Plugin : BasePlugin
             harmony => RunnersWrapsFeature.Install(harmony, Log, allowForcedOffers && forceRunnersWraps.Value));
         InstallFeature("Leadfoot", "leadfoot", true,
             harmony => LeadfootFeature.Install(harmony, Log, allowForcedOffers && forceLeadfoot.Value));
+        InstallFeature("Eye Level potion", "firstpersonpotion", true, harmony =>
+        {
+            CameraIntegration.Initialize(this, Config, Log);
+            try { FirstPersonPotionFeature.Install(harmony, Log); }
+            catch { CameraIntegration.Shutdown(); throw; }
+        });
         InstallFeature("potion affliction catalog", "afflictions", true, harmony => AfflictionsFeature.Install(harmony, Log));
         InstallFeature("surgery catalog", "surgeries", true,
             harmony => SurgeriesFeature.Install(harmony, Log, surgeryPrices, allowForcedOffers && forceAdrenalGraft.Value));
@@ -161,6 +173,13 @@ public sealed class Plugin : BasePlugin
             ContentMenuFeature.Install(harmony);
             AddComponent<TcContentMenuController>();
         });
+    }
+
+    public override bool Unload()
+    {
+        ForcedViewServices.Unregister(FirstPersonPotionFeature.Key);
+        CameraIntegration.Shutdown();
+        return true;
     }
 
     private ConfigEntry<bool> BindToggle(LegacyConfigurationSnapshot legacy, bool migrationCompleted,
@@ -196,6 +215,7 @@ public sealed class Plugin : BasePlugin
                 "adrenalgraft" => CustomContentIds.AdrenalGraftKey,
                 "sling" => CounterweightSlingFeature.Key,
                 "irongrip" => SkillDefinitions.Get(CustomSkill.IronGrip).Key,
+                "firstpersonpotion" => FirstPersonPotionFeature.Key,
                 _ => null
             };
             if (key is not null) FoundationServices.Content.Disable(key);

@@ -34,12 +34,21 @@ foreach($package in $packages){
     if($package.members -contains 'ChainedBeasts.BattleNumbers'){Copy-Verified (Join-Path $repo 'chained-beasts-battle-numbers/LICENSE') (Join-Path $stage 'BattleNumbers-LICENSE.txt')}
     $members=$package.members -join ', '
     @"
-# $($package.name) $script:ReleaseVersion — local build
+# $($package.name) $script:ReleaseVersion
 
 Included DLLs: $members. This archive does not install or contain BepInEx.
-TermsAndContusions requires ChainedBeasts.ModFoundation >=1.0.0 <2.0.0.
-The optional combined multiplayer test ZIP also includes Battle Numbers 0.2.x;
-see package-manifest.json for its exact version and hash.
+TermsAndContusions requires ChainedBeasts.ModFoundation >=1.1.0 <2.0.0.
+Its Eye Level camera support is built into TC; standalone FPS Mod is optional.
+Eye Level is a new three-skull potion. Its base healing matches the strongest
+normal potion generated in that offer set. It locks first person for the next
+battle, then clears through the normal completion/removal path. With or without
+FPS Mod, select a mode in TC Content and Save before a run: POTION ONLY locks
+Eye Level offers ON and disables F9; F9 SWITCHING locks Eye Level offers OFF
+and enables F9. Eye Level cannot be toggled separately or changed by bulk
+content toggles. The host mode controls the party; personal modes return after
+disconnecting. Existing stored offers are preserved; use a fresh run or reroll.
+Mouse and keyboard; no shared-screen co-op.
+Optional Battle Numbers is a separate download.
 Foundation alone is supported. Optional teaching examples are not included.
 0.9.8 adds the main-menu TC Content panel. All content defaults enabled.
 1.0.0 promotes the 0.9.9 build: styled TC Content cards, category counts,
@@ -51,7 +60,7 @@ clients before the party can start. Their saved personal preferences remain
 unchanged and return on disconnect. Selection is locked while connected.
 Existing owned content and saved offers are preserved; filters affect newly
 generated offers. Matching mod versions and other gameplay settings/prices
-are still required. This menu/profile protocol awaits manual game testing.
+are still required. Mode tests have gone well; broader host/client edge cases remain.
 0.9.7 adds Iron Grip (one rank): hits no longer make you drop carried enemies.
 It is enabled by default through [Skills] EnableIronGrip in
 BepInEx/config/local.chainedbeasts.termsandcontusions.cfg. Normal throws,
@@ -73,10 +82,10 @@ interaction and matching-party multiplayer coverage still needs checking.
 5. Read MULTIPLAYER.md before online testing: every player needs matching gameplay
    DLLs/settings. Everyone must join before starting or resuming; no mid-run
    joining/reconnect or host migration. F1 mutations remain Solo-only.
-   Check BepInEx/LogOutput.log for both $script:ReleaseVersion
+   Check BepInEx/LogOutput.log for Foundation/TC $script:ReleaseVersion
    plugins, successful shared initialization and no registration errors. The
-   release has passed nongame checks; broader Solo and host/client gameplay
-   testing is still needed. No attempt at balance was made.
+   potion and exclusive camera-mode tests have gone well; broader Solo and
+   host/client interactions still need more play. No attempt at balance was made.
 
 Native SaveData and its exact matching sidecars must be copied/restored together.
 Offer toggles preserve owned content. Do not remove required content plugins
@@ -93,7 +102,7 @@ https://github.com/Krrrrrrk/chained-beasts-mod-foundation/blob/main/docs/INSTALL
 "@ | Set-Content (Join-Path $stage 'README_INSTALL.md') -Encoding utf8
     $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | ForEach-Object { @{path=([IO.Path]::GetRelativePath($stage,$_.FullName).Replace('\','/'));sha256=(Get-Sha $_.FullName)} })
     @{schemaVersion=1;version=$script:ReleaseVersion;package=$package.name;runtimeVerified=$false;published=$false;
-        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=1.0.0 <2.0.0';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
+        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=1.1.0 <2.0.0; standalone FPS is optional';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
         ConvertTo-Json -Depth 8 | Set-Content (Join-Path $stage 'package-manifest.json') -Encoding utf8
     $archive=Join-Path $OutputRoot ($package.name+'-'+$script:ReleaseVersion+'.zip')
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $archive -Force

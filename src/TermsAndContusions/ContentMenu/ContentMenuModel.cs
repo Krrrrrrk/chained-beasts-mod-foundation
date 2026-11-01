@@ -30,6 +30,7 @@ internal sealed class ContentMenuModel
     internal const int PageSize = 5;
     internal readonly MenuEntry[] Entries;
     private readonly Dictionary<string, bool> _original;
+    private readonly Dictionary<string, bool> _locks = new(StringComparer.Ordinal);
     internal readonly Dictionary<string, bool> Draft;
     internal int Category = -1, Page;
     internal string Search = "";
@@ -40,6 +41,14 @@ internal sealed class ContentMenuModel
         Draft = new(_original, StringComparer.Ordinal);
     }
     internal int DirtyCount => Draft.Count(e => e.Value != _original[e.Key]);
+    internal bool IsLocked(string key) => _locks.ContainsKey(key);
+    internal void Lock(string key, bool value)
+    {
+        if (!Draft.ContainsKey(key)) throw new ArgumentException("Unknown locked content: " + key);
+        _locks[key] = value;
+        Draft[key] = value;
+    }
+    internal void Set(string key, bool value) { if (!IsLocked(key)) Draft[key] = value; }
     internal int EnabledCount(int category = -1) => Entries.Count(e => (category < 0 || (int)e.Category == category) && Draft[e.Key]);
     internal int Total(int category = -1) => Entries.Count(e => category < 0 || (int)e.Category == category);
     internal MenuEntry[] Matches() => Entries.Where(e => (Category < 0 || (int)e.Category == Category) &&
@@ -51,5 +60,5 @@ internal sealed class ContentMenuModel
     internal void SelectCategory(int category) { Category = Math.Clamp(category, -1, 3); Page = 0; }
     internal void SetSearch(string value) { Search = (value ?? ""); if (Search.Length > 128) Search = Search.Substring(0, 128); Page = 0; }
     internal void SetAll(bool value, bool categoryOnly = false)
-    { foreach (var e in Entries) if (!categoryOnly || Category < 0 || (int)e.Category == Category) Draft[e.Key] = value; }
+    { foreach (var e in Entries) if (!categoryOnly || Category < 0 || (int)e.Category == Category) Set(e.Key, value); }
 }

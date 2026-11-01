@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>ChainedBeasts.FirstPerson</AssemblyName>
+    <RootNamespace>ChainedBeasts.FirstPerson</RootNamespace>
+    <Version>0.2.0</Version>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Cinemachine"><HintPath>$(BepInExRoot)\interop\Cinemachine.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

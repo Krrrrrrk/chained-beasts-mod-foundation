@@ -2,12 +2,12 @@
 
 I started messing around with modding **Chained Beasts** and ended up making two things:
 
-- **Terms & Contusions** - my collection of 47 custom skills, equipment items, potion afflictions, and surgeries. Some are useful. Some are probably ridiculous.
+- **Terms & Contusions** - my collection of 48 custom skills, equipment items, potion afflictions, and surgeries. Some are useful. Some are probably ridiculous.
 - **Mod Foundation** - the code that makes those additions possible. It's also here for anyone else who wants to build their own mods.
 
 You can just download Terms & Contusions and play, or dig into Foundation and make something yourself. **You don't need to know anything about coding to install the playable mod.**
 
-**[Download Terms & Contusions + Foundation v1.0.0](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip)**
+**[Download Terms & Contusions + Foundation v1.1.0](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip)**
 
 Made for **Chained Beasts 1.0.2**, Steam build **26231777**, on **64-bit Windows**. If the game updates, check the [compatibility notes](docs/GAME_UPDATE_1.0.2.md) before assuming everything still works.
 
@@ -17,22 +17,24 @@ Made for **Chained Beasts 1.0.2**, Steam build **26231777**, on **64-bit Windows
 
 A small warning before we go any further: **I haven't tried to balance this stuff.** A skill might be hilariously overpowered, underwhelming, or just plain broken. That's half the fun of experimenting, but don't say I didn't warn you.
 
+**New in 1.1.0:** Eye Level puts you in first person for the next battle. It's always a three-skull potion, with the strongest normal potion healing in that offer set. The TC menu lets you choose potion-only play or voluntary F9 switching. [How the modes work](#eye-level-and-fps-mod).
+
 ## What's in Terms & Contusions?
 
-The current pack has **47 additions**:
+The current pack has **48 additions**:
 
 | Type | Count | Notes |
 |---|---:|---|
 | Skills | 13 | Twelve have four ranks; Iron Grip has just one |
 | Equipment | 12 | Gives bonuses while equipped |
-| Potion afflictions | 11 | Three severity levels each |
+| Potion afflictions | 12 | Three severity levels; Eye Level is always three skulls |
 | Surgeries | 11 | Once per player per run |
 
 You'll find them mixed in with the normal trainer, equipment shop, potion, and surgery offers. Custom descriptions start with **`TC:`** so you can tell them apart from vanilla content.
 
 If you want to see exactly what each one does, check out the [complete content catalog](docs/terms-and-contusions/CATALOG.md) or the [content-pack guide](docs/terms-and-contusions/README.md).
 
-Version **1.0.0** also adds a **TC Content** menu for turning individual entries on and off. All 47 are enabled by default. More on that [below](#choose-your-tc-content).
+The **TC Content** menu lets you turn individual entries on and off. The other entries start enabled; Eye Level follows the selected camera mode. More on that [below](#choose-your-tc-content).
 
 ## Quick install
 
@@ -60,7 +62,7 @@ Make sure you grab the **IL2CPP x64** download, not Mono or x86. If it isn't loa
 
 ### 3. Install Terms & Contusions
 
-**[Download the v1.0.0 mod ZIP (includes Foundation)](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip)**
+**[Download the v1.1.0 mod ZIP (includes Foundation)](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip)**
 
 Extract the ZIP's `BepInEx` folder into the same game folder and merge it with the one you already installed.
 
@@ -71,7 +73,7 @@ Chained Beasts\BepInEx\plugins\ChainedBeasts.ModFoundation.dll
 Chained Beasts\BepInEx\plugins\TermsAndContusions.dll
 ```
 
-The recommended ZIP **already includes both DLLs**. You only need to install BepInEx itself separately.
+The recommended ZIP **already includes both DLLs**, with Eye Level camera support built into TC. The separate FPS Mod is optional. You only need to install BepInEx itself separately.
 
 Also, don't use GitHub's automatic **Source code** ZIP for a normal install. That's the source for developers, not the ready-to-play mod.
 
@@ -83,7 +85,7 @@ Offers are randomized, so you might not see a custom item immediately. Look for 
 
 If something's not working, I've got guides for [troubleshooting](docs/INSTALLATION.md#troubleshooting), [configuration](docs/INSTALLATION.md#configuration), and [uninstalling or rolling back](docs/INSTALLATION.md#uninstalling-and-rolling-back).
 
-The [v1.0.0 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0) also has individual downloads if you don't want the combined package.
+The [v1.1.0 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0) also has individual downloads if you don't want the combined package.
 
 ## Choose your TC content
 
@@ -93,9 +95,9 @@ It's on the **bottom-right of the main menu**. You can change your selection bef
 
 1. Click **TC Content** to open the list. The button shows how many entries are enabled.
 2. Browse **All content**, **Skills**, **Equipment**, **Potions**, or **Surgeries**. Use **Previous/Next** to change pages, and click a card to switch it **ON/OFF**.
-3. Click **Save changes** when you're happy. **Enable all content** and **Disable all content** work on the whole pack. If you close or discard without saving, your previous selections stay put.
+3. Click **Save changes** when you're happy. **Enable all content** and **Disable all content** work on the whole pack, except Eye Level, which follows the first-person mode. If you close or discard without saving, your previous selections stay put.
 
-All **47 entries start enabled**, and settings you've saved previously are kept when you update.
+The other entries start enabled, and settings you've saved previously are kept when you update. **Eye Level is locked to the first-person mode**, so the bulk buttons can't change it.
 
 ![Main menu with the TC Content button highlighted in the bottom-right corner](docs/images/tc-content-button.png)
 
@@ -105,9 +107,34 @@ Turning something off prevents it from showing up in **new offers**, including r
 
 In multiplayer, **the host chooses which TC entries are active**. Clients use the host's list for that session and keep their own saved selection for later. Make your choices before connecting; the menu is locked while you're in a party or run. Everyone still needs the same Foundation/TC build.
 
-One note about the pictures: they were taken during the **0.9.9 development build**. This menu is included in **v1.0.0**. Search isn't available right now, but categories and pages work fine. The **Find Public Games** button you can see in the screenshots belongs to a *different* mod of mine (Matchmaking); it isn't part of Terms & Contusions.
+One note about the pictures: they were taken during the **0.9.9 development build**. The menu has been included since **v1.0.0**. Search isn't available right now, but categories and pages work fine. The **Find Public Games** button you can see in the screenshots belongs to a *different* mod of mine (Matchmaking); it isn't part of Terms & Contusions.
 
 There's more detail in the [content-selection guide](docs/CONTENT_SELECTION.md).
+
+## Eye Level and FPS Mod
+
+| Installed | First-person controls |
+|---|---|
+| TC + Foundation | Choose **POTION ONLY** or **F9 SWITCHING** in TC Content. A fresh install defaults to potion-only. |
+| FPS Mod alone | F9 switches freely between first and third person. TC is not needed. |
+| TC + Foundation + FPS Mod | Same TC mode control. A fresh install defaults to F9 switching; existing saved choices are kept. |
+
+Open **TC Content** before a run, click the mode under **FIRST PERSON**, then **Save changes**:
+
+- **POTION ONLY:** Eye Level is locked **ON** in the normal offer pool, and F9 switching is disabled. You can't turn Eye Level off individually or through Disable All in this mode.
+- **F9 SWITCHING:** Eye Level is locked **OFF**, and F9 switches freely between first and third person. Enable All can't turn the potion back on.
+
+The Eye Level card says **MODE LOCKED**. Both choices work with TC alone, so the separate FPS Mod is optional. TC and FPS Mod share one active camera when both are installed. Close/discard keeps the previous saved mode.
+
+In multiplayer, the **host's mode controls the party**, along with the content offers. Clients temporarily follow it and get their own saved mode back after leaving. Save before starting or joining. The mode tests have gone well, though I still expect weird edge cases.
+
+The file setting is `[FirstPerson] PotionOnly` in the TC config. The mod keeps `[Afflictions] EnableEyeLevel` matched to that choice at startup and when saving the menu. Camera preferences come from the FPS config when that mod is installed, or `EyeLevelCamera.*` in the TC config otherwise. The selected TC mode controls switching even if an older manual Enabled setting says otherwise.
+
+The mode controls **new offers**. Already-owned content and offers stored in a saved run are preserved. Use a fresh run or reroll existing potion offers after saving to test the new pool. Potion-only makes Eye Level eligible, not guaranteed on every screen. Menus, pause, executions and cinematics still temporarily return to the normal view. There is no split-screen first-person mode.
+
+[![Watch Eye Level gameplay](docs/images/eye-level-video.jpg)](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/Eye_Level.mp4)
+
+[Watch the Eye Level gameplay video (MP4)](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/Eye_Level.mp4)
 
 ## More screenshots
 
@@ -130,7 +157,7 @@ These are from the earlier **four-example version** of the project, so they don'
 
 ## Multiplayer (experimental)
 
-The v1.0.0 release supports multiplayer, and testing has gone pretty well so far. I still expect to find odd interactions or bugs, especially around saves, reconnects, and different client states.
+The v1.1.0 release supports multiplayer, and testing has gone pretty well so far. I still expect to find odd interactions or bugs, especially around saves, reconnects, and different client states.
 
 For multiplayer, **every player needs the same gameplay mod DLLs and settings**. Everyone should join **before** starting or resuming a run. Late joins, reconnecting, and host migration aren't supported right now.
 
@@ -138,7 +165,7 @@ The latest build includes fixes for client trainer skill generation, checkpoint 
 
 Back up your **entire save, config, and plugin setup** before changing versions, and follow the [multiplayer setup and testing guide](docs/MULTIPLAYER.md) rather than guessing.
 
-The recommended [Foundation + Terms & Contusions ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip) is the one you want for this.
+The recommended [Foundation + Terms & Contusions ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip) is the one you want for this.
 
 My separate [Battle Numbers mod](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is completely optional and has its own downloads.
 
@@ -148,6 +175,7 @@ After you've run the game with the mods installed, you'll find these config file
 
 - **Terms & Contusions:** `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`
 - **Mod Foundation / developer tools:** `BepInEx/config/local.chainedbeasts.modfoundation.cfg`
+- **Optional FPS Mod camera preferences:** `BepInEx/config/local.chainedbeasts.firstperson.cfg`
 
 You can use the TC Content menu to change future offers right in the game. For config-file edits, close the game first and restart after saving. Changing what's enabled doesn't remove items you already own or offers stored in your save; removing plugins or downgrading versions is a different story. More on that in the [settings and save guide](docs/INSTALLATION.md#configuration).
 
@@ -194,7 +222,7 @@ A few known limitations:
 - Custom save data isn't automatically synced by Steam Cloud. Back up saves **together with the mod DLLs and configs** they depend on.
 - Restoring a full arena instance or the exact current stamina state isn't supported.
 
-The [v1.0.0 release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.0.0) and [game compatibility notes](docs/GAME_UPDATE_1.0.2.md) have more detail.
+The [v1.1.0 release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0) and [game compatibility notes](docs/GAME_UPDATE_1.0.2.md) have more detail.
 
 ## Bug reports
 

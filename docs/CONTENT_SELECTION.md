@@ -1,4 +1,4 @@
-# TC Content menu — v1.0.0
+# TC Content menu - v1.0.0
 
 The main menu has a **TC Content** button in the bottom-right corner, with an enabled-count badge. Version 1.0.0 includes the dark panel, content cards, category counts and unsaved-changes indicator developed in 0.9.9. The styled panel is visible in the [README screenshots](../README.md#choose-your-tc-content), with search unavailable. Broader selection, gameplay and host-client checks are still needed.
 
@@ -6,9 +6,19 @@ The main menu has a **TC Content** button in the bottom-right corner, with an en
 2. Use **All content** or choose a category in the left sidebar, then use Previous/Next for more results. Category counts show how many entries are enabled. Search by name or effect is optional; if the panel says **Search unavailable**, use categories and pages instead.
 3. Click a card to switch its **ON/OFF** badge, then click **Save changes**. There is no restart requirement. **Discard changes** or the top-right X closes without saving. Enable all and Disable all affect the entire draft, including entries hidden by a search.
 
-The panel scales to the screen. It matches the public lobby browser and party chat: plum panels, cream text, gold headings, teal selection accents and square controls. These styles are included in TC itself; Matchmaking is optional. Save activates only for pending edits, and a confirmation appears after saving. A search-editor failure leaves the styled cards, categories and page controls available. If the styled renderer itself fails, a simple fallback panel remains accessible and the failure is logged. A panel titled **TC Content — simple view** indicates that fallback; include the logged error when reporting it.
+The panel scales to the screen. It matches the public lobby browser and party chat: plum panels, cream text, gold headings, teal selection accents and square controls. These styles are included in TC itself; Matchmaking is optional. Save activates only for pending edits, and a confirmation appears after saving. A search-editor failure leaves the styled cards, categories and page controls available. If the styled renderer itself fails, a simple fallback panel remains accessible and the failure is logged. A panel titled **TC Content - simple view** indicates that fallback; include the logged error when reporting it.
 
-All 47 entries default to enabled. Existing saved Enable* preferences are retained. These are the same settings in `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`; the menu does not add a second configuration file.
+Other content defaults to enabled; Eye Level follows the selected first-person mode. Existing saved Enable* preferences are retained. These are the same settings in `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`; the menu does not add a second configuration file.
+
+Eye Level is included in 1.1.0, bringing the list to 48 entries. Toggle it under **Potions** and save before a run. Existing selections are retained; the new entry defaults to enabled.
+
+## First-person mode
+
+The sidebar offers **F9 SWITCHING** and **POTION ONLY**, with or without the separate FPS Mod. Click to change the mode, then Save. Discard keeps the previous saved choice.
+
+Potion-only locks Eye Level ON and disables F9. F9 switching locks Eye Level OFF and enables manual switching. The Eye Level card is marked MODE LOCKED and cannot be toggled independently; Enable All and Disable All respect that lock. The count includes the locked value, so Disable All in potion-only mode leaves one entry enabled.
+
+The host's selected mode temporarily controls clients during a party, using the same synchronized Eye Level offer bit. Each client's own saved mode returns on disconnect. Changing mode does not reset other content choices. Already-generated/stored offers are preserved; use a fresh run or reroll to inspect the new pool.
 
 ## Multiplayer
 

@@ -2,6 +2,8 @@
 
 Afflictions come from normal potion choices, with the game's healing preserved. Effects use effective severity after suppression or reduction. Curing an affliction removes its future contribution and relevant pending state.
 
+Version 1.1.0 adds **Eye Level**, bringing the catalog to 12 potion afflictions. Eye Level is always three skulls and uses the strongest normal base healing from that generated offer set. It locks first person for the next battle, then clears like Food Poisoning. With **POTION ONLY** selected, F9 does nothing; pause, execution, death and cinematics still release the camera safely. When the potion wears off in potion-only mode, the normal third-person view returns. Camera support is built into TC, with one local player per display. Standalone FPS Mod is optional. TC offers both modes: **POTION ONLY** locks Eye Level offers on and disables F9, while **F9 SWITCHING** locks Eye Level offers off and enables manual switching. The Eye Level card cannot be changed independently. Save before a run; the host mode controls the party. The mode tests have gone well; broader interactions still need more play.
+
 | Content / ID | Full scaling and limits | Setting |
 |---|---|---|
 | Leadfoot / 11010 | Effective severity 1/2/3: movement reduced 10/20/30%; native suppression/reduction/cure applies. | `[Leadfoot] EnableLeadfoot` |
@@ -15,6 +17,10 @@ Afflictions come from normal potion choices, with the game's healing preserved. 
 | Cold Start / 11018 | 1 skull(s): Deal 10% less damage during the first ten seconds of each battle. / 2 skull(s): Deal 20% less damage during the first ten seconds of each battle. / 3 skull(s): Deal 30% less damage during the first ten seconds of each battle. | `[Afflictions] EnableColdStart` |
 | Obsessive Focus / 11019 | 1 skull(s): After directly damaging an enemy, attacks against other enemies deal 15% less damage for three seconds. / 2 skull(s): After directly damaging an enemy, attacks against other enemies deal 25% less damage for three seconds. / 3 skull(s): After directly damaging an enemy, attacks against other enemies deal 35% less damage for three seconds. | `[Afflictions] EnableObsessiveFocus` |
 | Overheating / 11020 | 1 skull(s): Consecutive melee attacks add 5% stamina cost per stack, up to three stacks. The first attack after two seconds idle has normal cost. / 2 skull(s): Consecutive melee attacks add 10% stamina cost per stack, up to three stacks. The first attack after two seconds idle has normal cost. / 3 skull(s): Consecutive melee attacks add 15% stamina cost per stack, up to three stacks. The first attack after two seconds idle has normal cost. | `[Afflictions] EnableOverheating` |
+
+| Eye Level / 11021 (1.1.0) | Three skulls only. Locks first person for the next battle, then expires. | `[Afflictions] EnableEyeLevel` |
+
+Eye Level uses ID `11021` and `[Afflictions] EnableEyeLevel`. Its short description is `TC: First person for the next battle.` Its offer setting is controlled by the TC first-person mode: potion-only locks it on, F9 switching locks it off. The Eye Level card cannot be changed independently. Existing owned effects still expire normally, and disabling future offers doesn't cure a potion already consumed.
 
 For implementation details, use the [content index](manifest.json), [shared mechanics and events](../foundation/MECHANICS.md) and [adding-content guide](../ADDING_CONTENT.md).
 

@@ -88,7 +88,7 @@ internal static class AfflictionsFeature
         FoundationServices.CheckpointCapturing += Capture;
         FoundationServices.CheckpointValidating += Validate;
         FoundationServices.CheckpointRestored += _ => Restore();
-        logger.LogInfo("[Terms & Contusions] ten potion afflictions registered; effective severity, native healing and schema-1 timed state enabled");
+        logger.LogInfo("[Terms & Contusions] potion affliction catalog registered; effective severity, native healing and timed-state handling enabled");
     }
     private static void Register(CustomAffliction kind, StatChannel channel, Func<NativeStatContext, double> factor)
     { var entry = AfflictionDefinitions.Get(kind); if (Enabled(entry)) FoundationServices.RegisterModifier(entry.Key, channel, factor); }
@@ -104,9 +104,11 @@ internal static class AfflictionsFeature
         }
         if (visual is null) throw new InvalidOperationException("Native affliction visual source missing");
         library.allInjuries.Add(new InjuryDef { name = entry.Key, injuryType = (InjuryType)entry.Id, releaseStatus = ReleaseStatus.InFullGame,
-            offerModifiers = (OfferModifiers)0, offerType = OfferType.Normal, maxLevel = 3, canBeDisabled = true,
+            offerModifiers = entry.Kind == CustomAffliction.EyeLevel ? OfferModifiers.NotInLocalMultiplayer : (OfferModifiers)0,
+            offerType = OfferType.Normal, maxLevel = 3, canBeDisabled = true,
             requiresCategory = (SkillCategory)0, unlocksCategory = (SkillCategory)0, tooltipCategories = StatusTooltipType.None,
             bodyPart = entry.Kind switch {
+                CustomAffliction.EyeLevel => BodyPart.Eye,
                 CustomAffliction.BrittleGuard => BodyPart.Arms,
                 CustomAffliction.HeavyLanding => BodyPart.Legs,
                 CustomAffliction.ShakyResolve or CustomAffliction.TinEar or CustomAffliction.ObsessiveFocus => BodyPart.Brain,

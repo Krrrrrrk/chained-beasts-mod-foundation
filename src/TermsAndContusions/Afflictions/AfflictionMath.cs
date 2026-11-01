@@ -32,6 +32,7 @@ public static class AfflictionMath
             CustomAffliction.ColdStart => $"Deal {10 * s}% less damage during the first ten seconds of each battle.",
             CustomAffliction.ObsessiveFocus => $"After hitting an enemy, deal {new[] { 0, 15, 25, 35 }[s]}% less damage to others for 3s.",
             CustomAffliction.Overheating => $"Repeated melee attacks cost +{5 * s}% stamina (3 stacks). Rest 2s to reset.",
+            CustomAffliction.EyeLevel => "First person for the next battle.",
             _ => throw new ArgumentOutOfRangeException(nameof(kind))
         });
     }

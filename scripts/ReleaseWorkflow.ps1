@@ -1,6 +1,6 @@
 # Shared local-only packaging/deployment helpers. Dot-source; importing never builds, deploys or launches.
 Set-StrictMode -Version Latest
-$script:ReleaseVersion = '1.0.0'
+$script:ReleaseVersion = '1.1.0'
 $script:ExpectedGameHash = 'ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29'
 $script:ProductNames = @('ChainedBeasts.ModFoundation','TermsAndContusions')
 function Get-RepositoryRoot { [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')) }
@@ -30,8 +30,9 @@ function Get-ProductFiles([string]$Configuration='Release') {
     foreach($name in $script:ProductNames) {
         $path=Join-Path $repo "src/$name/bin/$Configuration/net6.0/$name.dll"
         $assembly=[Reflection.AssemblyName]::GetAssemblyName($path) # Metadata only; never load/execute the plugin.
-        if ($assembly.Name -ne $name -or $assembly.Version.ToString(3) -ne $script:ReleaseVersion) { throw "Unexpected assembly identity/version: $path" }
-        [pscustomobject]@{name=$name;path=$path;sha256=(Get-Sha $path);version=$script:ReleaseVersion}
+        $version = if($name -eq 'ChainedBeasts.FirstPerson'){'0.2.0'}else{$script:ReleaseVersion}
+        if ($assembly.Name -ne $name -or $assembly.Version.ToString(3) -ne $version) { throw "Unexpected assembly identity/version: $path" }
+        [pscustomobject]@{name=$name;path=$path;sha256=(Get-Sha $path);version=$version}
     }
 }
 function Get-BattleNumbersProduct([string]$Configuration='Release') {

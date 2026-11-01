@@ -1,10 +1,10 @@
 # Multiplayer setup
 
-**Foundation + Terms & Contusions 1.0.0** includes [host-controlled TC content selection](CONTENT_SELECTION.md), developed in the 0.9.9 build. Choose and save at the main menu before hosting or joining. Clients temporarily adopt the host's offer toggles without changing their saved preferences; editing is locked while connected. This new selection/handshake still needs a manual two-PC test.
+**Foundation + Terms & Contusions 1.1.0** includes [host-controlled TC content selection](CONTENT_SELECTION.md), developed in the 0.9.9 build. Choose and save at the main menu before hosting or joining. Clients temporarily adopt the host's offer toggles without changing their saved preferences; editing is locked while connected. This new selection/handshake still needs a manual two-PC test.
 
 Earlier multiplayer testing went well, but I still expect weird edge cases. Iron Grip worked in my Solo test; its multiplayer coverage remains incomplete. Publishing v1 does not establish exhaustive gameplay or save/resume verification.
 
-Download the [Foundation + TC 1.0.0 ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip). Optional [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is a separate download; this release contains the two gameplay plugins. Use the same gameplay DLLs on every PC. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
+Download the [Foundation + TC 1.1.0 ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip). Optional [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is a separate download; this release contains both gameplay plugins. Use the same gameplay DLLs on every PC. BepInEx remains a [separate installation](INSTALLATION.md#2-install-bepinex-once).
 
 ## Client transition fixes
 
@@ -32,6 +32,8 @@ Earlier Foundation/TC releases through 0.9.1 and Battle Numbers through 0.2.0
 target game 1.0.1 and do not support the updated game. See
 [game-update notes](GAME_UPDATE_1.0.2.md).
 
+Eye Level camera support is built into TC; standalone FPS Mod is optional. The host's mode controls the party: **POTION ONLY** locks Eye Level offers on and disables F9, while **F9 SWITCHING** locks Eye Level offers off and enables F9. Clients temporarily follow the host without overwriting their personal saved mode. Choose and save before connecting. The mode tests have gone well; broader host/client edge cases still need more play. Eye Level is excluded from shared-screen co-op.
+
 ## Install on every PC
 
 1. Close Chained Beasts on each PC. Back up the whole `BepInEx/plugins`,
@@ -40,7 +42,7 @@ target game 1.0.1 and do not support the updated game. See
 2. Keep BepInEx **6.0.0-be.791+b782da4 Unity IL2CPP x64**, game 1.0.2 / Steam
    build 26231777 / Unity 6000.3.21f1. Generate interop locally through the loader;
    don't copy someone else's generated game bindings.
-3. Remove old copies of Foundation and TermsAndContusions from every plugin subfolder after backing them up. Extract the combined ZIP's `BepInEx` folder into the game root. It contains Foundation 1.0.0 and TermsAndContusions 1.0.0, without the loader or optional number plugins.
+3. Remove old copies of Foundation and TermsAndContusions from every plugin subfolder after backing them up. Extract the combined ZIP's `BepInEx` folder into the game root. It contains Foundation 1.1.0 and TermsAndContusions 1.1.0, without the loader or optional number plugins.
 4. Send the **same ZIP** to everyone. The host's content offer toggles are adopted automatically; match surgery prices and other gameplay settings in `BepInEx/config/local.chainedbeasts.termsandcontusions.cfg`.
    Cosmetic Battle Numbers colors/scale/lifetime can differ. Forced offers and
    F1 cheats remain Solo-only, even if enabled in configuration.
@@ -96,7 +98,7 @@ For the mechanics review, latest direct-hit fixes, confirmed healing and optiona
 see [activation feedback](ACTIVATION_FEEDBACK.md). Its known latency/weapon-transfer
 limits are still awaiting manual tests.
 
-## Manual two-PC checks — further verification needed
+## Manual two-PC checks - further verification needed
 
 - With matching installs, join both players before starting a fresh online run.
   Confirm both logs have no hook, handshake or interop errors. Also check a
@@ -135,8 +137,8 @@ on one PC need extra UI verification.
 Close the game before rolling back. Restore the **paired pre-test plugins,
 configuration and complete user-data backup together** on each PC. Don't just
 swap DLLs and continue a run owning incompatible custom content. Don't mix
-1.0.0 gameplay DLLs with older releases. The local deploy script records its
-backup in `artifacts/packages/1.0.0/deployment.json`; use
+1.1.0 gameplay DLLs with older releases. The local deploy script records its
+backup in `artifacts/packages/1.1.0/deployment.json`; use
 `scripts/restore-plugin-backup.ps1` with that checkpoint to restore the matching
 set.
 
@@ -164,5 +166,5 @@ pwsh -NoProfile -File scripts/build-and-deploy-plugin.ps1 -Deploy -SkipBuild
 ```
 
 The combined handoff is
-`artifacts/packages/1.0.0/TermsAndContusions-with-Foundation-1.0.0.zip`. No build,
+`artifacts/packages/1.1.0/TermsAndContusions-with-Foundation-1.1.0.zip`. No build,
 check or package command launches the game or publishes a GitHub release.

@@ -1,6 +1,6 @@
 # Terms & Contusions content catalog
 
-The 0.9.7 release contains 47 additions. Iron Grip worked in my manual test; broader interaction and multiplayer cases still need checking. Custom card descriptions start with `TC:`. Twelve skills have four ranks and Iron Grip has one; potion afflictions have three severities. The tables below show the first-rank/severity description; category guides give the full scaling and limits.
+Version 1.1.0 contains 48 additions, including **Eye Level**, a three-skull potion that locks first person for the next battle. Custom card descriptions start with `TC:`. Twelve skills have four ranks and Iron Grip has one; other potion afflictions have three severities. The tables below show the first-rank/severity description; category guides give the full scaling and limits.
 
 These are unbalanced experimental Solo examples. Use the [installation guide](../INSTALLATION.md) and keep matching saves, sidecars and mods together. The [content index](manifest.json) lists stable IDs, settings and source files.
 
@@ -60,6 +60,8 @@ These are unbalanced experimental Solo examples. Use the [installation guide](..
 | Cold Start / 11018 | TC: Deal 10% less damage during the first ten seconds of each battle. | Native rules |
 | Obsessive Focus / 11019 | TC: After hitting an enemy, deal 15% less damage to others for 3s. | Native rules |
 | Overheating / 11020 | TC: Repeated melee attacks cost +5% stamina (3 stacks). Rest 2s to reset. | Native rules |
+
+| Eye Level / 11021 (1.1.0) | TC: First person for the next battle. Always three skulls; strongest normal healing in that offer set. | Native rules |
 
 ## Surgeries
 
