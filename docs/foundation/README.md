@@ -2,16 +2,16 @@
 
 **Just want to play Terms & Contusions?** Use the [player quick install](../../README.md#quick-install). This page is for building source and making mods.
 
-Foundation supplies reusable registration, checkpoint state, modifiers and lifecycle integration. Separate plugins own their definitions and gameplay rules. The [**1.1.1 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1) targets Chained Beasts 1.0.2 / Steam build 26231777 and retains experimental multiplayer and confirmed activation feedback. Foundation can be installed without Terms & Contusions.
+Foundation supplies reusable registration, checkpoint state, modifiers and lifecycle integration. Separate plugins own their definitions and gameplay rules. The [**1.1.2 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2) targets Chained Beasts 1.0.2 / Steam build 26369255 and retains experimental multiplayer and confirmed activation feedback. Foundation can be installed without Terms & Contusions.
 
-Start with the setup below, then follow the [separate-mod walkthrough](SEPARATE_MOD.md). Solo has been working in my recent tests; the latest description/client-transition fixes, individual mechanics, checkpoint cases and host/client gameplay still need broader manual testing. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1).
+Start with the setup below, then follow the [separate-mod walkthrough](SEPARATE_MOD.md). Solo has been working in my recent tests; the latest description/client-transition fixes, individual mechanics, checkpoint cases and host/client gameplay still need broader manual testing. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2).
 
 ## Products and prerequisites
 
 | Product | Assembly | BepInEx GUID | Current release | Previous release (game 1.0.1) |
 |---|---|---|---|---|
-| Foundation | `ChainedBeasts.ModFoundation.dll` | `local.chainedbeasts.modfoundation` | `1.1.1` | `0.9.1` |
-| Terms & Contusions | `TermsAndContusions.dll` | `local.chainedbeasts.termsandcontusions` | `1.1.1` | `0.9.1` |
+| Foundation | `ChainedBeasts.ModFoundation.dll` | `local.chainedbeasts.modfoundation` | `1.1.2` | `0.9.1` |
+| Terms & Contusions | `TermsAndContusions.dll` | `local.chainedbeasts.termsandcontusions` | `1.1.2` | `0.9.1` |
 | Optional teaching example | `StandaloneContentExample.dll` | `example.chainedbeasts.standalonecontent` | `0.8.0` | Not shipped with pack |
 
 Install these development prerequisites:
@@ -19,7 +19,7 @@ Install these development prerequisites:
 - **Git** to clone the source.
 - **PowerShell 7** (`pwsh`) to run the repository scripts.
 - A **.NET SDK/targeting pack supporting `net6.0`**.
-- The inspected Windows x64 setup: **Chained Beasts 1.0.2 / Steam 26231777**, Unity **6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Releases through 0.9.1 target game 1.0.1; see [compatibility notes](../GAME_UPDATE_1.0.2.md).
+- The inspected Windows x64 setup: **Chained Beasts 1.0.2 / Steam 26369255**, Unity **6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Releases through 0.9.1 target game 1.0.1; see [compatibility notes](../GAME_UPDATE_1.0.2.md).
 
 Complete the [BepInEx first-time setup](../INSTALLATION.md#2-install-bepinex-once) and one normal game launch before building, then close the game. References come from the loader's generated `BepInEx/interop` directory; never substitute Cpp2IL inspection stubs or redistribute those DLLs. Installed native Newtonsoft.Json is used only inside the checkpoint adapter, with a separate reference alias.
 
@@ -49,11 +49,11 @@ Create local release ZIPs after a successful build:
 pwsh -NoProfile -File .\scripts\package-plugins.ps1 -SkipBuild
 ```
 
-The current source builds **1.1.1** for game 1.0.2. Packages are written to `artifacts/packages/1.1.1`; prebuilt downloads are on the [1.1.1 release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1). For multiplayer requirements, the separate Battle Numbers 0.2.2 checkout and pending host/client tests, read [MULTIPLAYER.md](../MULTIPLAYER.md). For deployment and paired rollback, read the [advanced script section of the installation guide](../INSTALLATION.md#building-and-scripted-installation) before using the release helpers.
+The current source builds **1.1.2** for game 1.0.2. Packages are written to `artifacts/packages/1.1.2`; prebuilt downloads are on the [1.1.2 release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2). For multiplayer requirements, the separate Battle Numbers 1.0.1 checkout and pending host/client tests, read [MULTIPLAYER.md](../MULTIPLAYER.md). For deployment and paired rollback, read the [advanced script section of the installation guide](../INSTALLATION.md#building-and-scripted-installation) before using the release helpers.
 
 The build command supports `-FoundationOnly`. Build commands never deploy or launch the game. Deployment requires explicit -Deploy and makes a matching complete checkpoint; default build invocations cannot install.
 
-The 1.1.1 pack requires Foundation `>=1.1.1 <2.0.0` for Eye Level. TC compiles the shared camera source into its own assembly and soft-depends on the optional standalone FPS plugin only to order initialization. The build script builds Foundation and TC; the Foundation-only package stays independent. The minimal examples use the compatible `>=1.0.0 <2.0.0` Foundation API range. The published 0.8.3 pack declares `>=0.8.0 <0.9.0`; keep matching production DLLs together. The range alone doesn't establish gameplay compatibility, and multiplayer additionally requires exact gameplay DLL fingerprints and settings. The installed BepInEx API interprets a bare version as exact, so the range is intentional. Missing/incompatible dependencies block the pack. A failed shared-core install leaves `FoundationServices.IsReady=false`; dependent plugins explicitly refuse to initialize.
+The 1.1.2 pack requires Foundation `>=1.1.2 <2.0.0` for Eye Level. TC compiles the shared camera source into its own assembly and soft-depends on the optional standalone FPS plugin only to order initialization. The build script builds Foundation and TC; the Foundation-only package stays independent. The minimal examples use the compatible `>=1.0.0 <2.0.0` Foundation API range. The published 0.8.3 pack declares `>=0.8.0 <0.9.0`; keep matching production DLLs together. The range alone doesn't establish gameplay compatibility, and multiplayer additionally requires exact gameplay DLL fingerprints and settings. The installed BepInEx API interprets a bare version as exact, so the range is intentional. Missing/incompatible dependencies block the pack. A failed shared-core install leaves `FoundationServices.IsReady=false`; dependent plugins explicitly refuse to initialize.
 
 ## Public extension points
 
@@ -88,4 +88,4 @@ The shared [mechanics/events guide](MECHANICS.md) covers direct-hit receipts, ph
 
 ## Optional F1 progression panels
 
-Foundation 1.1.1 adds `DeveloperMenuExtensions.Register(key, title, draw)` for other mods' Solo progression panels. Dispose the returned registration when unloading, and recheck Solo/host/profile authority before changing saved data. [Hybrids](https://github.com/Krrrrrrk/Chained-Beasts_Hybrids) uses this for its IV/V/VI unlock controls. The public 1.1.0 DLL doesn't include this API.
+Foundation 1.1.2 adds `DeveloperMenuExtensions.Register(key, title, draw)` for other mods' Solo progression panels. Dispose the returned registration when unloading, and recheck Solo/host/profile authority before changing saved data. [Hybrids](https://github.com/Krrrrrrk/Chained-Beasts_Hybrids) uses this for its IV/V/VI unlock controls. The public 1.1.0 DLL doesn't include this API.

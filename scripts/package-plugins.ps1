@@ -37,7 +37,7 @@ foreach($package in $packages){
 # $($package.name) $script:ReleaseVersion
 
 Included DLLs: $members. This archive does not install or contain BepInEx.
-TermsAndContusions requires ChainedBeasts.ModFoundation >=1.1.1 <2.0.0.
+TermsAndContusions requires ChainedBeasts.ModFoundation >=1.1.2 <2.0.0.
 Its Eye Level camera support is built into TC; standalone FPS Mod is optional.
 Eye Level is a new three-skull potion. Its base healing matches the strongest
 normal potion generated in that offer set. It locks first person for the next
@@ -70,7 +70,7 @@ interaction and matching-party multiplayer coverage still needs checking.
 1. Close the game. Back up all BepInEx/plugins, BepInEx/config and the complete
    LocalLow/Featherweight Games/ChainedBeasts user-data folder, including any
    ModFoundation/checkpoints sidecars, together before changing versions.
-2. Use the inspected Steam Windows x64 game 1.0.2 / build 26231777 / Unity 6000.3.21f1 with
+2. Use the inspected Steam Windows x64 game 1.0.2 / build 26369255 / Unity 6000.3.21f1 with
    BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64 and generated runtime interop.
 3. Remove prior copies of our DLLs from all BepInEx plugin subfolders after
    backing them up. The old content-bearing monolithic Foundation must not
@@ -102,7 +102,7 @@ https://github.com/Krrrrrrk/chained-beasts-mod-foundation/blob/main/docs/INSTALL
 "@ | Set-Content (Join-Path $stage 'README_INSTALL.md') -Encoding utf8
     $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | ForEach-Object { @{path=([IO.Path]::GetRelativePath($stage,$_.FullName).Replace('\','/'));sha256=(Get-Sha $_.FullName)} })
     @{schemaVersion=1;version=$script:ReleaseVersion;package=$package.name;runtimeVerified=$false;published=$false;
-        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=1.1.1 <2.0.0; standalone FPS is optional';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
+        gameAssemblySha256=$script:ExpectedGameHash;files=$files;dependency='TermsAndContusions: local.chainedbeasts.modfoundation >=1.1.2 <2.0.0; standalone FPS is optional';products=@($products | Where-Object {$package.members -contains $_.name} | Select-Object name,version,sha256)} |
         ConvertTo-Json -Depth 8 | Set-Content (Join-Path $stage 'package-manifest.json') -Encoding utf8
     $archive=Join-Path $OutputRoot ($package.name+'-'+$script:ReleaseVersion+'.zip')
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $archive -Force

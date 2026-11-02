@@ -1,5 +1,7 @@
 # Chained Beasts Mod Foundation + Terms & Contusions
 
+Updated for the Chained Beasts 1.0.2 hotfix, Steam build **26369255**. In-game and multiplayer retesting is still pending.
+
 I started messing around with modding **Chained Beasts** and ended up making two things:
 
 - **Terms & Contusions** - my collection of 48 custom skills, equipment items, potion afflictions, and surgeries. Some are useful. Some are probably ridiculous.
@@ -7,9 +9,9 @@ I started messing around with modding **Chained Beasts** and ended up making two
 
 You can just download Terms & Contusions and play, or dig into Foundation and make something yourself. **You don't need to know anything about coding to install the playable mod.**
 
-**[Download Terms & Contusions + Foundation v1.1.1](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip)**
+**[Download Terms & Contusions + Foundation v1.1.2](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.2/TermsAndContusions-with-Foundation-1.1.2.zip)**
 
-Made for **Chained Beasts 1.0.2**, Steam build **26231777**, on **64-bit Windows**. If the game updates, check the [compatibility notes](docs/GAME_UPDATE_1.0.2.md) before assuming everything still works.
+Made for **Chained Beasts 1.0.2**, Steam build **26369255**, on **64-bit Windows**. If the game updates, check the [compatibility notes](docs/GAME_UPDATE_1.0.2.md) before assuming everything still works.
 
 **Just want to play?** Head to [Quick install](#quick-install).
 
@@ -64,7 +66,7 @@ Make sure you grab the **IL2CPP x64** download, not Mono or x86. If it isn't loa
 
 ### 3. Install Terms & Contusions
 
-**[Download the v1.1.0 mod ZIP (includes Foundation)](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip)**
+**[Download the v1.1.2 mod ZIP (includes Foundation)](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.2/TermsAndContusions-with-Foundation-1.1.2.zip)**
 
 Extract the ZIP's `BepInEx` folder into the same game folder and merge it with the one you already installed.
 
@@ -87,7 +89,7 @@ Offers are randomized, so you might not see a custom item immediately. Look for 
 
 If something's not working, I've got guides for [troubleshooting](docs/INSTALLATION.md#troubleshooting), [configuration](docs/INSTALLATION.md#configuration), and [uninstalling or rolling back](docs/INSTALLATION.md#uninstalling-and-rolling-back).
 
-The [v1.1.0 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0) also has individual downloads if you don't want the combined package.
+The [v1.1.2 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2) also has individual downloads if you don't want the combined package.
 
 ## Choose your TC content
 
@@ -167,7 +169,7 @@ The latest build includes fixes for client trainer skill generation, checkpoint 
 
 Back up your **entire save, config, and plugin setup** before changing versions, and follow the [multiplayer setup and testing guide](docs/MULTIPLAYER.md) rather than guessing.
 
-The recommended [Foundation + Terms & Contusions ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip) is the one you want for this.
+The recommended [Foundation + Terms & Contusions ZIP](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.2/TermsAndContusions-with-Foundation-1.1.2.zip) is the one you want for this.
 
 My separate [Battle Numbers mod](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is completely optional and has its own downloads.
 
@@ -212,7 +214,7 @@ If you want to get deeper into how it all works, there's documentation on the [a
 
 ## Current limitations
 
-This release was built for **Chained Beasts 1.0.2 (Steam build 26231777)**, **Unity 6000.3.21f1**, **Windows x64**, and the BepInEx version linked above.
+This release was built for **Chained Beasts 1.0.2 (Steam build 26369255)**, **Unity 6000.3.21f1**, **Windows x64**, and the BepInEx version linked above.
 
 Solo and multiplayer have been working in my tests, but I haven't tried every skill rank, combination, save/resume case, or host/client interaction. There are definitely still things to find.
 

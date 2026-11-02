@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "pack": "Terms & Contusions",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "pluginGuid": "local.chainedbeasts.termsandcontusions",
-  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1",
+  "releaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2",
   "releaseChannel": "stable",
-  "stableReleaseVersion": "1.1.1",
-  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1",
-  "status": "1.1.1 adds the optional Foundation F1 progression-panel hook used by Hybrids. TC retains Eye Level and the existing camera modes.",
+  "stableReleaseVersion": "1.1.2",
+  "stableReleaseUrl": "https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2",
+  "status": "1.1.2 updates Foundation and TC for game 1.0.2 / Steam build 26369255, including the changed equipment-catalog hook. In-game and multiplayer retesting is pending.",
   "entries": [
     {
       "key": "terms-and-contusions:skill/bulk-up",
@@ -515,19 +515,21 @@
   },
   "gameCompatibility": {
     "gameVersion": "1.0.2",
-    "steamBuild": "26231777",
+    "steamBuild": "26369255",
     "unityVersion": "6000.3.21f1",
-    "gameAssemblySha256": "ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29",
-    "metadataSha256": "b689ca1c435476874b1a2e6e0aab140f07af02a6a9700d8f457c79e89b170075",
+    "gameAssemblySha256": "0deadea3eb9a6ee3bdb69ab7945d4b6dfe40a07be0727edb5cb4dc20c05c3f6e",
+    "metadataSha256": "d3576ba8280b8a8f18a63ec895aa927617fdf255af03971bd0407cd1c2ee5fbc",
     "bepInExVersion": "6.0.0-be.791+b782da4",
-    "foundationVersion": "1.1.0",
-    "contentPackVersion": "1.1.0",
-    "battleNumbersVersion": "0.2.2",
+    "foundationVersion": "1.1.2",
+    "contentPackVersion": "1.1.2",
+    "battleNumbersVersion": "1.0.1",
     "runtimeVerified": false,
     "report": "docs/GAME_UPDATE_1.0.2.md",
     "manualSmokeTestReported": true,
     "manualSmokeTestVersion": "0.9.7",
-    "manualSmokeTestScope": "Basic Solo and multiplayer reported working at0.9.6. Iron Grip0.9.7 subsequently reported working in a manual test; full pickup/block/cleanup/latency/save-resume and new-skill multiplayer coverage is not established."
+    "manualSmokeTestScope": "Basic Solo and multiplayer reported working at0.9.6. Iron Grip0.9.7 subsequently reported working in a manual test; full pickup/block/cleanup/latency/save-resume and new-skill multiplayer coverage is not established.",
+    "steamBuildId": "26369255",
+    "published": true
   },
   "directHitReview": {
     "version": "0.9.3",

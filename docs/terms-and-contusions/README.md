@@ -1,13 +1,13 @@
 # Play Terms & Contusions
 
-**Terms & Contusions** is the experimental gameplay pack built on Chained Beasts Mod Foundation. The current release is **1.1.1**.
+**Terms & Contusions** is the experimental gameplay pack built on Chained Beasts Mod Foundation. The current release is **1.1.2**.
 
-This release targets **game 1.0.2 / Steam build 26231777**. Solo has been working in my
+This release targets **game 1.0.2 / Steam build 26369255**. Solo has been working in my
 recent tests; the latest fixes still need broader manual testing.
 Older releases through 0.9.1 target game 1.0.1.
 See [compatibility notes](../GAME_UPDATE_1.0.2.md) and [multiplayer setup](../MULTIPLAYER.md).
 
-**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip) includes Foundation and TC, with Eye Level camera support built into TC. BepInEx is installed separately.
+**Ready to play?** Follow the [quick install](../../README.md#quick-install), or use the [detailed installation and update guide](../INSTALLATION.md). The [recommended combined download](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.2/TermsAndContusions-with-Foundation-1.1.2.zip) includes Foundation and TC, with Eye Level camera support built into TC. BepInEx is installed separately.
 
 This page explains the content, settings and limitations. For source builds, use the [developer guide](../foundation/README.md).
 
@@ -90,7 +90,7 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 ## Verification and known limitations
 
-- Solo has been working in my recent tests. The latest description/client-transition fixes pass builds and nongame checks, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
+- Solo has been working in my recent tests. The latest description/client-transition fixes pass builds and nongame checks, but individual entries, interactions and checkpoint cases are not exhaustively verified. See [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2) and the [mechanics review](../ACTIVATION_FEEDBACK.md).
 - Multiplayer testing of **0.9.6** went well, but I still expect weird edge cases. **Iron Grip in 0.9.7 worked in my manual test; its multiplayer coverage still needs checking.** Every PC needs matching gameplay DLLs, content settings and the [required lobby/checkpoint setup](../MULTIPLAYER.md). Developer actions and forced offers still require the actual Solo session/authority checks.
 - Original icons and models are not included; the pack reuses visuals already present in the installed game.
 - New descriptions use English fallback. Previously supplied translations are retained but have not had native-speaker review.
@@ -98,7 +98,7 @@ For removal or a return to an older version, follow [uninstalling and rolling ba
 
 ## Build and installation
 
-Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.0). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
+Players can install the [ready-made release](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2). To compile or modify the source, follow the [developer setup and build guide](../foundation/README.md#clone-and-build).
 
 The production assemblies are `ChainedBeasts.ModFoundation.dll` and `TermsAndContusions.dll`. The content pack's assembly/namespace is `TermsAndContusions`; its BepInEx GUID is `local.chainedbeasts.termsandcontusions`. The 1.1.0 release declares Foundation `>=1.1.0 <2.0.0`; keep the matching production DLLs together. Older 0.8.3 downloads target the previous game build.
 

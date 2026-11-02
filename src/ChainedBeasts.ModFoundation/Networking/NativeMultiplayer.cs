@@ -100,9 +100,9 @@ internal static class NativeMultiplayer
         using var stream = File.OpenRead(Path.Combine(BepInEx.Paths.GameRootPath, "GameAssembly.dll"));
         using var hash = SHA256.Create();
         var digest = Convert.ToHexString(hash.ComputeHash(stream)).ToLowerInvariant();
-        if (digest != "ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29")
+        if (digest != "0deadea3eb9a6ee3bdb69ab7945d4b6dfe40a07be0727edb5cb4dc20c05c3f6e")
             throw new NotSupportedException("Uninspected game build; multiplayer hooks disabled. GameAssembly SHA256=" + digest);
-        MultiplayerServices.RegisterCompatibility("native-game", digest, "Steam-26231777");
+        MultiplayerServices.RegisterCompatibility("native-game", digest, "Steam-26369255");
     }
 
     internal static void Install(Harmony harmony)

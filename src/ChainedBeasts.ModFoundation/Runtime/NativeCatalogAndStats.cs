@@ -16,7 +16,7 @@ internal static class NativeCatalogAndStats
             FeaturePatcher.Patch(harmony, typeof(NativeCatalogAndStats), FeaturePatcher.RequireMethod(type, name, parameters), prefix, postfix);
         Patch(typeof(GameLibrary), nameof(GameLibrary.Init), nameof(LibraryBefore), nameof(LibraryAfter));
         Patch(typeof(GameLibrary), nameof(GameLibrary.GetAllSkillTypes), postfix: nameof(Skills));
-        Patch(typeof(GameLibrary), nameof(GameLibrary.GetAllPurchaseTypes), postfix: nameof(Equipment));
+        Patch(typeof(GameLibrary), nameof(GameLibrary.GetAllPurchaseTypes), postfix: nameof(Equipment), parameters: new[] { typeof(bool) });
         Patch(typeof(GameLibrary), nameof(GameLibrary.GetAllInjuryTypes), postfix: nameof(Afflictions));
         foreach (var target in new[]
         {

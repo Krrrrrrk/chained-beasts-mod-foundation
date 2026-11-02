@@ -6,7 +6,7 @@
 
 [Quick install on the main page](../README.md#quick-install) · [Updating an existing install](#updating-an-existing-install) · [Troubleshooting](#troubleshooting) · [Make your own mod](foundation/README.md)
 
-These instructions cover the **1.1.1 release** for the **Windows 64-bit Steam version of Chained Beasts 1.0.2 / build 26231777**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
+These instructions cover the **1.1.2 release** for the **Windows 64-bit Steam version of Chained Beasts 1.0.2 / build 26369255**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
 
 Solo and multiplayer have been working in my tests. Iron Grip also worked in
 my manual test, though its multiplayer and edge-case coverage remain incomplete. Older 0.8.3/0.9.1 downloads target game 1.0.1 and are incompatible
@@ -44,7 +44,7 @@ The download above is the loader used with this project. BepInEx 5 and Unity Mon
 
 ### 3. Install the combined mod package
 
-1. Download [**TermsAndContusions-with-Foundation-1.1.1.zip**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.1/TermsAndContusions-with-Foundation-1.1.1.zip).
+1. Download [**TermsAndContusions-with-Foundation-1.1.2.zip**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.2/TermsAndContusions-with-Foundation-1.1.2.zip).
 2. Extract the ZIP somewhere convenient, then open the extracted folder.
 3. Copy its **`BepInEx` folder into the game folder** and allow the folders to merge.
 
@@ -94,7 +94,7 @@ Eye Level camera support is compiled into TC. FPS Mod is optional. If you use it
 3. Install the new **combined package** as described in [step 3](#3-install-the-combined-mod-package). Use the Foundation and TC DLLs from the same release.
 4. Keep your existing configuration files. Start the game and check for load errors if anything looks wrong.
 
-**Coming from 0.7.3?** That version put the custom content inside a single Foundation DLL. Versions 0.8.0 through 1.0.0 split the content into two DLLs; 1.1.1 keeps that two-DLL layout, with the Eye Level camera built into TC. Replace the old Foundation and install the content-pack DLL alongside the new one; do not leave the old copy in another plugin subfolder.
+**Coming from 0.7.3?** That version put the custom content inside a single Foundation DLL. Versions 0.8.0 through 1.0.0 split the content into two DLLs; 1.1.2 keeps that two-DLL layout, with the Eye Level camera built into TC. Replace the old Foundation and install the content-pack DLL alongside the new one; do not leave the old copy in another plugin subfolder.
 
 The mod imports supported legacy ownership and settings when loading. Old developer offer-forcing settings only take effect when the separate `EnableForcedOffers` master setting is enabled. Leave that master setting false for normal play.
 
@@ -137,8 +137,8 @@ See the [catalog](terms-and-contusions/CATALOG.md) for individual content settin
 The project's setup writes its log to **`BepInEx\LogOutput.log`**, inside the game folder. After a fresh launch, look for both plugin names and any errors following them:
 
 ```text
-ChainedBeasts.ModFoundation 1.1.1
-Terms & Contusions 1.1.1
+ChainedBeasts.ModFoundation 1.1.2
+Terms & Contusions 1.1.2
 ```
 
 Loading lines are useful diagnostics; they do not establish that every feature works. Foundation must initialize successfully for the pack to run.
@@ -153,7 +153,7 @@ Finish or abandon the custom run **while the mod is still installed**. Then clos
 
 Keep Foundation if another installed mod requires it. Otherwise, you can also remove `ChainedBeasts.ModFoundation.dll`. You do not need to remove BepInEx or unrelated mods.
 
-A saved run that owns content from a removed plugin may no longer load. Offer toggles in 1.1.1 do not remove owned content. To return to a pre-mod or older-version run, use its complete matching backup.
+A saved run that owns content from a removed plugin may no longer load. Offer toggles in 1.1.2 do not remove owned content. To return to a pre-mod or older-version run, use its complete matching backup.
 
 ### Restore an older version
 
@@ -165,19 +165,19 @@ For source-built installations with a script-created backup, an advanced rollbac
 
 ## Requirements and package choices
 
-The inspected setup is **Windows x64**, **Chained Beasts 1.0.2 / Steam build 26231777**, **Unity 6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Other game builds and platforms are unverified. Multiplayer is experimental and requires the [matching-party setup](MULTIPLAYER.md); the new Iron Grip multiplayer cases still need checking.
+The inspected setup is **Windows x64**, **Chained Beasts 1.0.2 / Steam build 26369255**, **Unity 6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Other game builds and platforms are unverified. Multiplayer is experimental and requires the [matching-party setup](MULTIPLAYER.md); the new Iron Grip multiplayer cases still need checking.
 
-All packages are available on the [1.1.1 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1).
+All packages are available on the [1.1.2 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2).
 
 | Download | Includes | Choose it when… |
 |---|---|---|
-| **`TermsAndContusions-with-Foundation-1.1.1.zip`** | Both mod DLLs | **You want to play Terms & Contusions.** |
-| `ChainedBeasts.ModFoundation-1.1.1.zip` | Foundation only | You need the shared infrastructure for a different Foundation-based mod. |
-| `TermsAndContusions-1.1.1.zip` | Content pack only | You already have matching Foundation installed. The combined ZIP is simpler for most players. |
+| **`TermsAndContusions-with-Foundation-1.1.2.zip`** | Both mod DLLs | **You want to play Terms & Contusions.** |
+| `ChainedBeasts.ModFoundation-1.1.2.zip` | Foundation only | You need the shared infrastructure for a different Foundation-based mod. |
+| `TermsAndContusions-1.1.2.zip` | Content pack only | You already have matching Foundation installed. The combined ZIP is simpler for most players. |
 
-Use matching **1.1.1** gameplay DLLs for this release. Packages also contain installation/license notices and a checksum manifest. They exclude the loader, game files, extracted assets, saves, configuration files, and optional teaching examples. [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is available separately.
+Use matching **1.1.2** gameplay DLLs for this release. Packages also contain installation/license notices and a checksum manifest. They exclude the loader, game files, extracted assets, saves, configuration files, and optional teaching examples. [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is available separately.
 
-**Testing status:** Solo and multiplayer have been working in my tests, and Iron Grip worked in a manual test. Builds and nongame checks pass; individual mechanics, interactions, save/restore cases and multiplayer are not exhaustively verified. Reliable surgery rerolls and complete Battle Numbers boss coverage remain limitations. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.1).
+**Testing status:** Solo and multiplayer have been working in my tests, and Iron Grip worked in a manual test. Builds and nongame checks pass; individual mechanics, interactions, save/restore cases and multiplayer are not exhaustively verified. Reliable surgery rerolls and complete Battle Numbers boss coverage remain limitations. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2).
 
 <a id="fresh-checkout-and-local-workflow"></a>
 
@@ -198,7 +198,7 @@ pwsh -NoProfile -File .\scripts\build-and-deploy-plugin.ps1 -Deploy -SkipBuild `
 
 Omit `-SkipBuild` to build first. The script requires `-Deploy`, refuses while the game is running, checks the inspected game build, and creates a backup before replacing either of this project's DLLs. It detects old copies by assembly identity, including renamed/nested copies, while preserving unrelated plugins during installation. A partial-copy failure restores the previous owned DLLs.
 
-The backup and `artifacts/packages/1.1.1/deployment.json` record the current source installation and hashes. Its inspected `GameAssembly.dll` SHA-256 is `ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29` (Steam 26231777). A changed build requires reinspection. Restoring older plugins does not undo a Steam game update; releases for game 1.0.1 remain incompatible with game 1.0.2.
+The backup and `artifacts/packages/1.1.2/deployment.json` record the current source installation and hashes. Its inspected `GameAssembly.dll` SHA-256 is `ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29` (Steam 26369255). A changed build requires reinspection. Restoring older plugins does not undo a Steam game update; releases for game 1.0.1 remain incompatible with game 1.0.2.
 
 For a backup created by that workflow:
 

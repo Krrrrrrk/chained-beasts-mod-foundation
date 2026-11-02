@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>TermsAndContusions</AssemblyName>
     <RootNamespace>TermsAndContusions</RootNamespace>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <DefineConstants>$(DefineConstants);TC_EMBEDDED_CAMERA</DefineConstants>
   </PropertyGroup>
   <ItemGroup>

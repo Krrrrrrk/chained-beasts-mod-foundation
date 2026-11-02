@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>ChainedBeasts.FirstPerson</AssemblyName>
     <RootNamespace>ChainedBeasts.FirstPerson</RootNamespace>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
