@@ -106,7 +106,7 @@ internal static class NativeWeaponIdentity
         Patch(typeof(Player), nameof(Player.ReceivePickup), nameof(ReceiveBefore), final: nameof(Finally), args: new[]
         { typeof(PickupType), typeof(int), typeof(int), typeof(int), typeof(Vector3), typeof(ulong), typeof(int), typeof(bool) });
         Patch(typeof(Player), nameof(Player.EquipWeapon), nameof(EquipBefore), nameof(EquipAfter), args: new[] { typeof(PickupData), typeof(bool), typeof(bool) });
-        Patch(typeof(Player), nameof(Player.DropPickupRpc), nameof(DropBefore), final: nameof(Finally), args: new[] { typeof(EquipType), typeof(float), typeof(bool) });
+        Patch(typeof(Player), nameof(Player.DropPickupRpc), nameof(DropBefore), final: nameof(Finally), args: new[] { typeof(EquipType), typeof(float), typeof(bool), typeof(bool) });
         Patch(typeof(PickupManager), nameof(PickupManager.SpawnPickup), nameof(SpawnBefore), nameof(SpawnAfter), nameof(Finally),
             typeof(Vector3), typeof(Quaternion), typeof(PickupType), typeof(int), typeof(int), typeof(EnemyType), typeof(int), typeof(Vector3), typeof(Vector3), typeof(ulong), typeof(bool), typeof(int));
         Patch(typeof(Projectile), nameof(Projectile.ToPickup), after: nameof(ToPickup));

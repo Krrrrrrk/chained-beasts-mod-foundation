@@ -21,7 +21,7 @@ namespace ChainedBeasts.FirstPerson;
 
 internal static class NativeSafety
 {
-    internal const string GameHash = "0deadea3eb9a6ee3bdb69ab7945d4b6dfe40a07be0727edb5cb4dc20c05c3f6e";
+    internal const string GameHash = "ae48a9c3f8018d3f996c4e692a3736f8b5dcb4ead5c8d0e6e40f3e83f0004a6a";
     private static readonly List<(MethodBase Method, long Entry)> Selected = new();
 
     internal static void VerifyFingerprint()
@@ -55,11 +55,11 @@ internal static class NativeSafety
         var module = process.Modules.Cast<ProcessModule>().Single(m =>
             string.Equals(m.ModuleName, "GameAssembly.dll", StringComparison.OrdinalIgnoreCase));
         InstallOne(typeof(Player), "GetModifiedPlayerInput", new[] { typeof(Vector2), typeof(bool) },
-            0x70e540, nameof(InputHooks.Movement), false);
+            0x722970, nameof(InputHooks.Movement), false);
         InstallOne(typeof(Player), "GetMouseGroundPos", Type.EmptyTypes,
-            0x70f1e0, nameof(InputHooks.MousePoint), true);
+            0x723610, nameof(InputHooks.MousePoint), true);
         InstallOne(typeof(NetworkAgent), "UpdateModelFacing", new[] { typeof(Vector3), typeof(bool) },
-            0x6d2020, nameof(InputHooks.Facing), true);
+            0x6d6fe0, nameof(InputHooks.Facing), true);
 
         void InstallOne(Type owner, string name, Type[] signature, int rva, string callback, bool prefix)
         {

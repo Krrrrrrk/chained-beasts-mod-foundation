@@ -1,5 +1,7 @@
 # Chained Beasts 1.0.2 compatibility update
 
+Current compatibility: Foundation/TC **1.1.4** targets **Chained Beasts 1.0.3 / Steam build 26775394**. The earlier 1.0.2 migration notes below are kept for reference. This update was built offline without launching the game.
+
 The [**Foundation + Terms & Contusions 0.9.7 release**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v0.9.7)
 and optional [**Battle Numbers 0.2.2 release**](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases/tag/v0.2.2)
 target Steam **26231777**, game **1.0.2**, Unity **6000.3.21f1**, and the existing

@@ -30,6 +30,7 @@ internal static class NativePersistence
     private static readonly List<WriteTicket> Writes = new();
     private static readonly HashSet<string> CaptureFailures = new(StringComparer.Ordinal);
     private static CheckpointEnvelope _restoring;
+    private static bool _restoreFailed;
     internal static bool IsRestoring => _restoring is not null;
     internal static string Mode => GameManager.InstanceExists ? GameManager.Instance.CurrentGameMode.ToString() : "Solo";
     internal static string RunKey => State.RunKey;
@@ -61,6 +62,7 @@ internal static class NativePersistence
         Patch(typeof(RunDataManager), nameof(RunDataManager.CreateCheckpoint), postfix: nameof(Capture));
         Patch(typeof(PlayerData.Checkpoint), nameof(PlayerData.Checkpoint.Validate), prefix: nameof(ValidateBefore), finalizer: nameof(ValidateFinally));
         Patch(typeof(NetworkSession), nameof(NetworkSession.RestoreCheckpoint), prefix: nameof(AllowRestore));
+        Patch(typeof(NetworkSession), nameof(NetworkSession.ExecuteRestoreStepRpc), prefix: nameof(ContinueRestore), parameters: new[] { typeof(int) });
         Patch(typeof(RunDataManager), nameof(RunDataManager.RestoreCheckpoint), nameof(RestoreBefore), nameof(RestoreAfter), nameof(RestoreFinally), typeof(RunDataManager.Checkpoint));
         Patch(typeof(PlayerData), nameof(PlayerData.RestoreCheckpoint), nameof(PlayerRestoreBefore), nameof(PlayerRestoreAfter), nameof(PlayerRestoreFinally), typeof(PlayerData.Checkpoint));
         Patch(typeof(PlayerData), nameof(PlayerData.OnCheckpointSynced), nameof(SyncBefore), null, nameof(ValidateFinally), typeof(PlayerData.Checkpoint), typeof(bool));
@@ -119,6 +121,7 @@ internal static class NativePersistence
 
     private static void Capture(RunDataManager __instance, RunDataManager.Checkpoint __result)
     {
+        if (_restoreFailed) throw new InvalidDataException("Checkpoint capture refused after a failed restore; return to the main menu.");
         if (!__instance.IsServer || __result?.playerDatas is null || __result.playerCount < 1 || (!SessionAccess.IsSoloMode && !NativeMultiplayer.Ready)) return;
         EnsureRun(__instance);
         try { NativeCombat.RequireSettledCheckpoint(); FoundationServices.CaptureFeatures(__instance); NetworkCheckpoints.RequireOwners(__instance); }
@@ -180,6 +183,7 @@ internal static class NativePersistence
         if (fileName != "SaveData" || sku != IPlatform.Sku.DEFAULT || data is null) return true;
         try
         {
+            if (_restoreFailed) throw new InvalidDataException("SaveData write refused after a failed restore; return to the main menu.");
             var payload = Encoding.UTF8.GetString(data.ToArray());
             var ticket = new WriteTicket();
             foreach (var identity in CheckpointJson.FromSave(payload, _noneIndex))
@@ -293,6 +297,7 @@ internal static class NativePersistence
                 if (NativeMultiplayer.Online && !NetworkCheckpoints.AllowRestore(__instance, envelope,
                     CheckpointWireProjection.Fingerprint(Serialize(checkpoint), _awardCount))) return false;
             }
+            _restoreFailed = false;
             return true;
         }
         catch (Exception exception)
@@ -302,6 +307,7 @@ internal static class NativePersistence
             return false;
         }
     }
+    private static bool ContinueRestore() => !_restoreFailed;
     private static void RestoreBefore(RunDataManager.Checkpoint checkpoint)
     {
         if (!SessionAccess.IsSoloMode && !NativeMultiplayer.Ready) return;
@@ -326,19 +332,32 @@ internal static class NativePersistence
     private static Exception RestoreFinally(Exception __exception)
     {
         _restoring = null;
+        if (__exception is not null)
+        {
+            _restoreFailed = true;
+            FoundationServices.Logger?.LogError("[Foundation] checkpoint apply failed; further restore steps and saving are blocked. Return to the main menu. " + __exception);
+        }
         if (__exception is not null && NativeMultiplayer.Online) NetworkCheckpoints.RestoreFailed(__exception);
         return __exception;
     }
 
     private static CheckpointEnvelope LoadForLiveRestore(RunDataManager.Checkpoint checkpoint, bool allowPersisted = false)
     {
-        // The disk identity stays exact. Only the latest trusted host transfer may
-        // account for the native RPC omitting playerName/normalizing its arrays.
+        // Disk identities stay exact. Online restores require the trusted host
+        // transfer; local restores may prove normalization against the persisted save.
         if (NativeMultiplayer.Online && WireBinding.TryResolve(Serialize(checkpoint), Mode, _noneIndex,
             _awardCount, NetworkCheckpoints.Epoch, out var transferred)) return transferred;
         if (NativeMultiplayer.Online && !allowPersisted && Identity(checkpoint).Token > 0)
             throw new InvalidDataException("Native checkpoint has no matching current host transfer authorization.");
-        return Load(checkpoint);
+        try { return Load(checkpoint); }
+        catch (Exception exception) when (!NativeMultiplayer.Online && Identity(checkpoint).Token > 0 && File.Exists(_savePath) &&
+            (exception is InvalidDataException || exception is FileNotFoundException))
+        {
+            var saved = _store.ReadLocalRestore(Serialize(checkpoint), Mode, _noneIndex, _awardCount, File.ReadAllText(_savePath));
+            FoundationServices.Logger?.LogInfo("[Foundation] local resume matched native RPC normalization to saved checkpoint: " +
+                saved.Identity.RunKey + "/" + saved.Identity.Token);
+            return saved;
+        }
     }
 
     internal static void AuthorizeWireTransfer(CheckpointEnvelope envelope, string wireFingerprint, string epoch, string generation) =>
@@ -448,6 +467,7 @@ internal static class NativePersistence
 
     private static void Reset()
     {
+        _restoreFailed = false;
         if (!IsRestoring) NetworkCheckpoints.ResetRun(null);
         State.Clear();
         Captured.Clear();

@@ -90,6 +90,26 @@ public sealed class CheckpointStore
         }
     }
 
+    public CheckpointEnvelope ReadLocalRestore(string nativeJson, string mode, int noneIndex, int awardCount, string saveJson)
+    {
+        if (mode is not ("Solo" or "Local"))
+            throw new InvalidDataException("Local restore proof cannot authorize an online checkpoint.");
+        var candidate = CheckpointJson.Identify(nativeJson, mode, noneIndex);
+        using var save = JsonDocument.Parse(saveJson);
+        if (!save.RootElement.TryGetProperty("Checkpoint" + mode, out var checkpoint) ||
+            checkpoint.ValueKind == JsonValueKind.Null || !checkpoint.TryGetProperty("runData", out var runData))
+            throw new InvalidDataException("The selected mode has no persisted native checkpoint.");
+        var savedJson = runData.GetRawText();
+        var saved = CheckpointJson.Identify(savedJson, mode, noneIndex);
+        if (candidate.Token <= 0 || candidate.RunKey != saved.RunKey || candidate.Token != saved.Token ||
+            !candidate.PlayerIds.SequenceEqual(saved.PlayerIds) ||
+            CheckpointWireProjection.Fingerprint(nativeJson, awardCount) != CheckpointWireProjection.Fingerprint(savedJson, awardCount))
+            throw new InvalidDataException("Local restore differs from the persisted native checkpoint.");
+        // Even solo resume crosses the native RPC serializer. Resolve its normalized
+        // representation against this exact saved generation, keeping disk identities strict.
+        return Read(saved, matchingNativeFileProvesPendingWrite: true);
+    }
+
     private static CheckpointEnvelope ReadFile(string path, CheckpointIdentity identity)
     {
         var envelope = JsonSerializer.Deserialize<CheckpointEnvelope>(File.ReadAllBytes(path));

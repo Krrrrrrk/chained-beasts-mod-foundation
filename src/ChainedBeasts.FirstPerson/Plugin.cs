@@ -10,7 +10,7 @@ public sealed class Plugin : BasePlugin
 {
     public const string Id = "local.chainedbeasts.firstperson";
     public const string Name = "Chained Beasts First Person";
-    public const string Version = "0.2.1";
+    public const string Version = "0.2.2";
     private Harmony _harmony;
     private FirstPersonController _controller;
 

@@ -41,7 +41,7 @@ internal static class CameraIntegration
             _standalone = info.Instance as BasePlugin;
             _standaloneSupported = _standalone != null && _standalone.GetType().Assembly.GetName().Name == "ChainedBeasts.FirstPerson" &&
                 _standalone.GetType().Assembly.GetName().Version >= new Version(0, 1, 0, 0) &&
-                _standalone.GetType().Assembly.GetName().Version <= new Version(0, 2, 0, 0);
+                _standalone.GetType().Assembly.GetName().Version <= new Version(0, 2, 2, 0);
         }
         PotionOnlySetting = config.Bind("FirstPerson", "PotionOnly", !HasStandalone,
             "True locks Eye Level offers on and disables manual camera switching. False locks Eye Level offers off and enables F9 switching. Both modes are available with TC alone. Also editable in TC Content before a run; the host's mode controls the party during a session.");
@@ -55,7 +55,7 @@ internal static class CameraIntegration
         NativeSafety.VerifyFingerprint();
         try
         {
-            // Our standalone 0.1.x/0.2.0 Unload restores renderers, cursor and
+            // Our standalone 0.1.x/0.2.0/0.2.2 Unload restores renderers, cursor and
             // Cinemachine and removes its three native input hooks.
             if (HasStandalone)
             {

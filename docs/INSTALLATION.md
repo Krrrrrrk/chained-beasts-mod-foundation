@@ -6,7 +6,7 @@
 
 [Quick install on the main page](../README.md#quick-install) · [Updating an existing install](#updating-an-existing-install) · [Troubleshooting](#troubleshooting) · [Make your own mod](foundation/README.md)
 
-These instructions cover the **1.1.2 release** for the **Windows 64-bit Steam version of Chained Beasts 1.0.2 / build 26369255**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
+These instructions cover the **1.1.2 release** for the **Windows 64-bit Steam version of Chained Beasts 1.0.3 / build 26775394**. [Back up your install and saves](#back-up-your-install-and-saves) before adding mods or changing versions.
 
 Solo and multiplayer have been working in my tests. Iron Grip also worked in
 my manual test, though its multiplayer and edge-case coverage remain incomplete. Older 0.8.3/0.9.1 downloads target game 1.0.1 and are incompatible
@@ -44,7 +44,7 @@ The download above is the loader used with this project. BepInEx 5 and Unity Mon
 
 ### 3. Install the combined mod package
 
-1. Download [**TermsAndContusions-with-Foundation-1.1.2.zip**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.2/TermsAndContusions-with-Foundation-1.1.2.zip).
+1. Download [**TermsAndContusions-with-Foundation-1.1.4.zip**](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/download/v1.1.4/TermsAndContusions-with-Foundation-1.1.4.zip).
 2. Extract the ZIP somewhere convenient, then open the extracted folder.
 3. Copy its **`BepInEx` folder into the game folder** and allow the folders to merge.
 
@@ -165,9 +165,9 @@ For source-built installations with a script-created backup, an advanced rollbac
 
 ## Requirements and package choices
 
-The inspected setup is **Windows x64**, **Chained Beasts 1.0.2 / Steam build 26369255**, **Unity 6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Other game builds and platforms are unverified. Multiplayer is experimental and requires the [matching-party setup](MULTIPLAYER.md); the new Iron Grip multiplayer cases still need checking.
+The inspected setup is **Windows x64**, **Chained Beasts 1.0.3 / Steam build 26775394**, **Unity 6000.3.21f1**, and **BepInEx 6.0.0-be.791+b782da4 Unity IL2CPP x64**. Other game builds and platforms are unverified. Multiplayer is experimental and requires the [matching-party setup](MULTIPLAYER.md); the new Iron Grip multiplayer cases still need checking.
 
-All packages are available on the [1.1.2 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2).
+All packages are available on the [1.1.4 release page](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.4).
 
 | Download | Includes | Choose it when… |
 |---|---|---|
@@ -177,7 +177,7 @@ All packages are available on the [1.1.2 release page](https://github.com/Krrrrr
 
 Use matching **1.1.2** gameplay DLLs for this release. Packages also contain installation/license notices and a checksum manifest. They exclude the loader, game files, extracted assets, saves, configuration files, and optional teaching examples. [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers/releases) is available separately.
 
-**Testing status:** Solo and multiplayer have been working in my tests, and Iron Grip worked in a manual test. Builds and nongame checks pass; individual mechanics, interactions, save/restore cases and multiplayer are not exhaustively verified. Reliable surgery rerolls and complete Battle Numbers boss coverage remain limitations. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.2).
+**Testing status:** Solo and multiplayer have been working in my tests, and Iron Grip worked in a manual test. Builds and nongame checks pass; individual mechanics, interactions, save/restore cases and multiplayer are not exhaustively verified. Reliable surgery rerolls and complete Battle Numbers boss coverage remain limitations. See the [release notes](https://github.com/Krrrrrrk/chained-beasts-mod-foundation/releases/tag/v1.1.4).
 
 <a id="fresh-checkout-and-local-workflow"></a>
 
@@ -198,7 +198,7 @@ pwsh -NoProfile -File .\scripts\build-and-deploy-plugin.ps1 -Deploy -SkipBuild `
 
 Omit `-SkipBuild` to build first. The script requires `-Deploy`, refuses while the game is running, checks the inspected game build, and creates a backup before replacing either of this project's DLLs. It detects old copies by assembly identity, including renamed/nested copies, while preserving unrelated plugins during installation. A partial-copy failure restores the previous owned DLLs.
 
-The backup and `artifacts/packages/1.1.2/deployment.json` record the current source installation and hashes. Its inspected `GameAssembly.dll` SHA-256 is `ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29` (Steam 26369255). A changed build requires reinspection. Restoring older plugins does not undo a Steam game update; releases for game 1.0.1 remain incompatible with game 1.0.2.
+The backup and `artifacts/packages/1.1.4/deployment.json` record the current source installation and hashes. Its inspected `GameAssembly.dll` SHA-256 is `ba3ef02fa87da4c41bb27d7610539c9578132204f0fb5713833e2ef93415ce29` (Steam 26775394). A changed build requires reinspection. Restoring older plugins does not undo a Steam game update; releases for game 1.0.1 remain incompatible with game 1.0.3.
 
 For a backup created by that workflow:
 
