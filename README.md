@@ -1,6 +1,6 @@
 # Chained Beasts Mod Foundation + Terms & Contusions
 
-Updated for **Chained Beasts 1.0.3, Steam build 26775394**. Built against fresh game bindings; the game was not launched for this update.
+I've given this a surface-level test on **Chained Beasts 1.0.3 (Steam build 26775394)**, and the basic features appear to be working. I haven't checked every mechanic or edge case.
 
 I started messing around with modding **Chained Beasts** and ended up making two things:
 
@@ -19,7 +19,7 @@ Made for **Chained Beasts 1.0.3**, Steam build **26775394**, on **64-bit Windows
 
 A small warning before we go any further: **I haven't tried to balance this stuff.** A skill might be hilariously overpowered, underwhelming, or just plain broken. That's half the fun of experimenting, but don't say I didn't warn you.
 
-**New in 1.1.1:** Foundation now supports the [Hybrids mod's](https://github.com/Krrrrrrk/Chained-Beasts_Hybrids) F1 progression controls. Use this release for Hybrids; the older 1.1.0 Foundation DLL doesn't have that hook.
+I'm keeping Foundation/TC, [FPS Mod](https://github.com/Krrrrrrk/Chained-Beasts_FPS-Mod), [Battle Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Battle-Numbers) and [Divine Numbers](https://github.com/Krrrrrrk/Chained-Beasts_Divine-Numbers) updated. [Matchmaking](https://github.com/Krrrrrrk/chained-beasts-matchmaking), [Rerolls](https://github.com/Krrrrrrk/Chained-Beasts_Rerolls) and [Hybrids](https://github.com/Krrrrrrk/Chained-Beasts_Hybrids) are retired and won't receive more updates.
 
 **New in 1.1.0:** Eye Level puts you in first person for the next battle. It's always a three-skull potion, with the strongest normal potion healing in that offer set. The TC menu lets you choose potion-only play or voluntary F9 switching. [How the modes work](#eye-level-and-fps-mod).
 
@@ -111,7 +111,7 @@ Turning something off prevents it from showing up in **new offers**, including r
 
 In multiplayer, **the host chooses which TC entries are active**. Clients use the host's list for that session and keep their own saved selection for later. Make your choices before connecting; the menu is locked while you're in a party or run. Everyone still needs the same Foundation/TC build.
 
-One note about the pictures: they were taken during the **0.9.9 development build**. The menu has been included since **v1.0.0**. Search isn't available right now, but categories and pages work fine. The **Find Public Games** button you can see in the screenshots belongs to a *different* mod of mine (Matchmaking); it isn't part of Terms & Contusions.
+One note about the pictures: they were taken during the **0.9.9 development build**. The menu has been included since **v1.0.0**. Search isn't available right now, but categories and pages work fine. The **Find Public Games** button you can see in the screenshots belongs to my retired Matchmaking mod; it isn't part of Terms & Contusions.
 
 There's more detail in the [content-selection guide](docs/CONTENT_SELECTION.md).
 
